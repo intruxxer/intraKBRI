@@ -1,32 +1,8 @@
 EKbri::Application.routes.draw do
-  
-  get "immigration/visa/index"
-  get "visa", :to => "immigration/visa#index"
-  
-  get "immigration/passport/index"
-  get "passport", :to => "immigration/passport#index"
-  
-  get "immigration/report/index"  
-  get "report", :to => "immigration/report#index"
-  
-  get "marriage/info", :to => "immigration/marriage#info"  
-  
-  get "visasync", :to => "batch#syncvisamongotoaccess"
-  get "reversevisasync", :to => "batch#reversesyncvisamongotoaccess"  
-  
-  get "dashboard/index"
-  get "dashboard/counsel"
-  get "dashboard/immigration"
-  get "dashboard/immigration/:document" => "dashboard#immigration" 
-  get "dashboard/employment_indonesia"
-  get "dashboard/employment_korea"
-  get "dashboard/tabulation"
-  get "dashboard/statistics"
-  get "dashboard", :to => "dashboard#index"
-  
-  get "welcome/concept"
-  get "concept/index"
-  get "concept", :to => "concept#index"
+ 
+  resources :visas, controller: 'immigration/visa'
+  resources :passports, controller: 'immigration/passport'
+  resources :reports, controller: 'immigration/report'
   
   authenticated :user do
     root to: 'welcome#index', as: :authenticated_root
@@ -45,14 +21,24 @@ EKbri::Application.routes.draw do
   devise_scope :user do 
     get "/users/sign_out" => "devise/sessions#destroy" 
   end 
-
-  resources :users
-  resources :batch 
   
-  resources :visa, controller: 'immigration/visa'
-  resources :passport, controller: 'immigration/passport'
-  resources :report, controller: 'immigration/report'
-  #resources :marriage, controller: 'immigration/marriage'
+  resources :users
+  
+  get "marriage/info", :to => "immigration/marriage#info"   
+  
+  get "dashboard/index"
+  get "dashboard/counsel"
+  get "dashboard/immigration"
+  get "dashboard/immigration/:document" => "dashboard#immigration" 
+  get "dashboard/employment_indonesia"
+  get "dashboard/employment_korea"
+  get "dashboard/tabulation"
+  get "dashboard/statistics"
+  get "dashboard", :to => "dashboard#index"
+  
+  get "welcome/concept"
+  get "concept/index"
+  get "concept", :to => "concept#index"
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

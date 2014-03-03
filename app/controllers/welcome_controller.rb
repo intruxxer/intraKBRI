@@ -1,45 +1,39 @@
 class WelcomeController < ApplicationController
   def index	
-    @latestvisadata = {}
-    @latestreportdata = {}
-    @latestpassportdata = {}
   	if user_signed_in?
-  	  puts "Cuser=>"+current_user.inspect
   	  visadata = Visa.where(user_id: current_user)
-  	  puts "Visa-data=>"+visadata.inspect
+  	  @uservisa = Visa.where(owner_id: current_user.id)
+  	  
   	  passportdata = Passport.where(user_id: current_user)
-      puts "Passport-data=>"+visadata.inspect
-  		reportdata = Report.where(user_id: current_user)
-  		puts "Report-data=>"+reportdata.inspect
+      @userpassport = Passport.where(user_id: current_user)#recheck
+      
+  		@userreport = Report.where(user_id: current_user)
   		
+  		#if there is at least once visa/passport/report application, 
+  		#then visadata == 1 as for the current user
   		if visadata.count > 0
-  		  puts "Visadata=>1 or more"
-        visadata.each do |t|
-          @latestvisadata["visaapply" + t.id] = {'status' => 'Success', 'link' => edit_visa_path(current_user), 'name' => 'Visa Application', 'timestamp' => t.updated_at}
+        @uservisa.each do |x|
+          puts x.inspect
         end
       end
-  		puts "latestVisadata=>"+@latestvisadata.inspect
-  		
+
   		if passportdata.count > 0
-        puts "Passport-data=>1 or more"
-        passportdata.each do |t|
-          @latestpassportdata["passportapply" + t.id] = {'status' => 'Success', 'link' => edit_passport_path(current_user), 'name' => 'Aplikasi Paspor/SPLP', 'timestamp' => t.updated_at}
+        @userpassport.each do |x|
+          puts x.inspect
         end
       end
-      puts "latestPassportdata=>"+@latestpassportdata.inspect
   		
-  		if reportdata.count > 0
-  			reportdata.each do |t|
-  				@latestreportdata["lapordiri" + t.id] = {'status' => 'Success', 'link' => edit_report_path(current_user), 'name' => 'Pelaporan Data Diri', 'timestamp' => t.updated_at}
+  		if @userreport.count > 0
+  			@userreport.each do |x|
+  				puts x.inspect
   			end
   		end
-  		
-  	end
+  	end#if user_signed_in?
 	
   end
   
   def concept
-    #to show the concept
+    #E-KBRI Concepts
   end
   
 end

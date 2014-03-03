@@ -1,0 +1,32 @@
+<ol class="breadcrumb">
+	<li>
+		<i class="clip-home-2"></i>
+		&nbsp;
+		<%= link_to "E-KBRI", authenticated_root_path %>
+	</li>
+	<li class="active">
+		<% if action_name == "index" then %>
+			<%= "Dashboard" %>
+		<% elsif action_name == "counsel" %>
+			<%= "Konsuler" %>
+		<% elsif action_name == "immigration" %>
+			<%= "Imigrasi" %>
+		<% elsif action_name == "employment_indonesia" %>
+			<%= "BNP2TKI" %>
+		<% elsif action_name == "employment_korea" %>
+			<%= "HRD Korea" %>
+		<% else %>
+			<%= action_name.titleize %>
+		<% end %>
+	</li>
+	<li class="search-box">
+		<form class="sidebar-search">
+			<div class="form-group">
+				<input type="text" placeholder="Cari (Kata Kunci?)">
+				<button class="submit">
+					<i class="clip-search-3"></i>
+				</button>
+			</div>
+		</form>
+	</li>
+</ol>

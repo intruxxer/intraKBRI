@@ -1,0 +1,23 @@
+<div class="row">
+	<div class="col-sm-12">
+		<!-- start: PAGE TITLE & BREADCRUMB -->
+		<%= render "dashboard/breadcrumb" %>
+		<div class="page-header">
+		<% if action_name == "index" then %>
+			<h1><%= "Dashboard" %>
+		<% elsif action_name == "counsel" then %>
+			<h1><%= "Konsuler" %>
+		<% elsif action_name == "immigration" then %>
+			<h1><%= "Imigrasi" %>
+		<% elsif action_name == "employment_indonesia" %>
+			<h1><%= "BNP2TKI" %>
+		<% elsif action_name == "employment_korea" %>
+			<h1><%= "HRD Korea" %>
+		<% else %>
+			 <h1><%= action_name.titleize %>
+		<% end %>
+			<small>Overview &amp; Data </small></h1>
+		</div>
+		<!-- end: PAGE TITLE & BREADCRUMB -->
+	</div>
+</div>

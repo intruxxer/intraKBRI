@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Konsep E-KBRI</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0 " />
+	<link rel="stylesheet" media="all" href="/pitch/css/all.css" type="text/css"/>
+	<script type="text/javascript" src="/pitch/js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="/pitch/js/jquery.main.js"></script>
+	<!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="css/ie.css" media="screen"/><![endif]-->
+</head>
+<body>
+	<div id="wrapper">
+		<div class="nav-holder">
+			<ul id="nav">
+				<li class="active"><a href="#slide1"><span>Overview</span></a></li>
+				<li><a href="#slide2"><span>Pelayanan KBRI</span></a></li>
+				<li><a href="#slide3"><span>Kondisi saat ini</span></a></li>
+				<li><a href="#slide4"><span>Solutions</span></a></li>
+				<li><a href="#slide5"><span>Benefits</span></a></li>
+				<li><a href="#slide6"><span>Features</span></a></li>
+				<li><a href="#slide7"><span>Sample</span></a></li>
+				<li><a href="#slide8"><span>Live App</span></a></li>				
+			</ul>
+			<div class="slider-holder">
+				<div class="slider-block">
+					<div class="slider"><div class="pin"></div></div>
+				</div>
+			</div>
+		</div>
+		<div id="main">
+			<div id="slide1" class="slide">
+				<div class="slide-holder">
+					<a href="#"><%= image_tag("/assets/images/garuda.png", height: '160', width: '160') %></a>
+					<div class="head-text" style='margin-top:8px;font-size:26pt;height:150px;'>
+						<p>Menuju pelayanan elektronik KBRI</p>
+						<p style="font-size:12pt;color:#666666"><i>Seoul, Korea Selatan. January 5th, 2014</i></p>
+					</div>					
+					<div class="btn-holder">
+						<a href="#slide2" class="btn-start"><span>start</span> </a>
+					</div>
+				</div>
+			</div>
+			<div  id="slide2" class="slide">
+				<div class="slide-holder">
+					<div class="slide-frame">
+						<h2>Tugas Pokok KBRI</h2>
+						<li>Pelayanan Ke-konsuleran</li>
+						<li>Pelayanan Ke-imigrasian</li>
+						<li>Ketenagakerjaan</li>
+						
+					</div>
+				</div>
+			</div>
+			<div id="slide3" class="slide">
+				<div class="slide-holder">
+					<h2>Kondisi saat ini</h2>					
+					<div class="column">
+						<div class="col">
+							<div class="head">
+									<h3>Ke-konsuleran</h3>									
+							</div>
+							<p>Penyimpanan dok2 ket Lahir, NTCR, Kematian, surat legasisasi dll tidak tersimpan secara rapi</p>
+							<p>Proses pembuatan dok2 tersebut diatas masih bergantung pada ketelitian dan kecepatan bekerja staff KBRI (manual)
+</p>
+<p>Belum adanya field2 data yang lengkap menyeluruh terintegrasi dalam database</p>
+<p>Data tersimpang dalam gudang. Tidak boleh di lenyapkan karena itu adalah dokument negara  semakin terakumulasi dari tahun2 sebelumnbya
+</p>
+						</div>
+						<div class="col">
+							<div class="head">
+									<h3>Ke-imigrasian</h3>									
+							</div>
+							<p>Pelayanan WNA manual : 
+Form di salin ke bentuk digital oleh staff KBRI (Pemrosesan manual).
+Awal Desember, ruangan konsuler d perluas untuk mengatasi msalah tsb. Dgn asumsi penambhan man power akan mempercepat proses
+</p>
+							<p>
+								Pelayanan WNI manual: 
+Pengurusan passport/splp yang masih berbelit belit.
+Tidak ada mekanisme “pendeteksian” kapan WNI terkait habis masa visa di Korea.
+Tidak ada database elektronik lengkap memuat info WNI.
+							</p>
+						</div>
+						<div class="col">
+							<div class="head">
+									<h3>Ketenagakerjaan</h3>									
+							</div>
+							<p>Data yang diberikan oleh BNP2TKI untuk konfirmasi pengiriman TKI tidaklah lengkap</p>
+							<p>KBRI dan HRD Korea masih melakukan pengecekan TKI di bandara secara manual menggunakan dokumen hardcopy</p>
+							<p>Belum terjalin komunikasi dan pencocokan data yang baik dengan HRD korea terkait perubahan data TKI</p>
+						</div>	
+					</div>					
+				</div>
+			</div>			
+			<div id="slide4" class="slide">
+				<div class="slide-holder">
+					<h2><span>Solutions</span></h2>
+					<div class="box problems">
+						<div class="title">
+							<h3>e-KBRI</h3>
+						</div>
+						<div>
+							<%= image_tag("/pitch/images/overview.png") %>
+							<hr />
+							<h2>Comparison</h2>
+							<%= image_tag("/pitch/images/concept0.png") %>
+						</div>
+					</div>					
+				</div>
+			</div>
+			<div id="slide5" class="slide">				
+				<div class="slide-holder">
+					<div class="box solutions">
+						<div class="title">
+							<h3>Benefits</h3>
+						</div>						
+						<ul class="list">
+							<li>
+								<h4>Paperless data</h4>
+								<p>Penyimpanan dokumen secara elektronik. Space efficient. Trackable and Manageable data.</p>
+							</li>
+							<li>
+								<h4>Faster Workflow</h4>
+								<p>Mempercepat dan mempermudah layanan ke-konsuleran dan ke-imigrasian baik untuk pengguna maupun pengelola.</p>
+								<p>Layanan lapor diri, permohonan visa, perpanjangan paspor, dsb akan diselenggarakan secara elektronik.</p>
+							</li>
+							<li>
+								<h4>Dashboard & Statistic</h4>
+								<p>Monitor trend pengguna serta KPI (Key Performance Indicator) untuk peningkatan layanan kedepan.</p>
+							</li>
+							<li>
+								<h4>Electronic Reports</h4>
+								<p>Mempermudah pengelola dalam mengeluarkan laporan terkait audit (BPK) atau pencocokan data (HRD Korea).</p>
+							</li>
+						</ul>						
+					</div>					
+				</div>
+				<div class="slide-holder">
+							<img src="/pitch/images/concept1.png"  alt="image description" />
+							<img src="/pitch/images/concept2.png"  alt="image description" />
+							<img src="/pitch/images/concept3.jpg"  alt="image description" />
+				</div>
+			</div>			
+			<div id="slide6" class="slide">
+				<div class="slide-holder">
+					<h2>Features</h2>					
+					<ul class="model-block">
+						<li>
+							<img src="/pitch/images/img-07.png" width="128" height="118" alt="image description" class="alignright" />
+							<h3>Scalable</h3>
+							<p>Storage penyimpanan dokumen secara elektronik akan selalu bisa di upgrade sesuai dengan kebutuhan.</p>
+						</li>
+						<li>
+							<img src="/pitch/images/img-08.png" width="128" height="118" alt="image description" class="alignleft" />
+							<h3>Centralized Database</h3>
+							<p>Pusat penyimpanan data yang terpusat dan cepat untuk sebagai penyedia informasi untuk statistik dan laporan.</p>
+							
+						</li>
+						<li>
+							<img src="/pitch/images/img-09.png" width="128" height="118" alt="image description" class="alignright" />
+							<h3>Low maintenance</h3>
+							<p>Pemeliharaan server dan database dapat dilakukan secara tahunan dengan biaya relatif murah</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div id="slide7" class="slide">
+				<div class="slide-holder">
+					<h2>Samples</h2>
+					<div class="head-text">
+						<p>Klik untuk memperbesar</p>
+					</div>
+					<ul class="partner-list">
+						<li><a target="_window" href="/pitch/images/ss1.png"><%= image_tag("/pitch/images/ss1.png", height: '180', width: '240') %></a></li>
+						<li><a target="_window" href="/pitch/images/ss2.png"><%= image_tag("/pitch/images/ss2.png", height: '180', width: '240') %></a></li>
+						<li><a target="_window" href="/pitch/images/ss3.png"><%= image_tag("/pitch/images/ss3.png", height: '180', width: '240') %></a></li>
+						<li><a target="_window" href="/pitch/images/ss4.png"><%= image_tag("/pitch/images/ss4.png", height: '180', width: '240') %></a></li>
+					</ul
+				</div>
+			</div>
+			<div id="slide8" class="slide">
+				<div class="slide-holder">
+					<h2>Terima Kasih</h2>
+					
+					<div class="button-holder">
+						<a href="http://kbri.seoul.kr" class="button"><span>Go to e-KBRI</span></a>
+					</div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -71,7 +71,8 @@
 													<td class="center"><%= t.updated_at %></td>	
 													<td class="center"><%= t.status %></td>													
 													<td class="center">
-													<%= link_to 'Edit', edit_visa_path(t.id) %>
+													<%= link_to 'Edit', edit_visa_path(t.id) %> |
+													<%= link_to 'To SISARI', '/visa/tosisari/' + t.id %> 
 													</td>
 												</tr>												
 												<% end %>

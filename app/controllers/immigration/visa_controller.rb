@@ -89,9 +89,32 @@ class Immigration::VisaController < ApplicationController
     @visa = Visa.find(params[:id])
   end
   
+  
   #DELETE /visa
   def destroy 
   
+  end
+  
+  @@sisaripath = "/public/SISARI.mdb"
+  @@init_sisari_counter = 5849
+  #TRF TO SISARI
+  def tosisari
+    if Visa.count > 1
+      @@init_sisari_counter = Visa.last.sisari_counter
+    end
+    @visa = Visa.find(params[:id])
+    
+    db = Accessdb.new( Rails.root.to_s + @@sisaripath )
+    db.open('imigrasiRI')
+    
+    @@init_sisari_counter += 1
+    
+    db.execute("INSERT INTO TTVISA(NO_APLIKASI, JENIS, KDPERWAKILAN, NMPERWAKILAN, TGL_DOC, KODE_NEG, WARGA_NEG, NO_PASPOR, TGL_VALID_PASPOR, TGL_KLUAR_PASPOR, KTR_KLUAR_PASPOR, FLAGACCLOKET, NAMA, TGL_LAHIR, TMP_LAHIR, ENTRIES, TGLENTRY, TGL_UPDATE, KD_VISA, Pejabat_ttd, jabatan_ttd) 
+      VALUES('" + @@init_sisari_counter.to_s + "/" + Time.new.month.to_s + "/" + Time.new.year.to_s + "','I','37A', 'SEOUL', '" + @visa.created_at.strftime("%m/%d/%Y") + "','KOR','KOREA, REPUBLIC OF','" + @visa.passport_no.to_s + "','" + @visa.passport_date_expired.to_s + "','" + @visa.passport_date_issued.to_s + "','" + @visa.passport_issued + "','Y','" + @visa.full_name + "','" + @visa.dateBirth.strftime("%m/%d/%Y") + "','" + @visa.placeBirth + "','M','" + @visa.created_at.strftime("%m/%d/%Y") + "','" + @visa.updated_at.strftime("%m/%d/%Y") + "','Biasa','Bambang Witjaksono','COUNSELLOR')")
+    
+    db.close
+    
+    @visa.update(sisari_counter: @@init_sisari_counter)
   end
   
   private

@@ -43,7 +43,7 @@
 													<td class="center"><%= rows.full_name %></td>
 													<td class="center"><%= rows.status %></td>
 													<td class="center">
-															<%= link_to edit_visa_path(rows._id) do %>
+															<%= link_to(edit_visa_path(rows._id),{ target: '_blank'}) do %>
 																<span class="glyphicon glyphicon-pencil"></span>
 																<span class="glyphicon-class">Action</span>
 															<% end %>															

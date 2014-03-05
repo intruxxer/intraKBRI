@@ -50,6 +50,7 @@ class Immigration::VisaController < ApplicationController
      
    @visa = [ Visa.new(post_params) ]    
     if current_user.visas = @visa then
+      current_user.save
       UserMailer.visa_received_email(current_user).deliver
       respond_to do |format|
         format.html { redirect_to root_path, :notice => "Your visa application is successfully received!" }
@@ -81,8 +82,9 @@ class Immigration::VisaController < ApplicationController
   #PATCH, PUT /visa/:id
   def update
     #@visa = Visa.find_by(user_id: params[:id])
-    @visa = Visa.find(params[:id])
-    if @visa.update(post_params)
+    @visa = Visa.find(params[:id])         
+    if @visa.update_attributes(post_params)   
+      @visa.save      
       redirect_to root_path, :notice => 'You have updated your visa application data!'
     else
       render 'edit'

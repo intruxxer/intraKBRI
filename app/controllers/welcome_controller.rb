@@ -2,7 +2,7 @@ class WelcomeController < ApplicationController
   def index	
   	  if user_signed_in?
     	  visadata = Visa.where(user_id: current_user)
-    	  @uservisa = Visa.where(owner_id: current_user.id)
+    	  @uservisa = Visa.where(user_id: current_user.id)
     	  
     	  passportdata = Passport.where(user_id: current_user)
         @userpassport = Passport.where(owner_id: current_user.id)

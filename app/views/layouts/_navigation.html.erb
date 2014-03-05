@@ -45,7 +45,7 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pengaturan <b class="caret"></b></a>
     <ul class="dropdown-menu">
     <li><%= link_to 'Pengaturan Profil Pribadi', edit_user_registration_path %></li>
-        <% if current_user.has_role? :admin %>
+        <% if current_user.has_role? :admin or current_user.has_role? :moderator %>
       	   <li><%= link_to 'Aturcara & Pengelolaan Pengguna E-KBRI', users_path %></li>
       	   <li><%= link_to 'Statistik & Laporan via Sistem Panel E-KBRI', dashboard_path %></li>
    	    <% end %>

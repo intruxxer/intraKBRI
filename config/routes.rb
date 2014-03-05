@@ -1,5 +1,5 @@
 EKbri::Application.routes.draw do
- 
+   
   resources :visas, controller: 'immigration/visa'
   resources :passports, controller: 'immigration/passport'
   resources :reports, controller: 'immigration/report'
@@ -24,7 +24,10 @@ EKbri::Application.routes.draw do
   
   resources :users
   
-  get "marriage/info", :to => "immigration/marriage#info"   
+  get "infovisas", :to => "immigration/visa#info"   
+  get "infopassports", :to => "immigration/passport#info"
+  get "inforeports", :to => "immigration/report#info"
+  get "marriage/info", :to => "immigration/marriage#info"
   
   get "dashboard/index"
   get "dashboard/counsel"
@@ -35,12 +38,11 @@ EKbri::Application.routes.draw do
   get "dashboard/tabulation"
   get "dashboard/statistics"
   get "dashboard", :to => "dashboard#index"
+  get "dashboard/service/:document", :to => "dashboard#immigration"
   
   get "welcome/concept"
   get "concept/index"
   get "concept", :to => "concept#index"
-  
-  get "visa/tosisari/:id", :to => "immigration/visa#tosisari"
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

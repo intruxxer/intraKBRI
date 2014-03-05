@@ -12,6 +12,26 @@
 					Visa Application Form for Gaining Entry/Extension Re-Entry Permit to Republic of Indonesia
 				<% end %>
 				</header>
+				<% if current_user.has_role? :admin or current_user.has_role? :moderator %>
+					<div style="background:#666666;">
+						<div style="padding:6px;color:#FFFF66;">
+							Current Status : <%= @visa.status %> </br />
+							Last Updated : <%= @visa.updated_at %> <br />
+						</div>
+						<fieldset>
+							<div class="row">
+								<legend>Actions</legend>
+								<section class="col col-6">
+								Change Status : <label class="select">
+												<%= f.input_field :status, 
+												collection: { 'Verified' => 'Verified', 'Reject' => 'Rejected', 'Paid' => 'Paid', 'Interview Needed' => 'Interview', 'Confirm' => 'Confirm'}, :selected => 'verified'  %>
+												<i></i>
+								</label> 
+								</section>
+							</div>	
+						</fieldset>
+					</div>
+				<% end %>
 				<fieldset>Visa Reference Code: <b><%= @visa.ref_id %></b></fieldset>
 				<fieldset>
 					<div class="row">

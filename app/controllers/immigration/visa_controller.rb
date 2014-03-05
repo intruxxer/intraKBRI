@@ -5,6 +5,7 @@ class Immigration::VisaController < ApplicationController
     #if Visa.where(user_id: current_user).count > 0
         #redirect_to root_path
      #end
+     #We will have passport
   end
   
   #GET /new
@@ -39,10 +40,16 @@ class Immigration::VisaController < ApplicationController
       end
    end
    
+   uploaded_paymentslip_picture = params[:visa][:slip_photo]
+   if (uploaded_paymentslip_picture != nil)
+      new_pay_picture = uploaded_paymentslip_picture.read
+      File.open(Rails.root.join('public', 'uploads', uploaded_paymentslip_picture.original_filename), 'wb') do |file|
+        file.write(uploaded_paymentslip_picture)
+      end
+   end
      
-    @visa = [ Visa.new(post_params) ]    
+   @visa = [ Visa.new(post_params) ]    
     if current_user.visas = @visa then
-      
       UserMailer.visa_received_email(current_user).deliver
       respond_to do |format|
         format.html { redirect_to root_path, :notice => "Your visa application is successfully received!" }
@@ -55,8 +62,7 @@ class Immigration::VisaController < ApplicationController
     redirect_to :back, :notice => "Unfortunately, your current visa application fails to be submitted."
     #do something further 
     end
-  
-    #debugging
+    #*Debugging*#
     #logger.debug "We are inspecting VISA PROCESSING PARAMS as follows:"
     #puts params.inspect
     #puts @visa.inspect
@@ -85,36 +91,14 @@ class Immigration::VisaController < ApplicationController
   
   #GET /visa/:id/edit
   def edit
-    #@visa = Visa.find_by(user_id: params[:id])
+    #Why NOT searching based on user_id? because there will be MULTIPLE visas/users
+    #Hence, NOT @visa = Visa.find_by(user_id: params[:id]), but
     @visa = Visa.find(params[:id])
   end
-  
   
   #DELETE /visa
   def destroy 
   
-  end
-  
-  @@sisaripath = "/public/SISARI.mdb"
-  @@init_sisari_counter = 5849
-  #TRF TO SISARI
-  def tosisari
-    if Visa.count > 1
-      @@init_sisari_counter = Visa.last.sisari_counter
-    end
-    @visa = Visa.find(params[:id])
-    
-    db = Accessdb.new( Rails.root.to_s + @@sisaripath )
-    db.open('imigrasiRI')
-    
-    @@init_sisari_counter += 1
-    
-    db.execute("INSERT INTO TTVISA(NO_APLIKASI, JENIS, KDPERWAKILAN, NMPERWAKILAN, TGL_DOC, KODE_NEG, WARGA_NEG, NO_PASPOR, TGL_VALID_PASPOR, TGL_KLUAR_PASPOR, KTR_KLUAR_PASPOR, FLAGACCLOKET, NAMA, TGL_LAHIR, TMP_LAHIR, ENTRIES, TGLENTRY, TGL_UPDATE, KD_VISA, Pejabat_ttd, jabatan_ttd) 
-      VALUES('" + @@init_sisari_counter.to_s + "/" + Time.new.month.to_s + "/" + Time.new.year.to_s + "','I','37A', 'SEOUL', '" + @visa.created_at.strftime("%m/%d/%Y") + "','KOR','KOREA, REPUBLIC OF','" + @visa.passport_no.to_s + "','" + @visa.passport_date_expired.to_s + "','" + @visa.passport_date_issued.to_s + "','" + @visa.passport_issued + "','Y','" + @visa.full_name + "','" + @visa.dateBirth.strftime("%m/%d/%Y") + "','" + @visa.placeBirth + "','M','" + @visa.created_at.strftime("%m/%d/%Y") + "','" + @visa.updated_at.strftime("%m/%d/%Y") + "','Biasa','Bambang Witjaksono','COUNSELLOR')")
-    
-    db.close
-    
-    @visa.update(sisari_counter: @@init_sisari_counter)
   end
   
   private
@@ -128,15 +112,15 @@ class Immigration::VisaController < ApplicationController
       :tr_count_dest, :tr_flight_vessel, :tr_air_sea_port, :tr_date_entry, :lim_s_purpose, 
       :lim_s_flight_vessel, :lim_s_air_sea_port, :lim_s_date_entry, :v_purpose, :v_flight_vessel,
       :v_air_sea_port, :v_date_entry, :dip_purpose, :dip_flight_vessel, :dip_air_sea_port, :dip_date_entry, :o_purpose, 
-      :o_flight_vessel, :o_air_sea_port, :o_date_entry, :passportpath, :idcardpath, :photopath).merge(owner_id: current_user.id, 
-      ref_id: 'V-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s)
+      :o_flight_vessel, :o_air_sea_port, :o_date_entry, :passportpath, :idcardpath, :photopath, :status, :payment_slip
+      ).merge(owner_id: current_user.id, ref_id: 'V-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params
     #  params.require(:post).permit(:some_attribute).merge(user_id: current_user.id)
     #end
     def generate_string(length=5)
-      chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ23456789'
+      chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ123456789'
       password = ''
       length.times { |i| password << chars[rand(chars.length)] }
       password = password.upcase

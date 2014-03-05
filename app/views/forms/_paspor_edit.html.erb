@@ -5,7 +5,8 @@
 			<!-- Red color scheme -->
 			
 			<%= simple_form_for :passport, url: passport_path(@passport), :method => :patch, :html => { :class => "sky-form", :multipart => true } do |f| %>
-				<header>Formulir Pengurusan Paspor/SPLP untuk WNI di Korea Selatan <%= current_user.id %></header>
+				<header>Formulir Pengurusan Paspor/SPLP untuk WNI di Korea Selatan</header>
+				<fieldset>No. Aplikasi Paspor: <b><%= @passport.ref_id %></b></fieldset>
 				<fieldset>
 					<div class="row">
 						<section class="col col-6">
@@ -200,9 +201,22 @@
 					</div>
 				</fieldset>
 
+				<fieldset>
+					<div class="row">
+						<section class="col col-12">
+							<label class="label">Foto/Scan Bukti Pembayaran Pengurusan Paspor/SPLP</label>
+							<label for="file" class="input input-file">
+								<div class="button">
+									<%= f.input_field :slip_photo, as: :file, class: 'fileplaceholder' %>Unggah</div>
+									<%= f.input_field :payment_slip, readonly: true %>
+							</label>
+							<div class="note"><strong>Catatan:</strong> Hanya berkas gambar JPG/JPEG/PNG. Ukuran Maks. 2MB</div>
+						</section>			
+					</div>
+				</fieldset>
 				
 				<footer>
-					<button type="submit" class="button">Kirim Aplikasi</button>
+					<button type="submit" class="button">Perbarui Aplikasi</button>
 					<button type="button" class="button button-secondary" onclick="window.history.back();">Kembali</button>
 				</footer>
 			<% end %>

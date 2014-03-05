@@ -13,8 +13,8 @@ class DashboardController < ApplicationController
   
   def immigration
     if params[:document] == "visa" then
-      @document = "forms/visanew"
-      puts "rendering #{@document}"
+      @document = "dashboard/service_visa"
+      @visa = Visa
     elsif params[:document] == "passport"
       @document = "forms/paspornew"
       puts "rendering #{@document}"

@@ -4,7 +4,6 @@ class Visa
   
   field :owner_id,               type: String
   field :ref_id,                 type: String
-  field :sisari_counter,         type: Integer 
   field :application_type,       type: Integer 
   field :category_type,          type: String
   
@@ -76,7 +75,10 @@ class Visa
   field :photopath,              type: String
   
   field :status,                 type: String, default: 'Received'
+  field :payment_slip,           type: String
   
-  belongs_to :user, :class_name => "User", :inverse_of => :visa  
+  belongs_to :user, :class_name => "User", :inverse_of => :visa
+
+  field :is_sync,                type: Integer,     default: 0
 
 end

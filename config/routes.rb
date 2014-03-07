@@ -39,6 +39,7 @@ EKbri::Application.routes.draw do
   get "dashboard/statistics"
   get "dashboard", :to => "dashboard#index"
   get "dashboard/service/:document", :to => "dashboard#immigration"
+  get "admin/service/:document/:id", :to => "dashboard#immigration"
   
   get "welcome/concept"
   get "concept/index"
@@ -46,6 +47,12 @@ EKbri::Application.routes.draw do
   
   get "visa/show/all", :to => "immigration/visa#show_all"
   get "visa/tosisari/:id", :to => "immigration/visa#toSisari"
+  get "passport/show/all", :to => "immigration/passport#show_all"
+  
+  match "passport/tospri/:id", to: "immigration/passport#exec_toSPRI", via: :post
+  
+  
+  
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

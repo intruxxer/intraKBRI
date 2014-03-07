@@ -32,6 +32,9 @@ class Passport
 
   field :status,                 type: String, default: 'Diterima oleh KBRI'
   field :payment_slip,           type: String
+  field :vipa_no,                type: Integer
+  field :passport_no,            type: String
+  field :reg_no,                 type: String
   
   belongs_to :user, :class_name => "User", :inverse_of => :passport
 end

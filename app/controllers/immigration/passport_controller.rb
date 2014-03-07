@@ -1,5 +1,7 @@
 class Immigration::PassportController < ApplicationController
   #GET /passport
+  @@VIPACOUNTERDEF = 6600
+  
   def index
     #1 Person, 1 Application in 5 years
     #if Passport.where(user_id: current_user).count > 0
@@ -43,6 +45,7 @@ class Immigration::PassportController < ApplicationController
    
     @passport = [ Passport.new(post_params) ]    
     if current_user.passports = @passport then
+      current_user.save
       UserMailer.passport_received_email(current_user).deliver
       respond_to do |format|
         format.html { redirect_to root_path, :notice => "Pengurusan aplikasi paspor anda, berhasil!" }
@@ -81,14 +84,69 @@ class Immigration::PassportController < ApplicationController
   #DELETE /passport
   def destroy 
   
+  end  
+  
+  def exec_toSPRI
+    @passport = Passport.find(params[:id])
+    
+    params.require(:passport).permit(:passport_no,:reg_no)
+    
+    db = Accessdb.new( Rails.root.to_s + '/public/SPRI3.mdb' )
+    db.open()    
+    
+    db.execute("INSERT INTO tblDATA(noPass, noReg, namaLkP, tmpLahir, tglLahir, jmlHal, noLama, tglKeluarLama, tmpKeluarLama, idCode, KantorPerwakilan) 
+        VALUES('" + params[:passport][:passport_no] + "','" + params[:passport][:reg_no] + "','" + @passport.full_name + "','" + @passport.placeBirth + "','" + @passport.dateBirth.to_s + "','24','" + @passport.lastPassportNo + "','" + @passport.dateIssued.to_s + "','" + @passport.placeIssued + "','37A','KBRI SEOUL')")
+      
+    db.close
+    
+    @passport.update_attributes({:status => 'Printed',:passport_no => params[:passport][:passport_no], :reg_no => params[:passport][:reg_no]})
+  end
+  
+  def show_all
+    @passport = Passport.all   
+    
+    params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
+    
+    unless (params[:sSearch].nil? || params[:sSearch] == "")    
+      searchparam = params[:sSearch]  
+      @passport = @passport.any_of({:full_name => /#{searchparam}/},{:ref_id => /#{searchparam}/},{:status => /#{searchparam}/})
+    end   
+    
+    unless (params[:iDisplayStart].nil? || params[:iDisplayLength] == '-1')
+      @passport = @passport.skip(params[:iDisplayStart]).limit(params[:iDisplayLength])      
+    end    
+    
+    iTotalRecords = Passport.count
+    iTotalDisplayRecords = @passport.count
+    aaData = Array.new    
+    
+    @passport.each do |passport|
+      editLink = "<a href=\"/passports/" + passport.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update Application</span></a>"
+      printLink = "<a href=\"/admin/service/prep_spri/" + passport.id + "\" target=\"_blank\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SPRI</span></a>"
+      aaData.push([ passport.ref_id, passport.full_name, passport.status, editLink + "&nbsp;|&nbsp;" + printLink])                        
+    end
+    
+    respond_to do |format|
+      format.json { render json: {'sEcho' => params[:sEcho].to_i , 'aaData' => aaData , 'iTotalRecords' => iTotalRecords, 'iTotalDisplayRecords' => iTotalDisplayRecords } }
+    end
+    
   end
   
   private
+    def check_and_get_VIPA_COUNTER
+      counter = @@VIPACOUNTERDEF + 1
+      if Passport.count > 0
+        counter = Passport.last.vipa_no + 1
+      end
+      
+      return counter
+    end
+  
     def post_params
       params.require(:passport).permit( :application_type, :application_reason, :full_name, :height, :placeBirth, :dateBirth,              
       :marriage_status, :lastPassportNo, :dateIssued, :placeIssued, :jobStudyInKorea, :jobStudyOrganization, :jobStudyAddress, 
       :phoneKorea, :addressKorea, :phoneIndonesia, :addressIndonesia, :dateArrival, :sendingParty, :photopath, :status, :payment_slip).merge(owner_id: current_user.id, 
-      ref_id: 'P-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s)
+      ref_id: 'P-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s, vipa_no: check_and_get_VIPA_COUNTER)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

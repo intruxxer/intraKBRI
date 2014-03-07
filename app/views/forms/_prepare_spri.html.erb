@@ -1,0 +1,23 @@
+<%= simple_form_for :passport, url: '/passport/tospri/' + @passport.id, :method => :post, :html => { :class => "sky-form", :multipart => true } do |f| %>				
+				<fieldset>
+					<div class="row">
+						<section class="col col-6">
+							<label class="label">Nomor Passport</label>
+							<label class="input">
+								<%= f.input_field :passport_no %>							
+							</label>
+						</section>
+						<section class="col col-6">
+							<label class="label">Nomor Registrasi</label>
+							<label class="input">
+								<%= f.input_field :reg_no %>							
+							</label>
+						</section>
+					</div>
+				</fieldset>				
+				<footer>
+					<button type="submit" class="button">Insert to SPRI</button>
+					<button type="button" class="button button-secondary" onclick="window.close();">Kembali</button>
+				</footer>
+<% end %>
+			

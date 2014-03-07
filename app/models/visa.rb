@@ -76,6 +76,8 @@ class Visa
   
   field :status,                 type: String, default: 'Received'
   field :payment_slip,           type: String
+  
+  
   field :vipa_no,                type: Integer
   
   belongs_to :user, :class_name => "User", :inverse_of => :visa

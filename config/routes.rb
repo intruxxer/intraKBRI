@@ -45,6 +45,7 @@ EKbri::Application.routes.draw do
   get "concept", :to => "concept#index"
   
   get "visa/show/all", :to => "immigration/visa#show_all"
+  get "visa/tosisari/:id", :to => "immigration/visa#toSisari"
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

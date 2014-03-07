@@ -1,5 +1,7 @@
 class Immigration::VisaController < ApplicationController
   #GET /visa
+  @@VIPACOUNTERDEF = 5861
+  
   def index
     #if individual 1 person, 1 application
     #if Visa.where(user_id: current_user).count > 0
@@ -79,6 +81,19 @@ class Immigration::VisaController < ApplicationController
     end
   end
   
+  def toSisari
+    @visa = Visa.find(params[:id])
+    db = Accessdb.new( Rails.root.to_s + '/public/SISARI.mdb' )
+    db.open('imigrasiRI')    
+    
+    db.execute("INSERT INTO TTVISA(NO_APLIKASI, JENIS, KDPERWAKILAN, NMPERWAKILAN, TGL_DOC, KODE_NEG, WARGA_NEG, NO_PASPOR, TGL_VALID_PASPOR, TGL_KLUAR_PASPOR, KTR_KLUAR_PASPOR, FLAGACCLOKET, NAMA, TGL_LAHIR, TMP_LAHIR, ENTRIES, TGLENTRY, TGL_UPDATE, KD_VISA, Pejabat_ttd, jabatan_ttd) 
+        VALUES('" + @visa.vipa_no.to_s + "/" + Time.new.month.to_s + "/" + Time.new.year.to_s + "','I','37A', 'SEOUL', '" + @visa.created_at.strftime("%m/%d/%Y") + "','KOR','KOREA, REPUBLIC OF','" + @visa.passport_no.to_s + "','" + @visa.passport_date_expired.to_s + "','" + @visa.passport_date_issued.to_s + "','" + @visa.passport_issued + "','Y','" + @visa.full_name + "','" + @visa.dateBirth.strftime("%m/%d/%Y") + "','" + @visa.placeBirth + "','" + @visa.num_entry.to_s + "','" + @visa.created_at.strftime("%m/%d/%Y") + "','" + @visa.updated_at.strftime("%m/%d/%Y") + "','Biasa','Bambang Witjaksono','COUNSELLOR')")
+      
+    db.close
+    
+    @visa.update_attributes({:status => 'Printed'})
+  end
+  
   def show_all
     @visas = Visa.all   
     
@@ -86,7 +101,7 @@ class Immigration::VisaController < ApplicationController
     
     unless (params[:sSearch].nil? || params[:sSearch] == "")    
       searchparam = params[:sSearch]  
-      @visas = @visas.any_of({:full_name => /#{searchparam}/},{:ref_id => /#{searchparam}/})
+      @visas = @visas.any_of({:full_name => /#{searchparam}/},{:ref_id => /#{searchparam}/},{:status => /#{searchparam}/})
     end   
     
     unless (params[:iDisplayStart].nil? || params[:iDisplayLength] == '-1')
@@ -99,14 +114,14 @@ class Immigration::VisaController < ApplicationController
     
     @visas.each do |visa|
       editLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update Application</span></a>"
-      printLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
-      aaData.push([ visa.ref_id, visa.full_name, visa.status, editLink + "&nbsp;|&nbsp;" + printLink])
-                        
+      printLink = "<a href=\"/visa/tosisari/" + visa.id + "\" target=\"_blank\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
+      aaData.push([ visa.ref_id, visa.full_name, visa.status, editLink + "&nbsp;|&nbsp;" + printLink])                        
     end
     
     respond_to do |format|
       format.json { render json: {'sEcho' => params[:sEcho].to_i , 'aaData' => aaData , 'iTotalRecords' => iTotalRecords, 'iTotalDisplayRecords' => iTotalDisplayRecords } }
     end
+    
   end
   
   #PATCH, PUT /visa/:id
@@ -134,7 +149,19 @@ class Immigration::VisaController < ApplicationController
   end
   
   private
+    def check_and_get_VIPA_COUNTER
+      counter = @@VIPACOUNTERDEF + 1
+      if Visa.count > 0
+        counter = Visa.last.vipa_no + 1
+      end
+      
+      return counter
+    end  
+  
     def post_params
+      
+      
+      
       params.require(:visa).permit(:application_type, :category_type, :full_name, :sex, :email,
       :placeBirth, :dateBirth, :marital_status, :nationality, :profession, :passport_no, :passport_no,
       :passport_issued, :passport_type, :passport_date_issued, :passport_date_expired, :sponsor_type_kr,
@@ -145,7 +172,7 @@ class Immigration::VisaController < ApplicationController
       :lim_s_flight_vessel, :lim_s_air_sea_port, :lim_s_date_entry, :v_purpose, :v_flight_vessel,
       :v_air_sea_port, :v_date_entry, :dip_purpose, :dip_flight_vessel, :dip_air_sea_port, :dip_date_entry, :o_purpose, 
       :o_flight_vessel, :o_air_sea_port, :o_date_entry, :passportpath, :idcardpath, :photopath, :status, :payment_slip
-      ).merge(owner_id: current_user.id, ref_id: 'V-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s)
+      ).merge(owner_id: current_user.id, ref_id: 'V-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s, vipa_no: check_and_get_VIPA_COUNTER)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

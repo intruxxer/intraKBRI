@@ -79,6 +79,36 @@ class Immigration::VisaController < ApplicationController
     end
   end
   
+  def show_all
+    @visas = Visa.all   
+    
+    params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
+    
+    unless (params[:sSearch].nil? || params[:sSearch] == "")    
+      searchparam = params[:sSearch]  
+      @visas = @visas.any_of({:full_name => /#{searchparam}/},{:ref_id => /#{searchparam}/})
+    end   
+    
+    unless (params[:iDisplayStart].nil? || params[:iDisplayLength] == '-1')
+      @visas = @visas.skip(params[:iDisplayStart]).limit(params[:iDisplayLength])      
+    end    
+    
+    iTotalRecords = Visa.count
+    iTotalDisplayRecords = @visas.count
+    aaData = Array.new    
+    
+    @visas.each do |visa|
+      editLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update Application</span></a>"
+      printLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
+      aaData.push([ visa.ref_id, visa.full_name, visa.status, editLink + "&nbsp;|&nbsp;" + printLink])
+                        
+    end
+    
+    respond_to do |format|
+      format.json { render json: {'sEcho' => params[:sEcho].to_i , 'aaData' => aaData , 'iTotalRecords' => iTotalRecords, 'iTotalDisplayRecords' => iTotalDisplayRecords } }
+    end
+  end
+  
   #PATCH, PUT /visa/:id
   def update
     #@visa = Visa.find_by(user_id: params[:id])

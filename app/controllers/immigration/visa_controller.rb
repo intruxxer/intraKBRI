@@ -92,6 +92,8 @@ class Immigration::VisaController < ApplicationController
     db.close
     
     @visa.update_attributes({:status => 'Printed'})
+    
+    redirect_to 'dashboard/service/visa'
   end
   
   def show_all

@@ -1,6 +1,7 @@
 class Passport
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::Paperclip
   
   belongs_to :user, :class_name => "User", :inverse_of => :passport
   
@@ -39,8 +40,6 @@ class Passport
   field :dateArrival,            type: Date
   field :sendingParty,           type: Integer
   
-  field :photopath,              type: String
-
   field :status,                 type: String, default: 'Received'
   field :payment_slip,           type: String
   field :payment_date,           type: Date
@@ -69,5 +68,9 @@ class Passport
   validates :kabupatenIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
   validates :kecamatanIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
   
-  validates :sendingParty,       numericality: { only_integer: true }
+  has_mongoid_attached_file :photo, :styles => { :thumb => "90x120>" }
+  validates_attachment_content_type :photo, :content_type => %w(image/jpeg image/jpg image/png)
+  validates_attachment_presence :photo
+  validates_attachment_size :photo, less_than: 2.megabytes
+  
 end

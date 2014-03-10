@@ -8,6 +8,7 @@ class Immigration::PassportController < ApplicationController
     #    redirect_to edit_passport_path(current_user)
     #end
     #We comment this as we want to enable multiple paspors and/or SPLPs
+    @passport = Passport.new
   end
   
   #GET /new
@@ -26,22 +27,7 @@ class Immigration::PassportController < ApplicationController
   end
   
   #POST /passport
-  def create
-    uploaded_passport_picture = params[:passport][:photo]
-    if (uploaded_passport_picture != nil)
-      new_pass_picture = uploaded_passport_picture.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_passport_picture.original_filename), 'wb') do |file|
-        file.write(uploaded_passport_picture)
-      end
-    end
-    
-    uploaded_paymentslip_picture = params[:passport][:slip_photo]
-    if (uploaded_paymentslip_picture != nil)
-      new_pay_picture = uploaded_paymentslip_picture.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_paymentslip_picture.original_filename), 'wb') do |file|
-        file.write(uploaded_paymentslip_picture)
-      end
-    end
+  def create    
    
     @passport = [ Passport.new(post_params) ]    
     current_user.passports = @passport
@@ -80,6 +66,7 @@ class Immigration::PassportController < ApplicationController
     if @passport.update(post_params)
       redirect_to root_path, :notice => 'Anda telah berhasil memperbaharui data pengurusan paspor anda!'
     else
+      @errors = @passport.errors.messages
       render 'edit'
     end
   end
@@ -141,7 +128,7 @@ class Immigration::PassportController < ApplicationController
     def post_params
       params.require(:passport).permit( :application_type, :application_reason, :paspor_type, :full_name, :kelamin, :placeBirth, :dateBirth,              
       :citizenship_status, :lastPassportNo, :dateIssued, :placeIssued, :jobStudyInKorea, :jobStudyTypeInKorea, :jobStudyOrganization, :jobStudyAddress, 
-      :phoneKorea, :addressKorea, :cityKorea, :phoneIndonesia, :addressIndonesia, :kelurahanIndonesia, :kecamatanIndonesia, :kabupatenIndonesia, :dateArrival, :sendingParty, :photopath, :status, :payment_slip).merge(owner_id: current_user.id, 
+      :phoneKorea, :addressKorea, :cityKorea, :phoneIndonesia, :addressIndonesia, :kelurahanIndonesia, :kecamatanIndonesia, :kabupatenIndonesia, :dateArrival, :sendingParty, :photo, :status, :payment_slip).merge(owner_id: current_user.id, 
       ref_id: 'P-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s)
     end
     #Notes: to add attribute/variable after POST params received, do

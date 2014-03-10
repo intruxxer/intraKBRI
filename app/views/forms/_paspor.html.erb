@@ -67,15 +67,20 @@
 							<i></i>
 							</label>
 						</section>
-						<section class="col col-4">
+						<section class="col col-3">
 							<label class="label">Pas Foto Digital</label>
 							<label for="file" class="input input-file">
-								<div class="button">
+								<div class="button">									
 									<%= f.input_field :photo, as: :file, class: 'fileplaceholder' %>Unggah</div>
-									<%= f.input_field :photopath, readonly: true %>
+									<input type="text" name="photopath" readonly="readonly" />
 							</label>
 							<div class="note"><strong>Catatan : </strong> Hanya berkas gambar JPG/JPEG/PNG. Ukuran Maks. 2MB<br />Gambar wajib merupakan pas foto resmi rapih dan jelas dengan latar belakang putih. Contoh : <a href="http://goo.gl/F9bvxO" target="_blank">http://goo.gl/F9bvxO</a></div>
-						</section>			
+						</section>	
+						<% if @passport.photo.exists? %>
+						<section class="col col-1">
+							<%= image_tag @passport.photo.url(:thumb) %>
+						</section>				
+						<%end%>		
 					</div>
 
 					<div class="row">
@@ -379,13 +384,15 @@
 				$('#passport_application_type').change(function(){
 					if($(this).val() == 'pembuatan-splp'){
 						$('.splp').show();
+						$('#paspor_type').hide();
 					}else{
 						$('#paspor_type').show();
+						$('.splp').hide();
 					}
 				});	
 				// Regular datepicker
 				$('.datePick').datepicker({
-					dateFormat: 'yyyy/mm/dd',
+					dateFormat: 'yy/mm/dd',
 					prevText: '<i class="icon-chevron-left"></i>',
 					nextText: '<i class="icon-chevron-right"></i>'
 				});

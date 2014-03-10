@@ -1,6 +1,7 @@
 EKbri::Application.routes.draw do
-   
   resources :visas, controller: 'immigration/visa'
+  resources :visafamilys, controller: 'immigration/visafamily'
+  resources :visagroups, controller: 'immigration/visagroup'
   resources :passports, controller: 'immigration/passport'
   resources :reports, controller: 'immigration/report'
   
@@ -38,16 +39,20 @@ EKbri::Application.routes.draw do
   get "dashboard/tabulation"
   get "dashboard/statistics"
   get "dashboard", :to => "dashboard#index"
-  get "dashboard/service/:document", :to => "dashboard#immigration"
-  get "admin/service/:document/:id", :to => "dashboard#immigration"
   
   get "welcome/concept"
   get "concept/index"
   get "concept", :to => "concept#index"
   
+  #Unit Test Framework#
+  get "playground", :to => "playground#index"
+  get "test", :to => "playground#test"
+  
   get "visa/show/all", :to => "immigration/visa#show_all"
   get "visa/tosisari/:id", :to => "immigration/visa#toSisari"
   get "passport/show/all", :to => "immigration/passport#show_all"
+  get "dashboard/service/:document", :to => "dashboard#immigration"
+  get "admin/service/:document/:id", :to => "dashboard#immigration"
   
   match "passport/tospri/:id", to: "immigration/passport#exec_toSPRI", via: :post
   

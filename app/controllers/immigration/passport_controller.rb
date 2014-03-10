@@ -44,8 +44,8 @@ class Immigration::PassportController < ApplicationController
     end
    
     @passport = [ Passport.new(post_params) ]    
-    if current_user.passports = @passport then
-      current_user.save
+    current_user.passports = @passport
+    if current_user.save then      
       UserMailer.passport_received_email(current_user).deliver
       respond_to do |format|
         format.html { redirect_to root_path, :notice => "Pengurusan aplikasi paspor anda, berhasil!" }
@@ -55,8 +55,11 @@ class Immigration::PassportController < ApplicationController
             #like stopping loading.gif, hiding the element, alerting user
       end
     else
-    redirect_to :back, :notice => "Mohon maaf, Aplikasi pengurusan paspor anda gagal diproses."
-    #do something further 
+      @errors = current_user.passports[0].errors.messages
+      render 'index'
+           
+      #redirect_to :back, :alert => current_user.passports[0].errors.messages 
+      #do something further 
     end
     #debugging
     #logger.debug "We are inspecting PASSPORT PROCESSING PARAMS as follows:"
@@ -101,7 +104,7 @@ class Immigration::PassportController < ApplicationController
     
     @passport.update_attributes({:status => 'Printed',:passport_no => params[:passport][:passport_no], :reg_no => params[:passport][:reg_no]})
     
-    redirect_to 'dashboard/service/passport'
+    redirect_to 'dashboard/service/passport', :notice => 'Data berhasil dipindahkan'
   end
   
   def show_all
@@ -134,21 +137,12 @@ class Immigration::PassportController < ApplicationController
     
   end
   
-  private
-    def check_and_get_VIPA_COUNTER
-      counter = @@VIPACOUNTERDEF + 1
-      if Passport.count > 0
-        counter = Passport.last.vipa_no + 1
-      end
-      
-      return counter
-    end
-  
+  private  
     def post_params
-      params.require(:passport).permit( :application_type, :application_reason, :full_name, :height, :placeBirth, :dateBirth,              
-      :marriage_status, :lastPassportNo, :dateIssued, :placeIssued, :jobStudyInKorea, :jobStudyOrganization, :jobStudyAddress, 
-      :phoneKorea, :addressKorea, :phoneIndonesia, :addressIndonesia, :dateArrival, :sendingParty, :photopath, :status, :payment_slip).merge(owner_id: current_user.id, 
-      ref_id: 'P-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s, vipa_no: check_and_get_VIPA_COUNTER)
+      params.require(:passport).permit( :application_type, :application_reason, :paspor_type, :full_name, :kelamin, :placeBirth, :dateBirth,              
+      :citizenship_status, :lastPassportNo, :dateIssued, :placeIssued, :jobStudyInKorea, :jobStudyTypeInKorea, :jobStudyOrganization, :jobStudyAddress, 
+      :phoneKorea, :addressKorea, :cityKorea, :phoneIndonesia, :addressIndonesia, :kelurahanIndonesia, :kecamatanIndonesia, :kabupatenIndonesia, :dateArrival, :sendingParty, :photopath, :status, :payment_slip).merge(owner_id: current_user.id, 
+      ref_id: 'P-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

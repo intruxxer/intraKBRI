@@ -1,13 +1,13 @@
-class Immigration::VisaController < ApplicationController
+class Immigration::VisafamilyController < ApplicationController
   #GET /visa
-  @@VIPACOUNTERDEF = 5861
-  
   def index
-    #if individual 1 person, 1 application
-    #if Visa.where(user_id: current_user).count > 0
-        #redirect_to root_path
-     #end
-     #We will have passport
+    if params[:add_people] then
+      @add_people = true
+      @lastvisa = Visa.where(visa_type: 2, user_id: current_user).last
+      @ref_id = @lastvisa.ref_id
+    else
+      @ref_id = 'VF-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s
+    end
   end
   
   #GET /new
@@ -68,14 +68,19 @@ class Immigration::VisaController < ApplicationController
      
    @visa = [ Visa.new(post_params) ]    
     if current_user.visas = @visa then
-      current_user.save
       UserMailer.visa_received_email(current_user).deliver
       respond_to do |format|
-        format.html { redirect_to root_path, :notice => "Your visa application is successfully received!" }
-        format.json { render json: {action: "JSON Creating Visa", result: "Saved"} }
-        format.js #if being asked by AJAX to return "script" <-->
-            #visa_processing/create.js.erb -->to execute script JS,
-            #like stopping loading.gif, hiding the element, alerting user
+        format.html { 
+          #kalau pertama kali sbg org pertama
+          redirect_to :controller => 'visafamily', :action => 'index', 
+          :add_people => true, :ref_id => params[:visa][:ref_id]
+          #redirect_to visafamilys_path with GET options
+          
+          #kalau kedua kali 
+          
+          #kalau finish
+          
+        }
       end
     else
     redirect_to :back, :notice => "Unfortunately, your current visa application fails to be submitted."
@@ -97,57 +102,11 @@ class Immigration::VisaController < ApplicationController
     end
   end
   
-  def toSisari
-    @visa = Visa.find(params[:id])
-    db = Accessdb.new( Rails.root.to_s + '/public/Database/Visa.mdb' )
-    db.open('imigrasiRI')    
-    
-    db.execute("INSERT INTO TTVISA(NO_APLIKASI, JENIS, KDPERWAKILAN, NMPERWAKILAN, TGL_DOC, KODE_NEG, WARGA_NEG, NO_PASPOR, TGL_VALID_PASPOR, TGL_KLUAR_PASPOR, KTR_KLUAR_PASPOR, FLAGACCLOKET, NAMA, TGL_LAHIR, TMP_LAHIR, ENTRIES, TGLENTRY, TGL_UPDATE, KD_VISA, Pejabat_ttd, jabatan_ttd) 
-        VALUES('" + @visa.vipa_no.to_s + "/" + Time.new.month.to_s + "/" + Time.new.year.to_s + "','I','37A', 'SEOUL', '" + @visa.created_at.strftime("%m/%d/%Y") + "','KOR','KOREA, REPUBLIC OF','" + @visa.passport_no.to_s + "','" + @visa.passport_date_expired.to_s + "','" + @visa.passport_date_issued.to_s + "','" + @visa.passport_issued + "','Y','" + @visa.full_name + "','" + @visa.dateBirth.strftime("%m/%d/%Y") + "','" + @visa.placeBirth + "','" + @visa.num_entry.to_s + "','" + @visa.created_at.strftime("%m/%d/%Y") + "','" + @visa.updated_at.strftime("%m/%d/%Y") + "','Biasa','Bambang Witjaksono','COUNSELLOR')")
-      
-    db.close
-    
-    @visa.update_attributes({:status => 'Printed'})
-    
-    redirect_to 'dashboard/service/visa'
-  end
-  
-  def show_all
-    @visas = Visa.all   
-    
-    params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
-    
-    unless (params[:sSearch].nil? || params[:sSearch] == "")    
-      searchparam = params[:sSearch]  
-      @visas = @visas.any_of({:full_name => /#{searchparam}/},{:ref_id => /#{searchparam}/},{:status => /#{searchparam}/})
-    end   
-    
-    unless (params[:iDisplayStart].nil? || params[:iDisplayLength] == '-1')
-      @visas = @visas.skip(params[:iDisplayStart]).limit(params[:iDisplayLength])      
-    end    
-    
-    iTotalRecords = Visa.count
-    iTotalDisplayRecords = @visas.count
-    aaData = Array.new    
-    
-    @visas.each do |visa|
-      editLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update Application</span></a>"
-      printLink = "<a href=\"/visa/tosisari/" + visa.id + "\" target=\"_blank\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
-      aaData.push([ visa.ref_id, visa.full_name, visa.status, editLink + "&nbsp;|&nbsp;" + printLink])                        
-    end
-    
-    respond_to do |format|
-      format.json { render json: {'sEcho' => params[:sEcho].to_i , 'aaData' => aaData , 'iTotalRecords' => iTotalRecords, 'iTotalDisplayRecords' => iTotalDisplayRecords } }
-    end
-    
-  end
-  
   #PATCH, PUT /visa/:id
   def update
     #@visa = Visa.find_by(user_id: params[:id])
-    @visa = Visa.find(params[:id])         
-    if @visa.update_attributes(post_params)   
-      @visa.save      
+    @visa = Visa.find(params[:id])
+    if @visa.update(post_params)
       redirect_to root_path, :notice => 'You have updated your visa application data!'
     else
       render 'edit'
@@ -161,7 +120,7 @@ class Immigration::VisaController < ApplicationController
     @visa = Visa.find(params[:id])
   end
   
-  #DELETE /visa
+  #DELETE /visa/:id
   def destroy 
     @visa = Visa.find(params[:id])
     reference = @visa.ref_id
@@ -173,15 +132,6 @@ class Immigration::VisaController < ApplicationController
   end
   
   private
-    def check_and_get_VIPA_COUNTER
-      counter = @@VIPACOUNTERDEF + 1
-      if Visa.count > 0
-        counter = Visa.last.vipa_no + 1
-      end
-      
-      return counter
-    end  
-  
     def post_params
       params.require(:visa).permit(:application_type, :category_type, :full_name, :sex, :email,
       :placeBirth, :dateBirth, :marital_status, :nationality, :profession, :passport_no, :passport_no,
@@ -193,8 +143,7 @@ class Immigration::VisaController < ApplicationController
       :lim_s_flight_vessel, :lim_s_air_sea_port, :lim_s_date_entry, :v_purpose, :v_flight_vessel,
       :v_air_sea_port, :v_date_entry, :dip_purpose, :dip_flight_vessel, :dip_air_sea_port, :dip_date_entry, :o_purpose, 
       :o_flight_vessel, :o_air_sea_port, :o_date_entry, :passportpath, :idcardpath, :photopath, :status, :payment_slip, 
-      :payment_date, :ticketpath, :sup_docpath).merge(owner_id: current_user.id, visa_type: 1,
-      ref_id: 'V-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s)
+      :payment_date, :ticketpath, :sup_docpath, :ref_id).merge(owner_id: current_user.id, visa_type: 2)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

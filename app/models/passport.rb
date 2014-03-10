@@ -2,39 +2,72 @@ class Passport
   include Mongoid::Document
   include Mongoid::Timestamps
   
+  belongs_to :user, :class_name => "User", :inverse_of => :passport
+  
   field :owner_id,               type: String
   field :ref_id,                 type: String
-  field :application_type,       type: String 
+  field :application_type,       type: String
   field :application_reason,     type: String
+  field :paspor_type,            type: String
   
   field :full_name,              type: String
-  field :height,                 type: String
+  field :kelamin,                type: String
    
   field :placeBirth,             type: String 
   field :dateBirth,              type: Date
-  field :marriage_status,        type: Integer
+  field :citizenship_status,     type: String
   
   field :lastPassportNo,         type: String
   field :dateIssued,             type: Date
   field :placeIssued,            type: String
   
   field :jobStudyInKorea,        type: String
+  field :jobStudyTypeInKorea,    type: String
   field :jobStudyOrganization,   type: String
   field :jobStudyAddress,        type: String
+  
   field :phoneKorea,             type: String
-  field :addressKorea,           type: String 
+  field :addressKorea,           type: String
+  field :cityKorea,              type: String
+   
   field :phoneIndonesia,         type: String
   field :addressIndonesia,       type: String
+  field :kelurahanIndonesia,     type: String
+  field :kabupatenIndonesia,     type: String
+  field :kecamatanIndonesia,     type: String
+  
   field :dateArrival,            type: Date
   field :sendingParty,           type: Integer
   
   field :photopath,              type: String
 
-  field :status,                 type: String, default: 'Diterima oleh KBRI'
+  field :status,                 type: String, default: 'Received'
   field :payment_slip,           type: String
-  field :vipa_no,                type: Integer
-  field :passport_no,            type: String
-  field :reg_no,                 type: String
+  field :payment_date,           type: Date
   
-  belongs_to :user, :class_name => "User", :inverse_of => :passport
+  validates :application_type,   presence: true
+  validates :application_reason, presence: true
+  validates :paspor_type,        presence: true
+  validates :full_name,          presence: true, length: { minimum: 1, maximum: 32 }
+  validates :kelamin,            presence: true
+  validates :placeBirth,         presence: true, length: { minimum: 1, maximum: 30 }
+  validates :dateBirth,          presence: true
+  validates :citizenship_status, presence: true
+  validates :lastPassportNo,     presence: true, length: { minimum: 1, maximum: 32 }
+  validates :dateIssued,         presence: true
+  validates :placeIssued,        presence: true, length: { minimum: 1, maximum: 30 }
+  validates :jobStudyInKorea,    presence: true, length: { minimum: 1, maximum: 50 }
+  validates :jobStudyTypeInKorea,presence: true
+  validates :jobStudyOrganization,presence: true, length: { minimum: 1, maximum: 50 }
+  validates :jobStudyAddress,    presence: true, length: { minimum: 1, maximum: 50 }
+  validates :phoneKorea,         presence: true, length: { minimum: 1, maximum: 30 }
+  validates :addressKorea,       presence: true, length: { minimum: 1, maximum: 100 }
+  validates :cityKorea,          presence: true
+  validates :phoneIndonesia,     presence: true, length: { minimum: 1, maximum: 30 }
+  validates :addressIndonesia,   presence: true, length: { minimum: 1, maximum: 50 }
+  validates :kelurahanIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
+  validates :kabupatenIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
+  validates :kecamatanIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
+  
+  validates :sendingParty,       numericality: { only_integer: true }
 end

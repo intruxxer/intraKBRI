@@ -4,13 +4,13 @@
 						<section class="col col-6">
 							<label class="label">Nomor Passport</label>
 							<label class="input">
-								<%= f.input_field :passport_no %>							
+								<%= f.input_field :passport_no, :maxlength => 9  %>							
 							</label>
 						</section>
 						<section class="col col-6">
 							<label class="label">Nomor Registrasi</label>
 							<label class="input">
-								<%= f.input_field :reg_no %>							
+								<%= f.input_field :reg_no, :maxlength => 15 %>							
 							</label>
 						</section>
 					</div>

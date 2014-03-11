@@ -148,7 +148,7 @@ class Immigration::VisaController < ApplicationController
     @visa = Visa.find(params[:id])         
     if @visa.update_attributes(post_params)   
       @visa.save      
-      redirect_to root_path, :notice => 'You have updated your visa application data!'
+      redirect_to :back, :notice => 'You have updated your visa application data!'
     else
       render 'edit'
     end

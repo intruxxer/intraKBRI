@@ -56,9 +56,8 @@ class Passport
   validates :placeBirth,         presence: true, length: { minimum: 1, maximum: 30 }
   validates :dateBirth,          presence: true
   validates :citizenship_status, presence: true
-  validates :lastPassportNo,     presence: true, length: { minimum: 1, maximum: 32 }
-  validates :dateIssued,         presence: true
-  validates :placeIssued,        presence: true, length: { minimum: 1, maximum: 30 }
+  validates :lastPassportNo,     length: { minimum: 0, maximum: 32 }  
+  validates :placeIssued,        length: { minimum: 0, maximum: 30 }
   validates :jobStudyInKorea,    presence: true, length: { minimum: 1, maximum: 50 }
   validates :jobStudyTypeInKorea,presence: true
   validates :jobStudyOrganization,presence: true, length: { minimum: 1, maximum: 50 }
@@ -77,4 +76,7 @@ class Passport
   validates_attachment_presence :photo
   validates_attachment_size :photo, less_than: 2.megabytes
   
+  has_mongoid_attached_file :slip_photo, :styles => { :thumb => "90x120>" }
+  validates_attachment_content_type :slip_photo, :content_type => %w(image/jpeg image/jpg image/png application/pdf application/x-pdf)
+  validates_attachment_size :slip_photo, less_than: 2.megabytes
 end

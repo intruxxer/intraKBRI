@@ -27,7 +27,7 @@
 							<label class="label">Application Status</label>
 							<label class="select">
 								<%= f.input_field :status, 
-								collection: { 'Received by The Embassy' => 'Received', 'Payment has been acknowledged' => 'Paid', 
+								collection: { 'Received' => 'Received', 'Paid' => 'Paid', 
 									'Necessary visa data is completed' => 'Verified', 'Application is rejected' => 'Rejected' 
 									} %>
 							<i></i>
@@ -35,7 +35,30 @@
 						</section>
 						<% end %>
 					</div>
-				</fieldset>				
+				</fieldset>			
+				
+				<fieldset style='background:#FFCC00;'>
+					<h4>Payment Confirmation</h4>
+					<div class="row">
+						<section class="col col-6">
+							<label class="label" style='background:#FFCC00;'> Scanned/Photographed Payment Slip for Visa</label>
+							<label for="file" class="input input-file">
+								<div class="button">
+									<%= f.input_field :slip_photo, as: :file, class: 'fileplaceholder' %>Unggah</div>
+									<input type="text" readonly="readonly" name="payment_slip" />
+							</label>
+							<div class="note"><strong>Catatan:</strong> Hanya berkas JPG/JPEG/PNG/PDF. Ukuran Maks. 2MB</div>
+						</section>	
+						<section class="col col-6">
+							<label class="label" style='background:#FFCC00;'>Date of Visa Fee Payment</label>	
+							<label class="input">
+									<i class="icon-append icon-calendar"></i>
+									<%= f.input_field :payment_date, class: 'datePick' %>
+							</label>
+						</section>		
+					</div>
+				</fieldset>
+					
 				<fieldset>
 					<div class="row">
 						<section class="col col-6">
@@ -418,7 +441,10 @@
 				$('.datePick').datepicker({
 					dateFormat: 'yy/mm/dd',
 					prevText: '<i class="icon-chevron-left"></i>',
-					nextText: '<i class="icon-chevron-right"></i>'
+					nextText: '<i class="icon-chevron-right"></i>',
+				    changeMonth: true,
+      				changeYear: true,
+      				yearRange: '1900:' + new Date().getFullYear()
 				});
 				
 				$('.fileplaceholder').change(function(){					

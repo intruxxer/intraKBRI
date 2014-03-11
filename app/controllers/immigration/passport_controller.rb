@@ -81,10 +81,12 @@ class Immigration::PassportController < ApplicationController
     
     params.require(:passport).permit(:passport_no,:reg_no)
     
-    db = Accessdb.new( Rails.root.to_s + '/public/SPRI3.mdb' )
+    db = Accessdb.new( TARGET_SPRI_FOLDER + 'SPRI3.mdb' )
     db.open()    
     
-    db.execute("INSERT INTO tblDATA(noPass, noReg, tglKeluar, tglExpire, namaLkP, tmpLahir, tglLahir, jmlHal, noLama, tglKeluarLama, tmpKeluarLama, idCode, KantorPerwakilan, jnsKel, statusWN, namaKlrg) 
+    db.execute("DELETE * FROM tblData WHERE [noPass] = '" + params[:passport][:passport_no] + "' ")
+    
+    db.execute("INSERT INTO tblData(noPass, noReg, tglKeluar, tglExpire, namaLkP, tmpLahir, tglLahir, jmlHal, noLama, tglKeluarLama, tmpKeluarLama, idCode, KantorPerwakilan, jnsKel, statusWN, namaKlrg) 
         VALUES('" + params[:passport][:passport_no] + "','" + params[:passport][:reg_no] + "','" + Time.new.year.to_s + "/" + Time.new.month.to_s + "/" + Time.new.day.to_s + "','" + (Time.new.year + 5).to_s + "/" + Time.new.month.to_s + "/" + Time.new.day.to_s + "','" + @passport.full_name + "','" + @passport.placeBirth + "','" + @passport.dateBirth.to_s + "','24','" + @passport.lastPassportNo + "','" + @passport.dateIssued.to_s + "','" + @passport.placeIssued + "','37A','KBRI SEOUL', 'L/M', 'IDN','')")
       
     db.close

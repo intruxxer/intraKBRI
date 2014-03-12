@@ -1,13 +1,23 @@
 class Immigration::VisaController < ApplicationController
-  #GET /visa
-  @@VIPACOUNTERDEF = 5861
+  before_filter :authenticate_user!
+  @@SISARICOUNTER = 5850
   
+  #GET /visa
   def index
     #if individual 1 person, 1 application
     #if Visa.where(user_id: current_user).count > 0
         #redirect_to root_path
      #end
      #We will have passport
+     
+     #redirect_to :controller => 'immigration/visa', :action => 'index', :type => 2, :format => 'json'
+     respond_to do |format|
+        format.html { } # {redirect_to root_path, :notice => "Your visa application is successfully received!" }
+        format.json { } # {render json: {action: "JSON Creating Visa", result: "Saved", type: "1"} }
+        format.js #if being asked by AJAX to return "script" <-->
+            #visa_processing/create.js.erb -->to execute script JS,
+            #like stopping loading.gif, hiding the element, alerting user
+      end
   end
   
   #GET /new
@@ -97,19 +107,62 @@ class Immigration::VisaController < ApplicationController
     end
   end
   
+  #PATCH, PUT /visa/:id
+  def update
+    #@visa = Visa.find_by(user_id: params[:id])
+    @visa = Visa.find(params[:id])
+    if @visa.update(post_params)
+      redirect_to root_path, :notice => 'You have updated your visa application data!'
+    else
+      render 'edit'
+    end
+  end
+  
+  #GET /visa/:id/edit
+  def edit
+    #Why NOT searching based on user_id? because there will be MULTIPLE visas/users
+    #Hence, NOT @visa = Visa.find_by(user_id: params[:id]), but
+    @visa = Visa.find(params[:id])
+  end
+  
+  #DELETE /visa/:id
+  def destroy 
+    @visa = Visa.find(params[:id])
+    reference = @visa.ref_id
+    if @visa.delete
+      redirect_to :back, :notice => "Visa Application of Ref. No #{reference} has been erased."
+    else
+      redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."
+    end
+  end
+  
   def toSisari
     @visa = Visa.find(params[:id])
     db = Accessdb.new( Rails.root.to_s + '/public/Database/Visa.mdb' )
     db.open('imigrasiRI')    
     
-    db.execute("INSERT INTO TTVISA(NO_APLIKASI, JENIS, KDPERWAKILAN, NMPERWAKILAN, TGL_DOC, KODE_NEG, WARGA_NEG, NO_PASPOR, TGL_VALID_PASPOR, TGL_KLUAR_PASPOR, KTR_KLUAR_PASPOR, FLAGACCLOKET, NAMA, TGL_LAHIR, TMP_LAHIR, ENTRIES, TGLENTRY, TGL_UPDATE, KD_VISA, Pejabat_ttd, jabatan_ttd) 
-        VALUES('" + @visa.vipa_no.to_s + "/" + Time.new.month.to_s + "/" + Time.new.year.to_s + "','I','37A', 'SEOUL', '" + @visa.created_at.strftime("%m/%d/%Y") + "','KOR','KOREA, REPUBLIC OF','" + @visa.passport_no.to_s + "','" + @visa.passport_date_expired.to_s + "','" + @visa.passport_date_issued.to_s + "','" + @visa.passport_issued + "','Y','" + @visa.full_name + "','" + @visa.dateBirth.strftime("%m/%d/%Y") + "','" + @visa.placeBirth + "','" + @visa.num_entry.to_s + "','" + @visa.created_at.strftime("%m/%d/%Y") + "','" + @visa.updated_at.strftime("%m/%d/%Y") + "','Biasa','Bambang Witjaksono','COUNSELLOR')")
+    nextCounter = @@SISARICOUNTER + 1
+    
+    unless @visa.vipa_no.nil?
+      nextCounter = @visa.vipa_no    
+    end    
       
-    db.close
+      db.execute("INSERT INTO TTVISA(JK, TIPE_VISA, KETPEKERJAAN, LAMA,TYPELAMA, NO_APLIKASI, JENIS, KDPERWAKILAN, NMPERWAKILAN, TGL_DOC, KODE_NEG, WARGA_NEG, NO_PASPOR, TGL_VALID_PASPOR, TGL_KLUAR_PASPOR, KTR_KLUAR_PASPOR, FLAGACCLOKET, NAMA3, GIVEN_NAME, TGL_LAHIR, TMP_LAHIR, ENTRIES, TGLENTRY, TGL_UPDATE, KD_VISA, Pejabat_ttd, jabatan_ttd) 
+        VALUES('" + @visa.sex.to_s + " " + @visa.marital_status.to_s + "','" + @visa.visa_type.to_s + "','" + @visa.profession.to_s + "'," + @visa.duration_stays.to_s + ",'" + @visa.duration_stays_unit.to_s + "','" + nextCounter.to_s + "/" + Time.new.month.to_s + "/" + Time.new.year.to_s + "','I','37A', 'SEOUL', '" + @visa.created_at.strftime("%m/%d/%Y").to_s + "','KOR','KOREA, REPUBLIC OF','" + @visa.passport_no.to_s + "','" + @visa.passport_date_expired.to_s + "','" + @visa.passport_date_issued.to_s + "','" + @visa.passport_issued.to_s + "','Y','" + @visa.last_name.to_s + "','" + @visa.first_name.to_s + "','" + @visa.dateBirth.strftime("%m/%d/%Y") + "','" + @visa.placeBirth.to_s + "','" + @visa.num_entry.to_s + "','" + @visa.created_at.strftime("%m/%d/%Y").to_s + "','" + @visa.updated_at.strftime("%m/%d/%Y").to_s + "','Biasa','Didik Eko Pujianto','COUNSELLOR')")
+       
+    begin
+         
+      
+      @visa.update_attributes({:status => 'Printed', :vipa_no => nextCounter})
+       
+       msg = { :notice => 'Data berhasil dipindahkan' }
+    rescue 
+       msg = { :alert => 'Data gagal dipindahkan' }
+    end   
+      
+    db.close   
     
-    @visa.update_attributes({:status => 'Printed'})
-    
-    redirect_to 'dashboard/service/visa'
+    redirect_to '/dashboard/service/visa', msg
   end
   
   def show_all
@@ -133,7 +186,7 @@ class Immigration::VisaController < ApplicationController
     @visas.each do |visa|
       editLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update Application</span></a>"
       printLink = "<a href=\"/visa/tosisari/" + visa.id + "\" target=\"_blank\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
-      aaData.push([ visa.ref_id, visa.full_name, visa.status, editLink + "&nbsp;|&nbsp;" + printLink])                        
+      aaData.push([ visa.ref_id, visa.first_name + " " + visa.last_name , visa.status, editLink + "&nbsp;|&nbsp;" + printLink])                        
     end
     
     respond_to do |format|
@@ -142,59 +195,21 @@ class Immigration::VisaController < ApplicationController
     
   end
   
-  #PATCH, PUT /visa/:id
-  def update
-    #@visa = Visa.find_by(user_id: params[:id])
-    @visa = Visa.find(params[:id])         
-    if @visa.update_attributes(post_params)   
-      @visa.save      
-      redirect_to :back, :notice => 'You have updated your visa application data!'
-    else
-      render 'edit'
-    end
-  end
-  
-  #GET /visa/:id/edit
-  def edit
-    #Why NOT searching based on user_id? because there will be MULTIPLE visas/users
-    #Hence, NOT @visa = Visa.find_by(user_id: params[:id]), but
-    @visa = Visa.find(params[:id])
-  end
-  
-  #DELETE /visa
-  def destroy 
-    @visa = Visa.find(params[:id])
-    reference = @visa.ref_id
-    if @visa.delete
-      redirect_to :back, :notice => "Visa Application of Ref. No #{reference} has been erased."
-    else
-      redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."
-    end
-  end
-  
   private
-    def check_and_get_VIPA_COUNTER
-      counter = @@VIPACOUNTERDEF + 1
-      if Visa.count > 0
-        counter = Visa.last.vipa_no + 1
-      end
-      
-      return counter
-    end  
-  
     def post_params
-      params.require(:visa).permit(:application_type, :category_type, :full_name, :sex, :email,
+      params.require(:visa).permit(:application_type, :category_type, :first_name, :last_name, :sex, :email,
       :placeBirth, :dateBirth, :marital_status, :nationality, :profession, :passport_no, :passport_no,
       :passport_issued, :passport_type, :passport_date_issued, :passport_date_expired, :sponsor_type_kr,
-      :sponsor_name_kr, :sponsor_address_kr, :sponsor_phone_kr, :sponsor_type_id, :sponsor_name_id, 
-      :sponsor_address_id, :sponsor_phone_id, :duration_stays_day, :duration_stays_month, :duration_stays_year, 
+      :sponsor_name_kr, :sponsor_address_kr, :sponsor_address_city_kr, :sponsor_address_prov_kr, :sponsor_phone_kr, 
+      :sponsor_type_id, :sponsor_name_id, :sponsor_address_id, :sponsor_address_kab_id, :sponsor_address_prov_id, 
+      :sponsor_phone_id, :duration_stays, :duration_stays_unit,
       :num_entry, :checkbox_1, :checkbox_2, :checkbox_3, :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, 
       :tr_count_dest, :tr_flight_vessel, :tr_air_sea_port, :tr_date_entry, :lim_s_purpose, 
       :lim_s_flight_vessel, :lim_s_air_sea_port, :lim_s_date_entry, :v_purpose, :v_flight_vessel,
       :v_air_sea_port, :v_date_entry, :dip_purpose, :dip_flight_vessel, :dip_air_sea_port, :dip_date_entry, :o_purpose, 
-      :o_flight_vessel, :o_air_sea_port, :o_date_entry, :passportpath, :idcardpath, :photopath, :status, :payment_slip, 
-      :payment_date, :ticketpath, :sup_docpath).merge(owner_id: current_user.id, visa_type: 1,
-      ref_id: 'V-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s)
+      :o_flight_vessel, :o_air_sea_port, :o_date_entry, :passportpath, :idcardpath, :photopath, :status, :status_code, :payment_slip, 
+      :payment_date, :ticketpath, :sup_docpath).merge(owner_id: current_user.id, visa_type: 1, 
+      ref_id: 'V-KBRI-'+generate_string+"-"+Random.new.rand(10**3..10**5).to_s)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params
@@ -202,9 +217,8 @@ class Immigration::VisaController < ApplicationController
     #end
     def generate_string(length=5)
       chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ123456789'
-      password = ''
-      length.times { |i| password << chars[rand(chars.length)] }
-      password = password.upcase
-    end
-    
+      random_characters = ''
+      length.times { |i| random_characters << chars[rand(chars.length)] }
+      random_characters = random_characters.upcase
+  end
 end

@@ -20,7 +20,7 @@
   <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Visa<b class="caret"></b></a>
     <ul class="dropdown-menu">
-      <li><%= link_to 'Visa/Extension of Re-Entry Permit Requirements', 'infovisas' %></li>	
+      <li><%= link_to 'Visa/Extension of Re-Entry Permit Requirements', controller: "immigration/visa", action: "info" %></li>	
       <li class="divider"></li>
       <% if true %> <!-- <% current_user.individual %> -->
       <li><%= link_to 'Visa Application as Individual', visas_path %></li>
@@ -33,19 +33,18 @@
     </ul>
   </li>
   <li class="dropdown">
-  	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Paspor/SPLP & Lapor Diri<b class="caret"></b></a>
+  	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Paspor & Lapor Diri<b class="caret"></b></a>
   	<ul class="dropdown-menu">
-  	  <li><%= link_to 'Persyaratan permohonan Paspor', '/infopassports' %></li>      
+  	  <li><%= link_to 'Persyaratan mengenai aplikasi Paspor', controller: "immigration/passport", action: "info" %></li>      
       <li><%= link_to 'Pembuatan/Perpanjang Paspor', passports_path %></li>
-      <li><%= link_to 'Pembuatan SPLP', '' %></li>
       <li class="divider"></li>
-      <li><%= link_to 'Informasi mengenai Lapor Diri', 'inforeports' %></li>
+      <li><%= link_to 'Dokumen untuk Lapor Diri', controller: "immigration/report", action: "info" %></li>
       <li><%= link_to 'Lapor Diri kepada KBRI Seoul', reports_path %></li>
     </ul>
   </li>
   
   <% else %>
-  <li><%= link_to 'Daftar', new_user_registration_path %></li>
+  <li><%= link_to 'Sign Up', new_user_registration_path %></li>
   <% end %>
   
   <% if user_signed_in? %>

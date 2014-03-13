@@ -52,6 +52,7 @@ class Passport
   
   field :passport_no,            type: String
   field :reg_no,                 type: String
+  field :lapordiri_no,           type: String
   
   
   validates :application_type,   presence: true

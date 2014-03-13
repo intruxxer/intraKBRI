@@ -1,7 +1,6 @@
 class Immigration::VisaController < ApplicationController
   before_filter :authenticate_user!
   @@SISARICOUNTER = 5850
-  
   #GET /visa
   def index
     #if individual 1 person, 1 application
@@ -9,7 +8,7 @@ class Immigration::VisaController < ApplicationController
         #redirect_to root_path
      #end
      #We will have passport
-     
+     @visa = Visa.new
      #redirect_to :controller => 'immigration/visa', :action => 'index', :type => 2, :format => 'json'
      respond_to do |format|
         format.html { } # {redirect_to root_path, :notice => "Your visa application is successfully received!" }
@@ -27,7 +26,7 @@ class Immigration::VisaController < ApplicationController
 
   #POST /visa
   def create
-    
+=begin    
    uploaded_passport = params[:visa][:passport]
    if (uploaded_passport != nil)
       new_passport = uploaded_passport.read
@@ -75,10 +74,10 @@ class Immigration::VisaController < ApplicationController
         file.write(new_ticket_picture)
       end
    end
-     
-   @visa = [ Visa.new(post_params) ]    
-    if current_user.visas = @visa then
-      current_user.save
+=end     
+   @visa = [ Visa.new(post_params) ] 
+   current_user.visas = @visa   
+    if current_user.save then
       UserMailer.visa_received_email(current_user).deliver
       respond_to do |format|
         format.html { redirect_to root_path, :notice => "Your visa application is successfully received!" }
@@ -138,7 +137,13 @@ class Immigration::VisaController < ApplicationController
   
   def toSisari
     @visa = Visa.find(params[:id])
-    db = Accessdb.new( Rails.root.to_s + '/public/Database/Visa.mdb' )
+    
+    folderloc = TARGET_SISARI_FOLDER + 'Visa.mdb'
+    if @visa.passport_type == 3 || @visa.category_type == 'diplomatic'
+      folderloc = TARGET_SISARI_DIPLOMATIK_FOLDER + 'Visa_diplomatik.mdb'
+    end
+    
+    db = Accessdb.new( folderloc )
     db.open('imigrasiRI')    
     
     nextCounter = @@SISARICOUNTER + 1

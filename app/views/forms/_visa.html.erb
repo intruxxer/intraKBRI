@@ -3,6 +3,14 @@
 			  <%= image_tag("/assets/images/garuda.png", height: '160', width: '160') %>
 			</div>							
 </div>
+<% unless @errors.nil? %>
+			<h2 style="color:white;background:red;">Submission failed. The application is incomplete for:</h2>
+				<div style="padding:4px;color:red;font-size:10pt;">
+					<% @errors.each do |fs| %>
+						<%= simple_format(fs[0].to_s + " = " + fs[1].to_s + "\n")  %>
+					<%end%>
+				</div>
+			<%end%>
 <% if @add_people.blank? or !@add_people then %>
 <%= render 'forms/visanew' %>
 <% else %>

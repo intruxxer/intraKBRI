@@ -47,12 +47,12 @@ class Passport
   field :sendingParty,           type: Integer
   
   field :status,                 type: String, default: 'Received'
+  field :status_code,            type: Integer
   field :payment_slip,           type: String
   field :payment_date,           type: Date
   
   field :passport_no,            type: String
   field :reg_no,                 type: String
-  field :lapordiri_no,           type: String
   
   
   validates :application_type,   presence: true

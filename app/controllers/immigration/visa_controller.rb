@@ -1,6 +1,6 @@
 class Immigration::VisaController < ApplicationController
   before_filter :authenticate_user!
-  @@SISARICOUNTER = 5850
+  
   #GET /visa
   def index
     #if individual 1 person, 1 application
@@ -26,55 +26,7 @@ class Immigration::VisaController < ApplicationController
 
   #POST /visa
   def create
-=begin    
-   uploaded_passport = params[:visa][:passport]
-   if (uploaded_passport != nil)
-      new_passport = uploaded_passport.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_passport.original_filename), 'wb') do |file|
-        file.write(new_passport)
-      end
-   end
-   
-   uploaded_idcard = params[:visa][:idcard]
-   if (uploaded_idcard != nil)
-      new_idcard = uploaded_idcard.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_idcard.original_filename), 'wb') do |file|
-        file.write(new_idcard)
-      end
-   end
-   
-   uploaded_passport_picture = params[:visa][:photo]
-   if (uploaded_passport_picture != nil)
-      new_pass_picture = uploaded_passport_picture.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_passport_picture.original_filename), 'wb') do |file|
-        file.write(new_pass_picture)
-      end
-   end
-   
-   uploaded_paymentslip = params[:visa][:slip_photo]
-   if (uploaded_paymentslip != nil)
-      new_pay_picture = uploaded_paymentslip.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_paymentslip.original_filename), 'wb') do |file|
-        file.write(new_pay_picture)
-      end
-   end
-   
-   uploaded_supdoc = params[:visa][:supdoc]
-   if (uploaded_supdoc != nil)
-      new_supdoc_picture = uploaded_supdoc.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_supdoc.original_filename), 'wb') do |file|
-        file.write(new_supdoc_picture)
-      end
-   end
-   
-   uploaded_ticket = params[:visa][:supdoc]
-   if (uploaded_ticket != nil)
-      new_ticket_picture = uploaded_ticket.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_ticket.original_filename), 'wb') do |file|
-        file.write(new_ticket_picture)
-      end
-   end
-=end     
+    
    @visa = [ Visa.new(post_params) ] 
    current_user.visas = @visa   
     if current_user.save then
@@ -90,10 +42,7 @@ class Immigration::VisaController < ApplicationController
     redirect_to :back, :notice => "Unfortunately, your current visa application fails to be submitted."
     #do something further 
     end
-    #*Debugging*#
-    #logger.debug "We are inspecting VISA PROCESSING PARAMS as follows:"
-    #puts params.inspect
-    #puts @visa.inspect
+    
   end
 
   #GET visa/:id
@@ -133,70 +82,7 @@ class Immigration::VisaController < ApplicationController
     else
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."
     end
-  end
-  
-  def toSisari
-    @visa = Visa.find(params[:id])
-    
-    folderloc = TARGET_SISARI_FOLDER + 'Visa.mdb'
-    if @visa.passport_type == 3 || @visa.category_type == 'diplomatic'
-      folderloc = TARGET_SISARI_DIPLOMATIK_FOLDER + 'Visa_diplomatik.mdb'
-    end
-    
-    db = Accessdb.new( folderloc )
-    db.open('imigrasiRI')    
-    
-    nextCounter = @@SISARICOUNTER + 1
-    
-    unless @visa.vipa_no.nil?
-      nextCounter = @visa.vipa_no    
-    end    
-             
-    begin
-      db.execute("INSERT INTO TTVISA(JK, TIPE_VISA, KETPEKERJAAN, LAMA,TYPELAMA, NO_APLIKASI, JENIS, KDPERWAKILAN, NMPERWAKILAN, TGL_DOC, KODE_NEG, WARGA_NEG, NO_PASPOR, TGL_VALID_PASPOR, TGL_KLUAR_PASPOR, KTR_KLUAR_PASPOR, FLAGACCLOKET, NAMA3, GIVEN_NAME, TGL_LAHIR, TMP_LAHIR, ENTRIES, TGLENTRY, TGL_UPDATE, KD_VISA, Pejabat_ttd, jabatan_ttd) 
-        VALUES('" + @visa.sex.to_s + " " + @visa.marital_status.to_s + "','" + @visa.visa_type.to_s + "','" + @visa.profession.to_s + "'," + @visa.duration_stays.to_s + ",'" + @visa.duration_stays_unit.to_s + "','" + nextCounter.to_s + "/" + Time.new.month.to_s + "/" + Time.new.year.to_s + "','I','37A', 'SEOUL', '" + @visa.created_at.strftime("%m/%d/%Y").to_s + "','KOR','KOREA, REPUBLIC OF','" + @visa.passport_no.to_s + "','" + @visa.passport_date_expired.to_s + "','" + @visa.passport_date_issued.to_s + "','" + @visa.passport_issued.to_s + "','Y','" + @visa.last_name.to_s + "','" + @visa.first_name.to_s + "','" + @visa.dateBirth.strftime("%m/%d/%Y") + "','" + @visa.placeBirth.to_s + "','" + @visa.num_entry.to_s + "','" + @visa.created_at.strftime("%m/%d/%Y").to_s + "','" + @visa.updated_at.strftime("%m/%d/%Y").to_s + "','Biasa','Didik Eko Pujianto','COUNSELLOR')")   
-      
-      @visa.update_attributes({:status => 'Printed', :vipa_no => nextCounter})
-       
-       msg = { :notice => 'Data berhasil dipindahkan' }
-    rescue 
-       msg = { :alert => 'Data gagal dipindahkan' }
-    end   
-      
-    db.close   
-    
-    redirect_to '/dashboard/service/visa', msg
-  end
-  
-  def show_all
-    @visas = Visa.all   
-    
-    params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
-    
-    unless (params[:sSearch].nil? || params[:sSearch] == "")    
-      searchparam = params[:sSearch]  
-      @visas = @visas.any_of({:full_name => /#{searchparam}/},{:ref_id => /#{searchparam}/},{:status => /#{searchparam}/})
-    end   
-    
-    unless (params[:iDisplayStart].nil? || params[:iDisplayLength] == '-1')
-      @visas = @visas.skip(params[:iDisplayStart]).limit(params[:iDisplayLength])      
-    end    
-    
-    iTotalRecords = Visa.count
-    iTotalDisplayRecords = @visas.count
-    aaData = Array.new    
-    
-    @visas.each do |visa|
-      editLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update Application</span></a>"
-      printLink = "<a href=\"/visa/tosisari/" + visa.id + "\" target=\"_blank\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
-      aaData.push([ visa.ref_id, visa.first_name + " " + visa.last_name , visa.status, editLink + "&nbsp;|&nbsp;" + printLink])                        
-    end
-    
-    respond_to do |format|
-      format.json { render json: {'sEcho' => params[:sEcho].to_i , 'aaData' => aaData , 'iTotalRecords' => iTotalRecords, 'iTotalDisplayRecords' => iTotalDisplayRecords } }
-    end
-    
-  end
+  end  
   
   private
     def post_params

@@ -75,65 +75,7 @@ class Immigration::PassportController < ApplicationController
   #DELETE /passport
   def destroy 
   
-  end  
-  
-  def exec_toSPRI
-    @passport = Passport.find(params[:id])
-    
-    params.require(:passport).permit(:passport_no,:reg_no,:lapordiri_no)
-    
-    db = Accessdb.new( TARGET_SPRI_FOLDER + 'SPRI3.mdb' )
-    db.open()    
-    
-    db.execute("DELETE * FROM tblData WHERE [noPass] = '" + params[:passport][:passport_no] + "' ")
-    
-    begin
-      db.execute("INSERT INTO tblData(noFile, pekerjaan, alasanBuat, sponsorLuar, negaraLuar, alamatLuar, kotaLuar, telpLuar, telpDalam, alamatDalam, kelurahan, kabupaten, kecamatan, noPass, noReg, tglKeluar, tglExpire, namaLkP, tmpLahir, tglLahir, jmlHal, noLama, tglKeluarLama, tmpKeluarLama, idCode, KantorPerwakilan, jnsKel, statusWN, namaKlrg) 
-        VALUES('" + params[:passport][:lapordiri_no] + "','" + @passport.jobStudyAddress + "','" + @passport.application_reason + "','" +  @passport.jobStudyOrganization.to_s + "','KOREA SELATAN','" +  @passport.addressKorea.to_s + "','" +  @passport.cityKorea.to_s + "','" +  @passport.phoneKorea.to_s + "','" +  @passport.phoneIndonesia.to_s + "','" +  @passport.addressIndonesia.to_s + "','" +  @passport.kelurahanIndonesia.to_s + "','" +  @passport.kabupatenIndonesia.to_s + "','" +  @passport.kecamatanIndonesia.to_s + "','" + params[:passport][:passport_no] + "','" + params[:passport][:reg_no] + "','" + Time.new.year.to_s + "/" + Time.new.month.to_s + "/" + Time.new.day.to_s + "','" + (Time.new.year + 5).to_s + "/" + Time.new.month.to_s + "/" + Time.new.day.to_s + "','" + @passport.full_name + "','" + @passport.placeBirth + "','" + @passport.dateBirth.to_s + "','" +  @passport.paspor_type.to_s + "','" + @passport.lastPassportNo + "','" + @passport.dateIssued.to_s + "','" + @passport.placeIssued + "','37A','KBRI SEOUL', '" +  @passport.kelamin.to_s + "', '" +  @passport.citizenship_status.to_s + "','')")
-      @passport.update_attributes({ :status => 'Printed', :passport_no => params[:passport][:passport_no], :reg_no => params[:passport][:reg_no]})
-       
-      msg = { :notice => 'Data berhasil dipindahkan' }  
-        
-    rescue Exception=>e
-      
-      msg = { :alert => 'Data gagal dipindahkan' }
-      
-    end    
-      
-    db.close    
-    
-    redirect_to '/dashboard/service/passport', msg
-  end
-  
-  def show_all
-    @passport = Passport.all   
-    
-    params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
-    
-    unless (params[:sSearch].nil? || params[:sSearch] == "")    
-      searchparam = params[:sSearch]  
-      @passport = @passport.any_of({:full_name => /#{searchparam}/},{:ref_id => /#{searchparam}/},{:status => /#{searchparam}/})
-    end   
-    
-    unless (params[:iDisplayStart].nil? || params[:iDisplayLength] == '-1')
-      @passport = @passport.skip(params[:iDisplayStart]).limit(params[:iDisplayLength])      
-    end    
-    
-    iTotalRecords = Passport.count
-    iTotalDisplayRecords = @passport.count
-    aaData = Array.new    
-    
-    @passport.each do |passport|
-      editLink = "<a href=\"/passports/" + passport.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update Application</span></a>"
-      printLink = "<a href=\"/admin/service/prep_spri/" + passport.id + "\" target=\"_blank\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SPRI</span></a>"
-      aaData.push([ passport.ref_id, passport.full_name, passport.status, editLink + "&nbsp;|&nbsp;" + printLink])                        
-    end
-    
-    respond_to do |format|
-      format.json { render json: {'sEcho' => params[:sEcho].to_i , 'aaData' => aaData , 'iTotalRecords' => iTotalRecords, 'iTotalDisplayRecords' => iTotalDisplayRecords } }
-    end
-    
-  end
+  end    
   
   private  
     def post_params

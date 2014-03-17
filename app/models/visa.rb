@@ -104,21 +104,21 @@ class Visa
   #validates :category_type,          presence: true
   validates :visa_type,              presence: true
   
-  validates :first_name,             presence: true
-  validates :last_name,              presence: true
+  validates :first_name,             presence: true, length: { minimum: 1, maximum: 25 }
+  validates :last_name,              presence: true, length: { minimum: 1, maximum: 30 }
   validates :sex,                    presence: true  
   #validates :email,                  presence: true
-  validates :placeBirth,             presence: true 
+  validates :placeBirth,             presence: true, length: { minimum: 1, maximum: 30 } 
   validates :dateBirth,              presence: true
   validates :marital_status,         presence: true 
   #validates :nationality,            presence: true 
-  validates :profession,             presence: true
+  validates :profession,             presence: true, length: { minimum: 1, maximum: 50 }
   #validates :address_kr,             presence: true
   #validates :address_city_kr,        presence: true
   #validates :address_prov_kr,        presence: true
    
-  validates :passport_no,            presence: true 
-  validates :passport_issued,        presence: true 
+  validates :passport_no,            presence: true, length: { minimum: 1, maximum: 15 } 
+  validates :passport_issued,        presence: true, length: { minimum: 1, maximum: 30 } 
   #validates :passport_type,          presence: true 
   validates :passport_date_issued,   presence: true 
   validates :passport_date_expired,  presence: true

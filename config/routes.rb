@@ -48,13 +48,13 @@ EKbri::Application.routes.draw do
   get "playground", :to => "playground#index"
   get "test", :to => "playground#test"
   
-  get "visa/show/all", :to => "immigration/visa#show_all"
-  get "visa/tosisari/:id", :to => "immigration/visa#toSisari"
-  get "passport/show/all", :to => "immigration/passport#show_all"
+  get "visa/show/all", :to => "desktop#show_all_sisari"
+  get "visa/tosisari/:id", :to => "desktop#exec_toSisari"
+  get "passport/show/all", :to => "desktop#show_all_spri"
   get "dashboard/service/:document", :to => "dashboard#immigration"
   get "admin/service/:document/:id", :to => "dashboard#immigration"
   
-  match "passport/tospri/:id", to: "immigration/passport#exec_toSPRI", via: :post
+  match "passport/tospri/:id", to: "immigration/dekstop#exec_toSPRI", via: :post
   
   
   

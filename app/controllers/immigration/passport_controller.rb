@@ -74,12 +74,18 @@ class Immigration::PassportController < ApplicationController
   
   #DELETE /passport
   def destroy 
-  
+   @passport = Passport.find(params[:id])
+    reference = @passport.ref_id
+    if @passport.delete
+      redirect_to :back, :notice => "Visa Application of Ref. No #{reference} has been erased."
+    else
+      redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."
+    end
   end    
   
   private  
     def post_params
-      params.require(:passport).permit( :application_type, :application_reason, :paspor_type, :full_name, :kelamin, :placeBirth, :dateBirth,              
+      params.require(:passport).permit( :application_type, :application_reason, :paspor_type, :full_name, :height, :kelamin, :placeBirth, :dateBirth,              
       :citizenship_status, :lastPassportNo, :dateIssued, :placeIssued, :jobStudyInKorea, :jobStudyTypeInKorea, :jobStudyOrganization, :jobStudyAddress, 
       :phoneKorea, :addressKorea, :cityKorea, :phoneIndonesia, :addressIndonesia, :kelurahanIndonesia, :kecamatanIndonesia, :kabupatenIndonesia, :dateArrival, :sendingParty, :photo, :status, :payment_slip, :arc, :dateIssuedEnd, :immigrationOffice, :sponsor_address_prov_kr, :sponsor_address_prov_id).merge(owner_id: current_user.id, 
       ref_id: 'P-KBRI-'+generate_string+"-"+Random.new.rand(10**5..10**6).to_s)

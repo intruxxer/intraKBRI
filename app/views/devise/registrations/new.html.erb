@@ -16,14 +16,14 @@
 		<section class="col col-4">
 		  <label class="label">First Name</label>
 	      <label class="input">
-		    <%= f.input_field :first_name %>
+		    <%= f.input_field :first_name, :html => { :class => 'hurufBesar' } %>
 		    <i class="icon-append icon-user"></i>
 		  </label>
 		</section>
 		<section class="col col-4">
 		  <label class="label">Last Name</label>
 	      <label class="input">
-  		    <%= f.input_field :last_name %>
+  		    <%= f.input_field :last_name, :html => { :class => 'hurufBesar' } %>
   		    <i class="icon-append icon-user"></i>
   		  </label>
 		</section>
@@ -52,6 +52,7 @@
   		    <%= f.input_field :password_confirmation, :required => true %>
   		    <i class="icon-append icon-lock"></i>
   		  </label>
+  		  <div class="note"><strong>Note:</strong> Please provide MINIMUM 8 (eight) alphanumeric latin characters with at least one letter, one number out of min. 8.</div>
 		</section>
 	</div>
   </fieldset>
@@ -66,10 +67,10 @@
 		  </label>
 		</section>
 		<section class="col col-3">
-		  <label class="label">Country of Origin</label>
-	      <label class="select">
-		    	<%= f.input_field :nationality, 
-								collection: { 
+			<label class="label">Country of Origin</label>
+			<label class="select">
+				<%= f.input_field :origin, 
+								collection: {									
 									'ARUBA'=>'ABW',
 									'AFGANISTAN'=>'AFG',
 									'ANGOLA'=>'AGO',
@@ -315,11 +316,12 @@
 									'YEMEN'=>'YEM',
 									'SOUTH AFRICA'=>'ZAF',
 									'ZAMBIA'=>'ZMB',
-									'ZIMBABWE'=>'ZWE'
-								} %>
-		    <i></i>
-		  </label>
-		  <div class="note"><strong>Note:</strong> Please write your country of origin if you are NOT Indonesian.</div>
+									'ZIMBABWE'=>'ZWE' }, :selected => 'IDN' %>
+								<i></i>
+				</label>
+				<div class="note"><strong>Note:</strong> 
+				Please state your country of origin
+				if you are not Indonesian/holding Indonesian Citizenship.</div>
 		</section>
 		<section class="col col-3">
 		  <label class="label">Passport No.</label>
@@ -338,6 +340,12 @@
 	</div>
   </fieldset>
   
+  <fieldset>
+  	<div>Please take note that upon agreeing to create an account in e-KBRI, 
+  		you hereby explicitly grant permission to us to monitor, observe, and
+  		log your personal data like IP and beyond for security purposes.</div>
+  </fieldset>
+  
   <footer>
 	<button type="submit" class="button">Sign Up</button>
 	<button type="button" class="button button-secondary" onclick="window.history.back();">Back</button>
@@ -345,3 +353,16 @@
   <fieldset>&copy; 2013-2014 by The Embassy of Republic of Indonesia in Seoul. All Rights Reserved.</fieldset>
 <% end %>
 </div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script type="text/javascript">
+	$(function()
+		{
+				$('input:checkbox .hurufBesar').keyup(function() {
+				    $(this).val($(this).val().toUpperCase());
+				});
+				$('textarea').keyup(function() {
+				    $(this).val($(this).val().toUpperCase());
+				});
+		});			
+</script>

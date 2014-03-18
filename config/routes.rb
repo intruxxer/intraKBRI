@@ -5,6 +5,8 @@ EKbri::Application.routes.draw do
   resources :passports, controller: 'immigration/passport'
   resources :reports, controller: 'immigration/report'
   
+  get "dashboard/protocols", :to => "protocol#index"
+  
   authenticated :user do
     root to: 'welcome#index', as: :authenticated_root
   end
@@ -53,9 +55,12 @@ EKbri::Application.routes.draw do
   get "passport/show/all", :to => "desktop#show_all_spri"
   get "dashboard/service/:document", :to => "dashboard#immigration"
   get "admin/service/:document/:id", :to => "dashboard#immigration"
+  get "dashboard/syncpanel", :to => "dashboard#syncpanel"
   
   match "passport/tospri/:id", to: "immigration/dekstop#exec_toSPRI", via: :post
   
+  get "protocol/synccloudtolocal/:collection", :to => "protocol#syncCollectionCloudtoLocal"
+  get "protocol/syncdbcomplete", :to => "protocol#syncDBComplete"
   
   
   

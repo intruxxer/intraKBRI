@@ -42,6 +42,11 @@ class DashboardController < ApplicationController
   
   end 
   
+  def syncpanel
+    @document = "dashboard/syncpanel"
+    render 'immigration'
+  end
+  
   protected
   def check_access
     if !current_user.has_role? :admin then

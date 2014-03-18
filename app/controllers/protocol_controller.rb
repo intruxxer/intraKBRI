@@ -18,6 +18,17 @@ class ProtocolController < ApplicationController
         from: "162.243.144.189:27017"       
       )
       
+      if current_user.sync.nil?
+        current_user.sync = Sync.new({ :visas_last_synched => Time.now, :passports_last_synched => Time.now})
+        current_user.save
+      end      
+      
+      if collection.downcase == 'passports'
+        current_user.sync.touch(:passports_last_synched)
+      else
+        current_user.sync.touch(:visas_last_synched)
+      end
+      
       msg = { :notice => 'Data Synchronization Success' }
         
     rescue
@@ -59,6 +70,14 @@ class ProtocolController < ApplicationController
     
     redirect_to '/dashboard/service/visa', msg
     
+  end
+  
+  protected
+  def check_access
+    if !current_user.has_role? :admin then
+      redirect_to root_path, :flash => { :warning => "The URL you attempt to access is not exist." }
+    else  
+    end
   end
   
 end

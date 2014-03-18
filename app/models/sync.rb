@@ -2,9 +2,11 @@ class Sync
   include Mongoid::Document
   include Mongoid::Timestamps
   
-  field :passport_last_synched, type: Date
-  field :visa_last_synched,     type: Date
+  belongs_to :user, :class_name => "User", :inverse_of => :sync
   
-  validates :passport_last_synched, presence: true
-  validates :visa_last_synched,     presence: true  
+  field :passports_last_synched, type: DateTime
+  field :visas_last_synched,     type: DateTime
+  
+  
+  
 end

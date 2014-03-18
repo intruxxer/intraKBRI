@@ -6,7 +6,7 @@
 					<h4>Passports</h4>
 					<a href="/protocol/synccloudtolocal/passports"><button class="sync">Sync Now</button></a>
 					<div class="values">
-						<strong>2012/12/30 12:12:12</strong>
+						<strong><%= @syncdata.nil? ? '' : @syncdata.passports_last_synched.strftime("%m/%d/%Y %H:%M:%S") %></strong>
 						Last Sync Time
 					</div>
 				</li>
@@ -14,7 +14,7 @@
 					<h4>Visas</h4>
 					<a href="/protocol/synccloudtolocal/visas"><button class="sync">Sync Now</button></a>
 					<div class="values">
-						<strong>2012/12/30 12:12:12</strong>
+						<strong><%= @syncdata.nil? ? '' : @syncdata.visas_last_synched.strftime("%m/%d/%Y %H:%M:%S") %></strong>
 						Last Sync Time
 					</div>
 				</li>

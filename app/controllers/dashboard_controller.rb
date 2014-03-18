@@ -43,6 +43,9 @@ class DashboardController < ApplicationController
   end 
   
   def syncpanel
+    
+    @syncdata = current_user.sync
+    
     @document = "dashboard/syncpanel"
     render 'immigration'
   end

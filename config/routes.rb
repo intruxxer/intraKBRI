@@ -62,6 +62,7 @@ EKbri::Application.routes.draw do
   get "protocol/synccloudtolocal/:collection", :to => "protocol#syncCollectionCloudtoLocal"
   get "protocol/syncdbcomplete", :to => "protocol#syncDBComplete"
   
+  match "report/findbynameandbirth", to: "immigration/report#findbyNameandBirth", via: :get
   
   
   #resources :dashboard_immigration, path: "dashboard/immigration"

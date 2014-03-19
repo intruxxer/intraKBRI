@@ -83,4 +83,23 @@ Silahkan cek kembali data pemohon
 					<button type="button" class="button button-secondary" onclick="window.close();">Kembali</button>
 				</footer>
 <% end %>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript">
+			$(function()
+			{				
+				$(window).load(function(){
+					$.ajax({
+						type: "GET",
+						url: '/report/findbynameandbirth', 
+						data: { name: "<%= @passport.full_name %>", datebirth: "<%= @passport.dateBirth %>" }, 
+						success: function(data){ 
+							if(data.ref_id!='null'){
+								$("#passport_lapordiri_no").val(data.ref_id);
+							}
+						}, 
+						dataType: "json" 
+					})					
+				});
+			});			
+</script>
 			

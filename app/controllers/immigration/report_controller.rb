@@ -1,6 +1,6 @@
-class Immigration::ReportController < ApplicationController
+class Immigration::ReportController < ApplicationController  
+  before_filter :authenticate_user!
   
-
   def index
      @report = Report.new
 	   if Report.where(user_id: current_user).count > 0
@@ -26,7 +26,7 @@ class Immigration::ReportController < ApplicationController
 	  #@post = Report.find_by(user_id: params[:id])
 	  @report = Report.find(params[:id])
     if @report.update(post_params)
-    	 redirect_to root_path, :notice => 'Data Diri Anda Berhasil Diubah!'
+    	 redirect_to :back, :notice => 'Data Lapor Diri Anda Berhasil Diubah!'
     else
       @errors = @report.errors.messages
     	 render 'edit'
@@ -36,6 +36,16 @@ class Immigration::ReportController < ApplicationController
   def edit   
 	   @report = Report.find_by(user_id: params[:id])
 	   #@post = Report.find(params[:id])
+  end
+  
+  def findbyNameandBirth
+    params.permit(:name, :datebirth)        
+    @report = Report.where( name: params[:name] ).where( datebirth: params[:datebirth] ).all
+    catch = { 'ref_id' => 'null' }
+    if @report.exists?
+      catch = { 'ref_id' => @report.first.ref_id }
+    end    
+    render :json => catch
   end
   
   private

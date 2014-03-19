@@ -6,7 +6,8 @@
 			<%= simple_form_for :post, url: reports_path, :html => { :class => "sky-form", :multipart => true } do |f| %>
 				<header>Formulir Lapor Diri dan Pendataan WNI di Korea Selatan</header>
 				<fieldset>
-					<legend style="float:left;margin-bottom:28px;">Informasi Diri dan Kelengkapan Dokumen</legend>
+					<h3>Informasi Data Diri</h3>	
+					<hr /><br />
 					<div class="row">
 						<section class="col col-4">							
 							<label class="label">Nama Lengkap</label>
@@ -15,38 +16,14 @@
 								<%= f.input_field :name %>
 							</label>
 						</section>	
-						<section class="col col-4">
+						<section class="col col-2">
 							<label class="label">Tinggi Badan (cm)</label>
 							<label class="input">
 								<i class="icon-append icon-user"></i>
 								<%= f.input_field :height %>
 							</label>
-						</section>
-						<section class="col col-4">
-							<label class="label">Scan Paspor</label>
-							<label for="file" class="input input-file">
-								<div class="button">
-									<%= f.input_field :paspor, as: :file, class: 'fileplaceholder'  %>Unggah</div>
-									<%= f.input_field :pasporname, readonly: true %>
-							</label>
-							<div class="note"><strong>Note:</strong> Format : JPG/JPEG/PNG. Ukuran Maks : 2MB</div>
-						</section>			
-					</div>
-					<div class="row">
-						<section class="col col-4"></section><section class="col col-4"></section>
-						<section class="col col-4">
-							<label class="label">Scan Alien Card</label>
-							<label for="file" class="input input-file">
-								<div class="button">
-									<%= f.input_field :aliencard, as: :file, class: 'fileplaceholder'  %>Unggah</div>
-									<%= f.input_field :aliencardname, readonly: true %>
-							</label>
-							<div class="note"><strong>Note:</strong> Format : JPG/JPEG/PNG. Ukuran Maks : 2MB</div>
-						</section>
-					</div>
-					<div class="row">
-						<section class="col col-4"></section><section class="col col-4"></section>
-						<section class="col col-4">
+						</section>		
+						<section class="col col-3">
 							<label class="label">Pas Foto</label>
 							<label for="file" class="input input-file">
 								<div class="button">
@@ -54,10 +31,11 @@
 									<%= f.input_field :photoname, readonly: true %>
 							</label>
 							<div class="note"><strong>Note:</strong> Format : JPG/JPEG/PNG. Ukuran Maks : 2MB</div>
-						</section>
+						</section>						
 					</div>
+					
 					<div class="row">
-						<section class="col col-4">
+						<section class="col col-2">
 							<label class="label">Tempat Lahir</label>	
 							<label class="input">
 									<i class="icon-append icon-globe"></i>
@@ -65,7 +43,7 @@
 							</label>
 						</section>
 
-						<section class="col col-4">
+						<section class="col col-2">
 							<label class="label">Tanggal Lahir</label>	
 							<label class="input">
 									<i class="icon-append icon-calendar"></i>
@@ -73,7 +51,7 @@
 							</label>
 						</section>
 						
-						<section class="col col-4">
+						<section class="col col-2">
 							<label class="label" for='marriagestatus' >Status Perkawinan</label>
 							<label class="select">
 							<%= f.input_field :marriagestatus, collection: { 'Kawin'=>1 ,'Belum Kawin'=>2 ,'Cerai'=>3 } %>							
@@ -83,41 +61,75 @@
 					</div>
 					
 					<div class="row">
+						<h3>Kelengkapan Dokumen</h3>	
+						<hr /><br />
 						<section class="col col-4">
-							<label class="label">No Paspor/SPLP</label>
+							<label class="label">Scan Paspor</label>
+							<label for="file" class="input input-file">
+								<div class="button">
+									<%= f.input_field :paspor, as: :file, class: 'fileplaceholder'  %>Unggah</div>
+									<%= f.input_field :pasporname, readonly: true %>
+							</label>
+							<div class="note"><strong>Note:</strong> Format : JPG/JPEG/PNG. Ukuran Maks : 2MB</div>
+						</section>		
+						
+						<section class="col col-2">
+							<label class="label">No Passport</label>
 							<label class="input">
 								<i class="icon-append icon-book"></i>
 								<%= f.input_field :nopaspor %>
 							</label>
 						</section>
 						
-						<section class="col col-4">
-							<label class="label">Tanggal Terbit Paspor</label>
+						<section class="col col-2">
+							<label class="label">Tanggal Terbit</label>
 							<label class="input">
 								<i class="icon-append icon-calendar"></i>
 								<%= f.input_field :dateissued, class: 'datePick' %>
 							</label>
 						</section>
 						
-						<section class="col col-4">
-							<label class="label">Tanggal Berakhir Paspor</label>
+						<section class="col col-2">
+							<label class="label">Tanggal Berakhir</label>
 							<label class="input">
 								<i class="icon-append icon-calendar"></i>
 								<%= f.input_field :dateend, class: 'datePick' %>
 							</label>
 						</section>
 						
-						<section class="col col-4">
+						<section class="col col-3">
 							<label class="label">Tempat Pengeluaran Paspor</label>
 							<label class="input">
 								<i class="icon-append icon-globe"></i>
 								<%= f.input_field :passportplace %>
 							</label>
-						</section>
-					</div>
+						</section>		
+						
+						<section class="col col-3">
+							<label class="label">Kantor Pengeluaran Paspor</label>
+							<label class="input">
+								<i class="icon-append icon-globe"></i>
+								<%= f.input_field :passportplace %>
+							</label>
+						</section>			
+						
+						
+					</div>					
+					
 					
 					<div class="row">
+						
 						<section class="col col-4">
+							<label class="label">Scan Alien Card</label>
+							<label for="file" class="input input-file">
+								<div class="button">
+									<%= f.input_field :aliencard, as: :file, class: 'fileplaceholder'  %>Unggah</div>
+									<%= f.input_field :aliencardname, readonly: true %>
+							</label>
+							<div class="note"><strong>Note:</strong> Format : JPG/JPEG/PNG. Ukuran Maks : 2MB</div>
+						</section>	
+						
+						<section class="col col-2">
 							<label class="label">Jenis Visa</label>
 							<label class="select">								
 								<%= f.input_field :visatype, collection: { 'A-1' => 'a1', 'A-2' => 'a2', 'A-3' => 'a3', 'C-1' => 'c1', 'C-2' => 'c2', 'C-3' => 'c3', 'C-4' => 'c4', 'D-1' => 'd1', 'D-2' => 'd2', 'D-3' => 'd3', 'D-4' => 'd4', 'D-8' => 'd8', 'E-3' => 'e3', 'E-5' => 'e5', 'E-6' => 'e6', 'E-7' => 'e7', 'E-9' => 'e9', 'F-2' => 'f2', 'F-3' => 'f3', 'F-5' => 'f5', 'F-6' => 'f6' } %>
@@ -125,23 +137,25 @@
 							</label>
 						</section>
 						
-						<section class="col col-4">
-							<label class="label">Tanggal Terbit Visa</label>
+						<section class="col col-2">
+							<label class="label">Tanggal Terbit</label>
 							<label class="input">
 								<i class="icon-append icon-calendar"></i>
 								<%= f.input_field :visadateissued, class: 'datePick' %>
 							</label>
 						</section>
 						
-						<section class="col col-4">
-							<label class="label">Tanggal Berakhir Visa</label>
+						<section class="col col-2">
+							<label class="label">Tanggal Berakhir</label>
 							<label class="input">
 								<i class="icon-append icon-calendar"></i>
 								<%= f.input_field :visadateend, class: 'datePick' %>
 							</label>
-						</section>						
+						</section>							
 						
-					</div>		
+						
+					</div>				
+						
 					
 					</fieldset>
 					<fieldset>
@@ -453,6 +467,7 @@
 			<% end %>
 			<!--/ Red color scheme -->			
 </div>
+<script type="text/javascript" src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script type="text/javascript">
 			$(function()
 			{

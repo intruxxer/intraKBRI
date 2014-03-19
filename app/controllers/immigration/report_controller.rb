@@ -2,6 +2,7 @@ class Immigration::ReportController < ApplicationController
   
 
   def index
+     @report = Report.new
 	   if Report.where(user_id: current_user).count > 0
 		    redirect_to edit_report_path(current_user)
 	   end

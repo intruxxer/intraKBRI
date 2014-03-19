@@ -1,8 +1,10 @@
 class Report
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::Paperclip
   
   before_create :assign_ref_id
+  belongs_to :user, :class_name => "User", :inverse_of => :report
   
   field :owner_id,                  type: String
   field :ref_id,                    type: String
@@ -15,9 +17,9 @@ class Report
   field :nopaspor,                  type: String
   field :dateissued,                type: Date
   field :dateend,                   type: Date
-
   field :passportplace,             type: String
   field :pasporplace,               type: String
+  field :immigrationOffice,         type: String
   
   field :visatype,                  type: String
   field :visadateissued,            type:Date 
@@ -60,10 +62,13 @@ class Report
   
   field :pasporname,                type:String
   field :aliencardname,             type:String 
-  field :photoname,                 type:String 
+   
   field :stayinkorea,               type:Boolean, default: true
   
-  belongs_to :user, :class_name => "User", :inverse_of => :report
+  has_mongoid_attached_file :photo, :styles => { :thumb => "90x120>" }
+  validates_attachment_content_type :photo, :content_type => %w(image/jpeg image/jpg image/png)
+  validates_attachment_presence :photo
+  validates_attachment_size :photo, less_than: 2.megabytes
   
   private
   def assign_ref_id

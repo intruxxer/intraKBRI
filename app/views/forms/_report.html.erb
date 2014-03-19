@@ -3,12 +3,12 @@
 			  <%= image_tag("/assets/images/garuda.png", height: '160', width: '160') %>
 			</div>		
 			<!-- Red color scheme -->
-			<%= simple_form_for :post, url: reports_path, :html => { :class => "sky-form", :multipart => true } do |f| %>
+			<%= simple_form_for @report, url: reports_path, :html => { :class => "sky-form", :multipart => true } do |f| %>
 				<header>Formulir Lapor Diri dan Pendataan WNI di Korea Selatan</header>
-				<fieldset>
-					<h3>Informasi Data Diri</h3>	
-					<hr /><br />
+				<fieldset>					
 					<div class="row">
+						<h3>Informasi Data Diri</h3>	
+						<hr /><br />
 						<section class="col col-4">							
 							<label class="label">Nama Lengkap</label>
 							<label class="input">
@@ -28,10 +28,15 @@
 							<label for="file" class="input input-file">
 								<div class="button">
 									<%= f.input_field :photo, as: :file, class: 'fileplaceholder'  %>Unggah</div>
-									<%= f.input_field :photoname, readonly: true %>
+									<input type='text' readonly='readonly' />
 							</label>
-							<div class="note"><strong>Note:</strong> Format : JPG/JPEG/PNG. Ukuran Maks : 2MB</div>
-						</section>						
+							<div class="note"><strong>Catatan : </strong> Hanya berkas gambar JPG/JPEG/PNG. Ukuran Maks. 2MB<br />Gambar wajib merupakan pas foto resmi rapih dan jelas dengan latar belakang putih. Contoh : <a href="http://goo.gl/F9bvxO" target="_blank">http://goo.gl/F9bvxO</a></div>
+						</section>	
+						<% if @report.photo.exists? %>
+						<section class="col col-1">
+							<%= image_tag @passport.photo.url(:thumb) %>
+						</section>				
+						<%end%>					
 					</div>
 					
 					<div class="row">
@@ -54,7 +59,7 @@
 						<section class="col col-2">
 							<label class="label" for='marriagestatus' >Status Perkawinan</label>
 							<label class="select">
-							<%= f.input_field :marriagestatus, collection: { 'Kawin'=>1 ,'Belum Kawin'=>2 ,'Cerai'=>3 } %>							
+							<%= f.input_field :marriagestatus, collection: { 'Kawin'=>'kawin' ,'Belum Kawin'=>'belum-kawin' ,'Cerai'=>'cerai' } %>							
 							<i></i>
 							</label>
 						</section>
@@ -107,9 +112,10 @@
 						
 						<section class="col col-3">
 							<label class="label">Kantor Pengeluaran Paspor</label>
-							<label class="input">
-								<i class="icon-append icon-globe"></i>
-								<%= f.input_field :passportplace %>
+							<label class="select">
+								<%= f.input_field :immigrationOffice, 
+								collection: { "JAKARTA TIMUR" => "JAKARTA TIMUR", "JAKARTA BARAT" => "JAKARTA BARAT","JAKARTA UTARA"=>"JAKARTA UTARA","JAKARTA SELATAN"=>"JAKARTA SELATAN","TANJUNG PRIOK"=>"TANJUNG PRIOK","BANDUNG"=>"BANDUNG","SEMARANG"=>"SEMARANG","YOGYAKARTA"=>"YOGYAKARTA","SOLO"=>"SOLO","MADIUN"=>"MADIUN","SURABAYA"=>"SURABAYA","SUBANG"=>"SUBANG","CIREBON"=>"CIREBON","KBRI SEOUL"=>"KBRI SEOUL" } %>
+							<i></i>
 							</label>
 						</section>			
 						
@@ -159,9 +165,10 @@
 					
 					</fieldset>
 					<fieldset>
-					<legend style="float:left;margin-bottom:28px;">Keterangan di Korea</legend>
 					
 					<div class="row">
+						<h3>Keterangan di Korea</h3>
+						<hr /><br />
 						<section class="col col-3">
 							<label class="label">Status di Korea</label>
 							<label class="select">								
@@ -276,10 +283,11 @@
 					</div>
 					</fieldset>
 					
-					<fieldset>
-					<legend style="float:left;margin-bottom:28px;">Keterangan di Indonesia</legend>
-					
+					<fieldset>					
 				    <div class="row">
+			    	<h3>Keterangan di Indonesia</h3>
+					<hr /><br />
+				    	
 				    <section class="col col-3">
 							<label class="label">No Telepon di Indonesia</label>
 							<label class="input">
@@ -343,9 +351,13 @@
 				</fieldset>
 				
 				<fieldset>
-				<legend style="float:left;margin-bottom:28px;">Keluarga/Kerabat yang bisa dihubungi</legend>
+				
 				
 				<div class="row">
+					
+					<h3>Keluarga/Kerabat yang bisa dihubungi</h3>
+					<hr /><br />
+					
 					<section class="col col-3">
 						<label class="label">Nama</label>
 							<label class="input">	
@@ -427,9 +439,11 @@
 				</fieldset>
 				
 				<fieldset>
-					<legend style="float:left;margin-bottom:28px;">Lainnya</legend>
+					
 					<div class="row">
-
+						<h3>Lainnya</h3>
+						<hr /><br />
+						
 						<section class="col col-6">
 							<label class="label">Tiba di Korea</label>	
 							<label class="input">

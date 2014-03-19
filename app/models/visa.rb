@@ -3,6 +3,8 @@ class Visa
   include Mongoid::Timestamps
   include Mongoid::Paperclip
   
+  before_create :assign_visa_type
+  
   field :owner_id,               type: String
   field :ref_id,                 type: String
   field :application_type,       type: Integer 

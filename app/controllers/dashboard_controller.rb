@@ -50,11 +50,40 @@ class DashboardController < ApplicationController
     render 'immigration'
   end
   
+  def periodical_reporting
+    @layout_part = 'top'
+  end
+  
+  def generate_periodical_reporting
+    @layout_part = 'bottom'
+    periodical_post_params()
+    
+    if(params[:periodical][:startperiod].present? && params[:periodical][:endperiod].present?)
+      
+      @visa = Visa.where(:payment_date => {'$gte' => params[:periodical][:startperiod],'$lt' => params[:periodical][:endperiod]}).where(:status => 'Verified')
+      @passport = Passport.where(:payment_date => {'$gte' => params[:periodical][:startperiod],'$lt' => params[:periodical][:endperiod]}).where(:status => 'Verified')      
+      
+      render file: '/dashboard/report/rekap', layout: false
+        
+    else     
+       
+       redirect_to :back, :flash => { warning: "Laporan Gagal Dibuat" }
+          
+    end
+    
+    
+    
+  end
+  
   protected
   def check_access
     if !current_user.has_role? :admin then
       redirect_to root_path, :flash => { :warning => "The URL you attempt to access is not exist." }
     else  
     end
+  end
+  
+  def periodical_post_params
+    params.require(:periodical).permit(:startperiod, :endperiod)
   end
 end

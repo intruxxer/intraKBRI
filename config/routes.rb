@@ -57,12 +57,16 @@ EKbri::Application.routes.draw do
   get "admin/service/:document/:id", :to => "dashboard#immigration"
   get "dashboard/syncpanel", :to => "dashboard#syncpanel"
   
-  match "passport/tospri/:id", to: "immigration/dekstop#exec_toSPRI", via: :post
+  match "passport/tospri/:id", to: "desktop#exec_toSPRI", via: :post
   
   get "protocol/synccloudtolocal/:collection", :to => "protocol#syncCollectionCloudtoLocal"
   get "protocol/syncdbcomplete", :to => "protocol#syncDBComplete"
   
   match "report/findbynameandbirth", to: "immigration/report#findbyNameandBirth", via: :get
+  
+  get "report/panel/periodical", :to => "dashboard#periodical_reporting"
+  
+  match "report/generate/periodical", to: "dashboard#generate_periodical_reporting", via: :post
   
   
   #resources :dashboard_immigration, path: "dashboard/immigration"

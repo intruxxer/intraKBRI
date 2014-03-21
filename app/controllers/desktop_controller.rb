@@ -27,7 +27,7 @@ class DesktopController < ApplicationController
        
        msg = { :notice => 'Data berhasil dipindahkan' }
     rescue 
-       msg = { :alert => 'Data gagal dipindahkan' }
+       msg = { :flash => { warning: "Data Gagal dipindahkan" } }
     end   
       
     db.close   
@@ -84,7 +84,7 @@ class DesktopController < ApplicationController
         
     rescue Exception=>e
       
-      msg = { :alert => 'Data gagal dipindahkan' }
+      msg = { :flash => { warning: "Data Gagal dipindahkan" } }
       
     end    
       

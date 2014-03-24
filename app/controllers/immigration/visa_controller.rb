@@ -50,19 +50,16 @@ class Immigration::VisaController < ApplicationController
   #GET visa/:id
   def show
     @visa = Visa.find(params[:id])
-    
-    
       respond_to do |format|
       format.html #visa_processing/show.html.erb
       format.json { render json: @visa }
       format.xml { render xml: @visa }
       format.pdf do
-        render :pdf            => "Visa Application Form ["+"#{current_user.full_name}"+"]",
-               :disposition    => "inline", #{attachment, inline}
-               :show_as_html   => params[:debug].present?,
-               :template       => "immigration/visa/visarecapitulation.html.erb",
-               :layout         => "pdf_layout.html",
-               :footer         => { :center => "The Embassy of Republic of Indonesia at Seoul" }
+        render :pdf            => "Receipt of Visa Application ["+"#{current_user.full_name}"+"]_" + @visa.ref_id,
+               :disposition    => "attachment", #{attachment, inline}               
+               :template       => "immigration/visa/visapayment.html.erb",
+               :layout         => "pdf_layout.html"
+               
       end
     end
   end

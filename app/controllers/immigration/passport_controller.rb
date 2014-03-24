@@ -23,25 +23,32 @@ class Immigration::PassportController < ApplicationController
       format.html #visa_processing/show.html.erb
       format.json { render json: @passport }
       format.xml { render xml: @passport }
+      format.pdf do
+          render :pdf            => "Receipt of Passport Application ["+"#{current_user.full_name}"+"]_" + @passport.ref_id,
+                 :disposition    => "attachment", #{attachment, inline}                 
+                 :template       => "immigration/passport/pasporpayment.html.erb",
+                 :layout         => "pdf_layout.html"                 
+        end
     end
   end
   
   #POST /passport
-  def create   
- 
-    
+  def create       
     @passport = [ Passport.new(post_params) ]
     current_user.passports = @passport    
     
     if current_user.save then      
       UserMailer.passport_received_email(current_user).deliver
-      respond_to do |format|
-        format.html { redirect_to root_path, :notice => "Pengurusan aplikasi paspor anda, berhasil!" }
-        format.json { render json: {action: "JSON Creating Passport", result: "Saved"} }
-        format.js #if being asked by AJAX to return "script" <-->
+      #respond_to do |format|        
+        #format.html { redirect_to root_path, :notice => "Pengurusan aplikasi paspor anda, berhasil!" }
+        #format.json { render json: {action: "JSON Creating Passport", result: "Saved"} }
+        #format.js #if being asked by AJAX to return "script" <-->
             #passport_processing/create.js.erb -->to execute script JS,
             #like stopping loading.gif, hiding the element, alerting user
-      end
+      #end
+      @passport = @passport[0]
+      flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
+      render 'pasporconfirm.html.erb'
     else
       @passport = @passport[0]
       @errors = current_user.passports[0].errors.messages

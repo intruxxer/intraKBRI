@@ -11,7 +11,7 @@
 <% end %>
 
 <% if @layout_part == 'top' %>
-<%= simple_form_for :periodical , url: '/report/generate/periodical', :method => :post, :html => { :class => "sky-form", :multipart => true } do |f| %>
+<%= simple_form_for :periodical , url: '/report/generate/periodical.pdf', :method => :post, :html => { :class => "sky-form", :multipart => true } do |f| %>
 	<fieldset>
 		<div class="row">
 			

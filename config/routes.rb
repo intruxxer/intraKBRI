@@ -68,6 +68,8 @@ EKbri::Application.routes.draw do
   
   match "report/generate/periodical", to: "dashboard#generate_periodical_reporting", via: :post
   
+  get '/images/:name', :to => 'images#show', :as => :custom_image
+  
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

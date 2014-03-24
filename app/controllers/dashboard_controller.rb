@@ -63,7 +63,15 @@ class DashboardController < ApplicationController
       @visa = Visa.where(:payment_date => {'$gte' => params[:periodical][:startperiod],'$lt' => params[:periodical][:endperiod]}).where(:status => 'Verified')
       @passport = Passport.where(:payment_date => {'$gte' => params[:periodical][:startperiod],'$lt' => params[:periodical][:endperiod]}).where(:status => 'Verified')      
       
-      render file: '/dashboard/report/rekap', layout: false
+      respond_to do |format|
+        format.pdf do
+          render :pdf         => "Rekapitulasi Visa & Paspor " + params[:periodical][:startperiod] + " _ " + params[:periodical][:endperiod],
+                 :disposition => "inline",
+                 :template    => 'dashboard/report/rekap.html.erb',
+                 :page_size   => 'A4',                           
+                 :footer      => { :center => "The Embassy of Republic of Indonesia at Seoul" }
+        end
+      end  
         
     else     
        

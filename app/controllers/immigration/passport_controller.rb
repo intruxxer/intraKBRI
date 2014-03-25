@@ -1,6 +1,6 @@
 class Immigration::PassportController < ApplicationController
-  #GET /passport
-  @@VIPACOUNTERDEF = 6600
+  include SimpleCaptcha::ControllerHelpers
+  #GET /passport  
   
   def index
     #1 Person, 1 Application in 5 years
@@ -35,28 +35,27 @@ class Immigration::PassportController < ApplicationController
   #POST /passport
   def create       
     @passport = [ Passport.new(post_params) ]
-    current_user.passports = @passport    
+    #current_user.passports = @passport    
+    tempcache = @passport
+    @passport = @passport[0]
     
-    if current_user.save then      
-      UserMailer.passport_received_email(current_user).deliver
-      #respond_to do |format|        
-        #format.html { redirect_to root_path, :notice => "Pengurusan aplikasi paspor anda, berhasil!" }
-        #format.json { render json: {action: "JSON Creating Passport", result: "Saved"} }
-        #format.js #if being asked by AJAX to return "script" <-->
-            #passport_processing/create.js.erb -->to execute script JS,
-            #like stopping loading.gif, hiding the element, alerting user
-      #end
-      @passport = @passport[0]
-      flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
-      render 'pasporconfirm.html.erb'
-    else
-      @passport = @passport[0]
+    if @passport.valid?
+      if simple_captcha_valid?
+          current_user.passports = tempcache   
+          current_user.save
+          UserMailer.passport_received_email(current_user).deliver
+          flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
+          render 'pasporconfirm.html.erb'
+      else        
+        @errors = { 'Secret Code' => 'Wrong Code Entered'}
+        render 'index'
+      end
+    else     
       @errors = current_user.passports[0].errors.messages
       render 'index'
-           
-      #redirect_to :back, :alert => current_user.passports[0].errors.messages 
-      #do something further 
     end
+    
+    
     #debugging
     #logger.debug "We are inspecting PASSPORT PROCESSING PARAMS as follows:"
     #puts params.inspect

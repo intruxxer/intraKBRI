@@ -27,3 +27,9 @@ en:
   time:
     formats:
       defaults: "%d/%m/%Y %H:%M"
+  simple_captcha:
+    placeholder: "Enter Code here"
+    label: ""
+    message:
+      default: "Secret Code did not match with the Image"
+      user: "The secret Image and code were different"

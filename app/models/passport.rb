@@ -1,7 +1,7 @@
 class Passport
   include Mongoid::Document
   include Mongoid::Timestamps
-  include Mongoid::Paperclip
+  include Mongoid::Paperclip  
   
   before_create :assign_ref_id, :assign_passport_fee
   belongs_to :user, :class_name => "User", :inverse_of => :passport
@@ -126,11 +126,11 @@ class Passport
   
   def assign_passport_fee
     type = "passport_" + self.paspor_type
-    if self.application_reason.nil?
-      passport = Passportfee.where(passport_type: type)
+    if self.application_reason == 'hilang'
+      passport = Passportfee.where(passport_type: type, passport_reason: self.application_reason).first
       self.passportfee = passport.passport_fee
     else
-      passport = Passportfee.where(passport_type: type, passport_reason: self.application_reason)
+      passport = Passportfee.where(passport_type: type, passport_reason: 'regular' ).first      
       self.passportfee = passport.passport_fee
     end
     

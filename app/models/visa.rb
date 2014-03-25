@@ -171,13 +171,13 @@ class Visa
   
   def assign_visa_fee_ref
     if !self.type_of_visa.nil? and !self.num_entry.nil? then
-      visa = Visafee.where(application_of_visa: self.category_type, type_of_visa: self.type_of_visa, num_entry: self.num_entry)
+      visa = Visafee.where(application_of_visa: self.category_type, type_of_visa: self.type_of_visa, num_entry: self.num_entry).first
       self.visafee = visa.fee_of_visa
     elsif !self.type_of_visa.nil?
-      visa = Visafee.where(application_of_visa: self.category_type, type_of_visa: self.type_of_visa)
+      visa = Visafee.where(application_of_visa: self.category_type, type_of_visa: self.type_of_visa).first
       self.visafee = visa.fee_of_visa
     else 
-      visa = Visafee.where(application_of_visa: self.category_type)
+      visa = Visafee.where(application_of_visa: self.category_type).first
       self.visafee = visa.fee_of_visa
     end
   end

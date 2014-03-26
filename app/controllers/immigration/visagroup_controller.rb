@@ -1,4 +1,5 @@
 class Immigration::VisagroupController < ApplicationController
+  include SimpleCaptcha::ControllerHelpers
   before_filter :authenticate_user!
   #GET /visa
   def index
@@ -31,7 +32,7 @@ class Immigration::VisagroupController < ApplicationController
   def create
      
    @visa =  [Visa.new(post_params)]  
-   current_user.visas.push(@visa[0])   
+   
    
     if session[:add_people] then
       @add_people = true      
@@ -41,27 +42,32 @@ class Immigration::VisagroupController < ApplicationController
       
     end  
     
-    if current_user.save then
-      UserMailer.visa_received_email(current_user).deliver
-      respond_to do |format|
-        format.html { 
-          #kalau pertama kali sbg org pertama
+    time = Time.new
+    coded_date = time.strftime("%y%m%d")
+    @ref_id = '1'+coded_date+generate_string(3)
+    
+    if @visa[0].valid?
+      if simple_captcha_valid?
+          current_user.visas.push(@visa[0])   
+          current_user.save
+          UserMailer.visa_received_email(current_user).deliver
+          #flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
+          #render 'pasporconfirm.html.erb'
           if session[:add_people].nil? or session[:add_people].blank? or session[:add_people] == false
              session[:add_people] = true
           end
           redirect_to :controller => 'visagroup', :action => 'index' 
-           
-          # redirect_to visafamilys_path with GET options
-          # kalau kedua kali -> & #kalau finish ->
-        }
+      else        
+        @errors = { 'Secret Code' => 'Wrong Code Entered'}
+        render 'index'
       end
     else
-      @visa = @visa[0]
-      @errors = @visa.errors.messages
+     
+      @errors = @visa[0].errors.messages
       render 'index'
-      # redirect_to :back, :notice => "Unfortunately, your current visa application fails to be submitted."
-      # do something further 
-    end
+    end  
+    
+    
     #*Debugging*#
     # logger.debug "We are inspecting VISA PROCESSING PARAMS as follows:"
     # puts params.inspect

@@ -1,4 +1,5 @@
 class Immigration::VisafamilyController < ApplicationController
+  include SimpleCaptcha::ControllerHelpers
   before_filter :authenticate_user!
   #GET /visa
   def index
@@ -81,7 +82,7 @@ class Immigration::VisafamilyController < ApplicationController
 =end
      
    @visa =  [Visa.new(post_params)]  
-   current_user.visas.push(@visa[0])   
+     
    
     if session[:add_people] then
       @add_people = true      
@@ -90,31 +91,33 @@ class Immigration::VisafamilyController < ApplicationController
       session[:current_ref_id] = @lastvisa.ref_id
       
     end
+    
+    time = Time.new
+    coded_date = time.strftime("%y%m%d")
+    @ref_id = '1'+coded_date+generate_string(3)
    
-    if current_user.save then
-      UserMailer.visa_received_email(current_user).deliver
-      respond_to do |format|
-        format.html { 
-          #kalau pertama kali sbg org pertama
+    if @visa[0].valid?
+      if simple_captcha_valid?
+          current_user.visas.push(@visa[0])   
+          current_user.save
+          UserMailer.visa_received_email(current_user).deliver
+          #flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
+          #render 'pasporconfirm.html.erb'
+          
           if session[:add_people].nil? or session[:add_people].blank? or session[:add_people] == false
              session[:add_people] = true
           end
           redirect_to :controller => 'visafamily', :action => 'index' 
-          #redirect_to visafamilys_path with GET options
-          
-          #kalau kedua kali 
-          
-          #kalau finish
-          
-        }
+      else        
+        @errors = { 'Secret Code' => 'Wrong Code Entered'}
+        render 'index'
       end
-    else
-      @visa = @visa[0]
-      @errors = @visa.errors.messages
+    else      
+      @errors = @visa[0].errors.messages
       render 'index'
-      #redirect_to :back, :notice => "Unfortunately, your current visa application fails to be submitted."
-      #do something further 
     end
+    
+    
     #*Debugging*#
     #logger.debug "We are inspecting VISA PROCESSING PARAMS as follows:"
     #puts params.inspect

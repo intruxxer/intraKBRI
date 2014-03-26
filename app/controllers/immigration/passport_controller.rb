@@ -1,5 +1,6 @@
 class Immigration::PassportController < ApplicationController
   include SimpleCaptcha::ControllerHelpers
+  before_filter :authenticate_user!
   #GET /passport  
   
   def index

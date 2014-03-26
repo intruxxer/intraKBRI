@@ -1,4 +1,5 @@
 class Immigration::VisaController < ApplicationController
+  include SimpleCaptcha::ControllerHelpers
   before_filter :authenticate_user!
   
   #GET /visa
@@ -10,7 +11,7 @@ class Immigration::VisaController < ApplicationController
      #We will have passport
      @visa = Visa.new
      
-     time = Time.new
+      time = Time.new
       coded_date = time.strftime("%y%m%d")
       @ref_id = '1'+coded_date+generate_string(3)
       
@@ -45,23 +46,30 @@ class Immigration::VisaController < ApplicationController
     
     @visa =  [Visa.new(post_params)]
     
-    current_user.visas.push(@visa[0])   
-   
-      
-    if current_user.save then
-      UserMailer.visa_received_email(current_user).deliver
-      respond_to do |format|
-        format.html { redirect_to root_path, :notice => "Your visa application is successfully received!" }
-        format.json { render json: {action: "JSON Creating Visa", result: "Saved"} }
-        format.js #if being asked by AJAX to return "script" <-->
-            #visa_processing/create.js.erb -->to execute script JS,
-            #like stopping loading.gif, hiding the element, alerting user
+    time = Time.new
+    coded_date = time.strftime("%y%m%d")
+    @ref_id = '1'+coded_date+generate_string(3)
+    
+    
+    if @visa[0].valid?
+      if simple_captcha_valid?
+          current_user.visas.push(@visa[0])   
+          current_user.save
+          UserMailer.visa_received_email(current_user).deliver
+          #flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
+          #render 'pasporconfirm.html.erb'
+          redirect_to root_path, :notice => "Your visa application is successfully received!"
+      else        
+        
+        
+        
+        @errors = { 'Secret Code' => 'Wrong Code Entered'}
+        render 'index'
       end
     else
-    @errors = @visa[0].errors.messages
-    render 'index'
-    #redirect_to :back, :notice => "Unfortunately, your current visa application fails to be submitted."
-    #do something further 
+     
+      @errors = @visa[0].errors.messages
+      render 'index'
     end
     
   end

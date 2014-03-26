@@ -38,7 +38,7 @@
 							<i></i>
 							</label>
 						</section>
-						<section class="col col-3 newVisa specialFieldType no-show">
+						<section class="col col-3">
 							<label class="label">Requested Visa</label>
 							<label class="select">
 							<%= f.input_field :category_type, 
@@ -1314,11 +1314,7 @@
 					</section>				
 				</fieldset>
 				<footer>
-					<% if controller_name == "visafamily"  %>
-						<%= f.input_field :ref_id, type: 'hidden', value: @ref_id %>
-					<% elsif controller_name == "visagroup"  %>
-						<%= f.input_field :ref_id, type: 'hidden', value: @ref_id %>	
-					<% end %>
+					<%= f.input_field :ref_id, type: 'hidden', value: @ref_id %>	
 				
 					<% if controller_name == "visafamily" or controller_name == "visagroup"  %>
 						<button type="submit" class="button">Create & Add More Applicant(s)</button>
@@ -1330,7 +1326,7 @@
 			<% end %>
 <!--/ Red color scheme -->
 
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
 <script type="text/javascript">
 	$(function()
 		{

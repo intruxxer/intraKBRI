@@ -64,8 +64,7 @@ class Visa
   field :purpose,				         type: String
   
   field :status,                 type: String,  default: 'Received'
-  field :status_code,            type: Integer, default: 1
-  field :payment_slip,           type: String
+  field :status_code,            type: Integer, default: 1  
   field :payment_date,           type: Date
   field :vipa_no,                type: Integer
   
@@ -153,6 +152,10 @@ class Visa
   has_mongoid_attached_file :ticket, :styles => { :thumb => "90x120>" }
   validates_attachment_content_type :ticket, :content_type => %w(image/jpeg image/jpg image/png application/pdf)  
   validates_attachment_size :ticket, less_than: 2.megabytes
+  
+  has_mongoid_attached_file :slip_photo, :styles => { :thumb => "90x120>" }
+  validates_attachment_content_type :slip_photo, :content_type => %w(image/jpeg image/jpg image/png application/pdf)  
+  validates_attachment_size :slip_photo, less_than: 2.megabytes
   
   private
   def assign_ref_id

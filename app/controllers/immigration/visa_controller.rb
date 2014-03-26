@@ -9,6 +9,11 @@ class Immigration::VisaController < ApplicationController
      #end
      #We will have passport
      @visa = Visa.new
+     
+     time = Time.new
+      coded_date = time.strftime("%y%m%d")
+      @ref_id = '1'+coded_date+generate_string(3)
+      
      #redirect_to :controller => 'immigration/visa', :action => 'index', :type => 2, :format => 'json'
      respond_to do |format|
         format.html { } # {redirect_to root_path, :notice => "Your visa application is successfully received!" }
@@ -117,7 +122,7 @@ class Immigration::VisaController < ApplicationController
       :sponsor_type_id, :sponsor_name_id, :sponsor_address_id, :sponsor_address_kab_id, :sponsor_address_prov_id, 
       :sponsor_phone_id, :duration_stays, :duration_stays_unit, :num_entry, :checkbox_1, :checkbox_2, :checkbox_3, 
       :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry, :purpose, 
-      :passport, :idcard, :photo, :status, :status_code, :payment_slip, :payment_date, :ticket, :sup_doc, 
+      :passport, :idcard, :photo, :status, :status_code, :slip_photo, :payment_date, :ticket, :supdoc, :ref_id,
       :approval_no).merge(visa_type: 1)
     end
     #Notes: to add attribute/variable after POST params received, do

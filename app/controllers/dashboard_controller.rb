@@ -19,6 +19,10 @@ class DashboardController < ApplicationController
       @document = "dashboard/service_passport"
       puts "rendering #{@document}"
     elsif params[:document] == "prep_spri" then
+      
+      vipacounter = 3000
+      
+      
       @document = "dashboard/tospri_prep"
       @passport = Passport.find(params[:id])
     else  
@@ -60,8 +64,14 @@ class DashboardController < ApplicationController
     
     if(params[:periodical][:startperiod].present? && params[:periodical][:endperiod].present?)
       
-      @visa = Visa.where(:payment_date => {'$gte' => params[:periodical][:startperiod],'$lt' => params[:periodical][:endperiod]}).where(:status => 'Verified')
-      @passport = Passport.where(:payment_date => {'$gte' => params[:periodical][:startperiod],'$lt' => params[:periodical][:endperiod]}).where(:status => 'Verified')      
+      
+      @daterange = { 'startperiod' => params[:periodical][:startperiod], 'endperiod' => params[:periodical][:endperiod] }
+      
+      @visa = Visa.where(:payment_date => {'$gte' => params[:periodical][:startperiod],'$lte' => params[:periodical][:endperiod]})
+      @passport = Passport.where(:payment_date => {'$gte' => params[:periodical][:startperiod],'$lte' => params[:periodical][:endperiod]})
+            
+      @passportfee = Passportfee.all
+      @visafee = Visafee.all
       
       respond_to do |format|
         format.pdf do
@@ -84,6 +94,10 @@ class DashboardController < ApplicationController
   end
   
   protected
+  def group_passportfee_type
+      
+  end
+  
   def check_access
     if !current_user.has_role? :admin then
       redirect_to root_path, :flash => { :warning => "The URL you attempt to access is not exist." }

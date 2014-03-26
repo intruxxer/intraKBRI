@@ -11,8 +11,10 @@
 		
 		<div style="width:500px;margin:0 auto;">
 			<center><h3 style="text-decoration:underline;">REKAPITULASI PENERIMAAN VISA DAN LAIN-LAIN</h3></center>
-			<center><h4>Dari Tgl. : 19/03/2014 s/d 19/03/2014</h4></center>
-		</div>
+			<center><h4>Dari Tgl. : <%= @daterange['startperiod'] %> s/d <%= @daterange['endperiod'] %></h4></center>
+		</div>		
+			
+		<% numbering = 0 %>
 		
 		<table cellpadding="2" cellspacing="0" width="100%" border="0" style="text-align:center;">
 			<thead >
@@ -31,16 +33,28 @@
 				</tr>
 			</thead>			
 			<tbody>
+				<% @passportfee.each do |pfrow| 
+					sliced = pfrow.passport_type
+					sliced.slice! "passport_"					
+					if pfrow.passport_reason == 'hilang'
+						currentrow = @passport.where(:paspor_type => sliced).where(:application_reason => 'hilang')
+						hilang = "(HILANG/RUSAK)"	
+					else
+						currentrow = @passport.where(:paspor_type => sliced)
+						hilang = ""
+					end%>	
 				<tr>
-					<td>1.</td>
-					<td style="text-align:left;">VISA KUNJUNGAN USAHA</td>
-					<td>17</td>
-					<td>765</td>
+					<td><%= numbering += 1 %></td>
+					<td style="text-align:left;">SPRI <%= sliced %> HALAMAN <%= hilang %></td>
+					<td><%= currentrow.count %></td>
+					<td></td>
+					<td>$<%= currentrow.sum(:passportfee) %></td>
 					<td></td>
 					<td></td>
-					<td></td>
-					<td>765</td>
-				</tr>
+					<td>$<%= currentrow.sum(:passportfee) %></td>
+				</tr>					  
+				<% end %>
+				
 				<tr>
 					<td>2.</td>
 					<td style="text-align:left;">VISA SOSIAL BUDAYA</td>

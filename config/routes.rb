@@ -70,6 +70,10 @@ EKbri::Application.routes.draw do
   
   get '/images/:name', :to => 'images#show', :as => :custom_image
   
+  get "finishgroupapply", :to => "immigration/visa#finishing_application"
+  get "visas/reapply/:id", :to => "immigration/visa#reapply"
+  get "passports/reapply/:id", :to => "immigration/passport#reapply"
+  
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

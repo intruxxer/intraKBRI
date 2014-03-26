@@ -1,6 +1,7 @@
 class DesktopController < ApplicationController
   
   @@SISARICOUNTER = 5850
+  @@VIPACOUNTER = 3000
   
   def exec_toSisari
     @visa = Visa.find(params[:id])

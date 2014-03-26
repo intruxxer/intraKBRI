@@ -3,7 +3,7 @@ class Passport
   include Mongoid::Timestamps
   include Mongoid::Paperclip  
   
-  before_create :assign_ref_id, :assign_passport_fee
+  before_create :assign_ref_id, :assign_passport_fee, :set_vipacounter
   belongs_to :user, :class_name => "User", :inverse_of => :passport
   
   field :owner_id,               type: String
@@ -48,8 +48,7 @@ class Passport
   field :sendingParty,           type: Integer
   
   field :status,                 type: String, default: 'Received'
-  field :status_code,            type: Integer
-  field :payment_slip,           type: String
+  field :status_code,            type: Integer  
   field :payment_date,           type: Date
   
   field :passport_no,            type: String
@@ -57,7 +56,7 @@ class Passport
   field :lapordiri_no,           type: String
   
   field :passportfee,           type: Integer
-  
+  field :vipacounter,           type: Integer
   
   validates :application_type,   presence: true
   validates :application_reason, presence: true
@@ -105,6 +104,18 @@ class Passport
   
   
   private
+  def set_vipacounter
+    if Passport.count > 1
+      begin
+        self.vipacounter = Passport.max(:vipacounter) + 1
+      rescue
+        self.vipacounter = 3000
+      end      
+    else
+      self.vipacounter = 3000
+    end
+  end
+  
   def check_application_type
     if self.application_type == 'perpanjang-paspor'
       return true
@@ -114,7 +125,9 @@ class Passport
   end
   
   def assign_ref_id
-    self.ref_id = 'P-KBRI-' + generate_string(3)+"-"+Random.new.rand(10**4..10**10).to_s
+    time = Time.new
+    coded_date = time.strftime("%y%m%d")
+    self.ref_id = '4'+coded_date+generate_string(3)
   end
   
   def generate_string(length=5)

@@ -1260,7 +1260,7 @@
 				</div>  
 				</fieldset>
 				
-				<fieldset id="limited-stay" class="specialFieldCat no-show">
+				<fieldset id="limited-stay" class="specialFieldCat">
 			      <div class="row">
 			        <section class="col col-4">
 				      <label class="label">Immigration Approval No.</label>
@@ -1303,7 +1303,7 @@
 				  </div>
 				</fieldset>
 				
-				<fieldset class="newVisa specialFieldType no-show">
+				<fieldset class="newVisa specialFieldType">
 					<section class="col col-9">
 					I hereby declare that statements given above are true and I understand that even if granted a visa, 
 					the admission at the airport remains fully the discretion of the immigration authorities in Indonesia.
@@ -1334,36 +1334,13 @@
 <script type="text/javascript">
 	$(function()
 		{
-				//$( ".no-show" ).css("display", "none");
-									//console.log();
+				
 				$('input[type=text]').keyup(function() {
 				    $(this).val($(this).val().toUpperCase());
 				});
 				$('textarea').keyup(function() {
 				    $(this).val($(this).val().toUpperCase());
-				});					
-				// Adjusting suitable form
-				/*$( "#visa_application_type" ).change(function() {
-  					var str = "";
-    				str = $( "#visa_application_type option:selected" ).val();
-    				if(str == 3){
-    					var aClass = ".newVisa";
-    				}else if(str == 4){
-    					var aClass = ".reEntry";
-    				}
-    				$( ".specialFieldType" ).addClass("no-show").css("display", "none");
-					$( aClass ).removeClass("no-show").css("display","block");
-				});*/
-				
-				/*$( "#visa_category_type" ).change(function() {
-  					var str = "";
-    				str = $( "#visa_category_type option:selected" ).val();
-    				var id = "#"+str;
-    				$( ".specialFieldCat" ).addClass("no-show").css("display", "none");
-					if(id != "none") {
-						$( id ).removeClass("no-show").css("display","block");
-					}
-				});*/
+				});				
 				
 				
 				

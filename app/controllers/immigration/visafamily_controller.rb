@@ -4,8 +4,11 @@ class Immigration::VisafamilyController < ApplicationController
   def index
     @visa = Visa.new
     if session[:add_people] then
-      @add_people = true
-      @ref_id = session[:current_ref_id]
+      @add_people = true      
+      
+      @lastvisa = Visa.where(visa_type: 2, user_id: current_user).last
+      session[:current_ref_id] = @lastvisa.ref_id  
+         
       puts "Session add_people = True"
       puts "Session current_ref_id = #{session[:current_ref_id]}"
       #@lastvisa = Visa.where(visa_type: 2, user_id: current_user).last
@@ -77,8 +80,17 @@ class Immigration::VisafamilyController < ApplicationController
    end
 =end
      
-   @visa = [ Visa.new(post_params) ] 
-   current_user.visas = @visa   
+   @visa =  [Visa.new(post_params)]  
+   current_user.visas.push(@visa[0])   
+   
+    if session[:add_people] then
+      @add_people = true      
+      
+      @lastvisa = Visa.where(visa_type: 2, user_id: current_user).last
+      session[:current_ref_id] = @lastvisa.ref_id
+      
+    end
+   
     if current_user.save then
       UserMailer.visa_received_email(current_user).deliver
       respond_to do |format|
@@ -98,7 +110,7 @@ class Immigration::VisafamilyController < ApplicationController
       end
     else
       @visa = @visa[0]
-      @errors = current_user.visas[0].errors.messages
+      @errors = @visa.errors.messages
       render 'index'
       #redirect_to :back, :notice => "Unfortunately, your current visa application fails to be submitted."
       #do something further 
@@ -158,7 +170,7 @@ class Immigration::VisafamilyController < ApplicationController
       :sponsor_phone_id, :duration_stays, :duration_stays_unit, :num_entry, :checkbox_1, :checkbox_2, :checkbox_3, 
       :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry, 
       :purpose, :passport, :idcard, :photo, :status, :status_code, :payment_slip, 
-      :payment_date, :ticketpath, :sup_docpath, :ref_id, :approval_no).merge(owner_id: current_user.id, visa_type: 2)
+      :payment_date, :ticketpath, :sup_docpath, :ref_id, :approval_no).merge(visa_type: 2)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

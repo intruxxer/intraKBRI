@@ -75,7 +75,7 @@ class Visa
   field :visafee,                type: Integer
   
   #validates :owner_id,               presence: true
-  validates :ref_id,                 presence: true
+  #validates :ref_id,                 presence: true
   validates :application_type,       presence: true 
   validates :category_type,          presence: true
   validates :visa_type,              presence: true

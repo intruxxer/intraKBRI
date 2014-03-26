@@ -38,8 +38,11 @@ class Immigration::VisaController < ApplicationController
   #POST /visa
   def create
     
-   @visa = [ Visa.new(post_params) ] 
-   current_user.visas = @visa   
+    @visa =  [Visa.new(post_params)]
+    
+    current_user.visas.push(@visa[0])   
+   
+      
     if current_user.save then
       UserMailer.visa_received_email(current_user).deliver
       respond_to do |format|
@@ -69,9 +72,8 @@ class Immigration::VisaController < ApplicationController
         render :pdf            => "Visa Application Form ["+"#{current_user.full_name}"+"]",
                :disposition    => "inline", #{attachment, inline}
                :show_as_html   => params[:debug].present?,
-               :template       => "immigration/visa/visarecapitulation.html.erb",
-               :layout         => "visa_pdf.html",
-               :footer         => { :center => "The Embassy of Republic of Indonesia at Seoul" }
+               :template       => "immigration/visa/visapayment.html.erb",
+               :layout         => "pdf_layout.html"               
       end
     end
   end
@@ -116,7 +118,7 @@ class Immigration::VisaController < ApplicationController
       :sponsor_phone_id, :duration_stays, :duration_stays_unit, :num_entry, :checkbox_1, :checkbox_2, :checkbox_3, 
       :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry, :purpose, 
       :passport, :idcard, :photo, :status, :status_code, :payment_slip, :payment_date, :ticket, :sup_doc, 
-      :approval_no).merge(ref_id: reference_no_visa, owner_id: current_user.id, visa_type: 1)
+      :approval_no).merge(visa_type: 1)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

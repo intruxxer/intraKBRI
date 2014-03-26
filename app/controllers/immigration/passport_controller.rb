@@ -45,7 +45,7 @@ class Immigration::PassportController < ApplicationController
     
     if @passport.valid?
       if simple_captcha_valid?
-          current_user.passports = tempcache   
+          current_user.passports.push(tempcache)   
           current_user.save
           UserMailer.passport_received_email(current_user).deliver
           flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
@@ -99,7 +99,7 @@ class Immigration::PassportController < ApplicationController
     def post_params()
       params.require(:passport).permit(:application_type, :application_reason, :paspor_type, :full_name, :height, :kelamin, :placeBirth, :dateBirth,              
       :citizenship_status, :lastPassportNo, :dateIssued, :placeIssued, :jobStudyInKorea, :jobStudyTypeInKorea, :jobStudyOrganization, :jobStudyAddress, 
-      :phoneKorea, :addressKorea, :cityKorea, :phoneIndonesia, :addressIndonesia, :kelurahanIndonesia, :kecamatanIndonesia, :kabupatenIndonesia, :dateArrival, :sendingParty, :photo, :status, :slip_photo, :payment_date, :arc, :dateIssuedEnd, :immigrationOffice, :sponsor_address_prov_kr, :sponsor_address_prov_id, :supporting_doc).merge(owner_id: current_user.id)
+      :phoneKorea, :addressKorea, :cityKorea, :phoneIndonesia, :addressIndonesia, :kelurahanIndonesia, :kecamatanIndonesia, :kabupatenIndonesia, :dateArrival, :sendingParty, :photo, :status, :slip_photo, :payment_date, :arc, :dateIssuedEnd, :immigrationOffice, :sponsor_address_prov_kr, :sponsor_address_prov_id, :supporting_doc)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

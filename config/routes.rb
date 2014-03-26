@@ -3,7 +3,7 @@ EKbri::Application.routes.draw do
   resources :visafamilys, controller: 'immigration/visafamily'
   resources :visagroups, controller: 'immigration/visagroup'
   resources :passports, controller: 'immigration/passport'
-  resources :reports, controller: 'immigration/report'
+  resources :reports, controller: 'immigration/report'  
   
   get "dashboard/protocols", :to => "protocol#index"
   
@@ -73,6 +73,9 @@ EKbri::Application.routes.draw do
   get "finishgroupapply", :to => "immigration/visa#finishing_application"
   get "visas/reapply/:id", :to => "immigration/visa#reapply"
   get "passports/reapply/:id", :to => "immigration/passport#reapply"
+  
+  get "dashboard/reference/list", :to => "reference#index"
+  get "dashboard/reference/edit/:type/:id", :to => "reference#edit"
   
   
   #resources :dashboard_immigration, path: "dashboard/immigration"

@@ -4,7 +4,7 @@ class UserMailer < ActionMailer::Base
   def visa_received_email(user)
   	@url = "http://kbri.seoul.kr"
   	@email = user.email
-  	uservisa = Visa.where(owner_id: user.id).last
+  	uservisa = Visa.where(user_id: user.id).last
   	@ref_id = uservisa.ref_id
   	@uid = user.id
   	attachments["garuda.png"] = File.read("#{Rails.root}/public/assets/images/garuda.png")
@@ -20,7 +20,7 @@ class UserMailer < ActionMailer::Base
   def passport_received_email(user)
     @url = "http://kbri.seoul.kr"
     @email = user.email
-    userpassport = Passport.where(owner_id: user.id).last
+    userpassport = Passport.where(user_id: user.id).last
     @ref_id = userpassport.ref_id
     @uid = user.id
     attachments["garuda.png"] = File.read("#{Rails.root}/public/assets/images/garuda.png")

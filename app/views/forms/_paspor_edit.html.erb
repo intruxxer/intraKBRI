@@ -28,7 +28,7 @@
 							<label class="select">
 								<%= f.input_field :status, 
 								collection: { 'Received' => 'Received', 'Paid' => 'Paid', 
-									'Necessary visa data is completed' => 'Verified', 'Application is rejected' => 'Rejected' 
+									'Verified' => 'Verified', 'Rejected' => 'Rejected', 'Revision' => 'Revision' 
 									} %>
 							<i></i>
 							</label>
@@ -82,21 +82,25 @@
 							<label class="select">
 								<%= f.input_field :application_reason, 
 								collection: { 'Paspor Habis (Masa Berlakunya)' => 'habis-masa', 'Paspor Habis (Halamannya)' => 'habis-halaman',
-								          	  'Paspor Hilang' => 'hilang', 'Lainnya' => 'lainnya' } %>
+								          	  'Paspor Hilang/Rusak' => 'hilang', 'Lainnya' => 'lainnya' } %>
 							<i></i>
 							</label>
 						</section>
 					</div>
+					
+					<% if current_user.has_role? :admin or current_user.has_role? :moderator %>
 					<div class="row" id="paspor_type" >
 						<section class="col col-6">
 							<label class="label">Jenis Paspor</label>
 							<label class="select">
 								<%= f.input_field :paspor_type, 
-								collection: { '24 Halaman' => '24', '48 Halaman' => '48' }, :selected => '24'  %>
+								collection: { '24 Halaman' => '24', '48 Halaman' => '48' }  %>
 							<i></i>
 							</label>
 						</section>
 					</div>
+					<% end %>
+					
 				</fieldset>
 				
 				<fieldset>
@@ -182,8 +186,10 @@
 						</section>
 					</div>					
 				</fieldset>
-				<% if @passport.application_type == 'perpanjang-paspor' %>	
-				<fieldset>
+				
+				<fieldset id="pasporsebelumnya" <% if @passport.application_reason == 'lainnya' %>
+													style="display:none;" 
+												<% end %>>
 					<h3>Detail Paspor Sebelumnya</h3>	
 					<hr /><br />
 					<div class="row">
@@ -232,7 +238,7 @@
 						
 					</div>
 				</fieldset>
-				<% end %>
+				
 				<fieldset>
 					<h3>Detail Pekerjaan</h3>	
 					<hr /><br />
@@ -873,6 +879,15 @@
 				$('textarea').keyup(function() {
 				    $(this).val($(this).val().toUpperCase());
 				});				
+				
+				$('#passport_application_reason').change(function(){
+					if($(this).val() == 'lainnya'){
+						$('#pasporsebelumnya').hide();						
+					}else{												
+						$('#pasporsebelumnya').show();
+					}
+				});	
+				
 				// Regular datepicker
 				$('.datePick').datepicker({
 					dateFormat: 'yy/mm/dd',

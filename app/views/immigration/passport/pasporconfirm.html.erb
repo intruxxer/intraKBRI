@@ -229,7 +229,12 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 	<tr>
 		<td></td>
 		<td class="container" bgcolor="#FFFFFF">
-
+			<p>Status permohonan anda saat ini adalah : <b><%= @passport.status %></b></p>
+			<% if @passport.status == 'Verified' %>				
+				<p>Jumlah Pembayaran yang harus anda bayarkan dapat dilihat di bagian bawah</p>
+			<% else %>
+				<p>Harap bersabar permohonan anda sedang diproses</p>
+			<% end %>
 			<div class="content">
 			<table>
 				<tr>
@@ -269,15 +274,15 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 						<br />
 						<br />
 						<hr /><br />
-						
+						<% if @passport.status == 'Verified' %>
 						<h6><b>Keterangan Pembayaran</b></h6>
 						<h2>$<%= @passport.passportfee %></h2>
-						<p style="text-align:justify;">Di bayarkan melalui <b>Bank KEB</b>. Indonesian Embassy at Seoul account <b>2391028301</b> dengan menggunakan slip pembayaran dengan mata uang Dollar. <b>Metode dan Jenis mata uang lain tidak akan diterima.</b></p>
+						<p style="text-align:justify;">Di bayarkan melalui <b>Bank KEB (외환은행)</b>. Indonesian Embassy in Seoul account <b>650-005012-179</b> dengan menggunakan <b>slip pembayaran dengan mata uang Dollar (Foreign Currency Deposit Slip / 외화예금전표 )</b>. Currency : <b>USD</b></p>
 						
 						<br />
 						<br />
 						<hr /><br />						
-						
+						<% end %>
 						<!-- A Real Hero (and a real human being) -->	
 						
 						<!-- Callout Panel -->
@@ -285,7 +290,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 						 Silahkan cek status permohonan anda melalui <a href="http://kbri.seoul.kr">http://kbri.seoul.kr</a> atau menghubungi Kantor Kedutaan Besar Republik Indonesia di Korea Selatan
 						</p><!-- /Callout Panel -->
 						
-						<center><h5>Terima Kasih sudah menggunakan sistem elektronik KBRI Seoul</h5></center>
+						<center><h5>Terima Kasih telah menggunakan sistem elektronik KBRI Seoul</h5></center>
 						
 					
 					</td>

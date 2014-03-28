@@ -10,7 +10,7 @@ class Passport
   field :ref_id,                 type: String
   field :application_type,       type: String
   field :application_reason,     type: String
-  field :paspor_type,            type: String
+  field :paspor_type,            type: String, default: 24
   
   field :full_name,              type: String
   field :kelamin,                type: String
@@ -57,6 +57,7 @@ class Passport
   
   field :passportfee,           type: Integer
   field :vipacounter,           type: Integer
+  field :comment,               type: String
   
   validates :application_type,   presence: true
   validates :application_reason, presence: true
@@ -67,11 +68,11 @@ class Passport
   validates :dateBirth,          presence: true
   validates :citizenship_status, presence: true
   
-  validates :lastPassportNo,     presence: true, length: { minimum: 0, maximum: 32 }, :if => :check_application_type
-  validates :placeIssued,        presence: true, length: { minimum: 0, maximum: 30 }, :if => :check_application_type
-  validates :dateIssued,         presence: true, :if => :check_application_type
-  validates :dateIssuedEnd,      presence: true, :if => :check_application_type
-  validates :immigrationOffice,  presence: true, :if => :check_application_type
+  validates :lastPassportNo,     presence: true, length: { minimum: 0, maximum: 32 }, :if => :check_application_reason
+  validates :placeIssued,        presence: true, length: { minimum: 0, maximum: 30 }, :if => :check_application_reason
+  validates :dateIssued,         presence: true, :if => :check_application_reason
+  validates :dateIssuedEnd,      presence: true, :if => :check_application_reason
+  validates :immigrationOffice,  presence: true, :if => :check_application_reason
   
   validates :jobStudyInKorea,    presence: true, length: { minimum: 1, maximum: 50 }
   validates :jobStudyTypeInKorea,presence: true
@@ -116,11 +117,17 @@ class Passport
     end
   end
   
-  def check_application_type
-    if self.application_type == 'perpanjang-paspor'
-      return true
-    else
+  def check_paid
+    if self.slip_photo.exists? and !self.payment_date.nil?
+      self.status = 'Paid'
+    end
+  end
+  
+  def check_application_reason
+    if self.application_reason == 'lainnya'
       return false
+    else
+      return true
     end     
   end
   

@@ -118,10 +118,11 @@ class DesktopController < ApplicationController
     aaData = Array.new    
     
     @passport.each do |passport|
-      deleteLink = "<a rel=\"nofollow\" data-method=\"delete\" href=\"/passports/" + passport.id + "\"><span class='glyphicon glyphicon-trash'></span><span class='glyphicon-class'>Delete</span></a>"
-      editLink = "<a href=\"/passports/" + passport.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update</span></a>"
+      #deleteLink = "<a rel=\"nofollow\" data-method=\"delete\" href=\"/passports/" + passport.id + "\"><span class='glyphicon glyphicon-trash'></span><span class='glyphicon-class'>Delete</span></a>"
+      editLink = "<a href=\"/passports/" + passport.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Edit</span></a>"
       printLink = "<a href=\"/admin/service/prep_spri/" + passport.id + "\" target=\"_blank\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SPRI</span></a>"
-      aaData.push([ passport.ref_id, passport.full_name, passport.status, editLink + "&nbsp;|&nbsp;" + deleteLink + "&nbsp;|&nbsp;" + printLink])                        
+      checkLink = "<a href=\"/passports/" + passport.id + "/check\"><span class='glyphicon glyphicon-eye-open'></span><span class='glyphicon-class'>Check</span></a>"
+      aaData.push([ passport.ref_id, passport.full_name, passport.status, checkLink + "&nbsp;|&nbsp;" + editLink + "&nbsp;|&nbsp;" + printLink])                        
     end
     
     respond_to do |format|

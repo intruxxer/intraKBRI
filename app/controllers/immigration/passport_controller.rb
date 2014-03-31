@@ -26,6 +26,11 @@ class Immigration::PassportController < ApplicationController
     render layout: "dashboard"    
   end
   
+  def payment
+    @passport = Passport.find(params[:id])
+  end
+  
+  
   #GET passport/:id
   def show
     @passport = Passport.find(params[:id])
@@ -90,6 +95,16 @@ class Immigration::PassportController < ApplicationController
     else
       @errors = @passport.errors.messages
       render 'edit'
+    end
+  end
+  
+  def update_payment 
+    @passport = Passport.find(params[:id])
+    if @passport.update(post_params)      
+      redirect_to :back, :notice => 'Data Pembayaran anda berhasil disimpan!'
+    else
+      @errors = @passport.errors.messages
+      render 'payment'
     end
   end
   

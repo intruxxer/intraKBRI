@@ -79,8 +79,7 @@
 	</div>
 <% end %>
 <% if user_signed_in? and current_user.citizenship then %>	
-		<div class="row">
-		<div class="col-md-9">
+		<div class="row">		
 								<!-- start: TABLE WITH IMAGES PANEL -->
 								<div class="panel panel-default">
 									<div class="panel-heading">
@@ -93,9 +92,11 @@
 											<thead>
 												<tr>																										
 													<th>No. Referensi</th>
-													<th><center>Tanggal</center></th>													
-													<th><center>Status</center></th>	
-													<th><center>Menu Pengubahan</center></th>
+													<th><center>Pengajuan</center></th>													
+													<th><center>Status</center></th>
+													<th><center>Pembayaran</center></th>
+													<th><center>Pengambilan</center></th>	
+													<th><center></center></th>
 													
 												</tr>
 											</thead>
@@ -103,28 +104,34 @@
 												<% @userpassport.each do |t| %>
 												<tr>													
 													<td align="left"><%= t.ref_id %></td>
-													<td class="center"><%= t.updated_at.strftime("%-d %b %y") %></td>	
-													<td class="center"><%= t.status %></td>													
+													<td class="center"><%= t.updated_at.strftime("%-d %b %Y") %></td>	
+													<td class="center"><%= t.status %></td>	
+													<td class="center"><%=  !(t.payment_date.nil?) ? t.payment_date.strftime("%-d %b %Y") : '-' %></td>
+													<td class="center""><%=  !(t.payment_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (t.payment_date+1).strftime("%-d %b %Y") + '</a>').html_safe : '-' %></td>												
 													<td class="center">
+													<% if t.status != 'Printed' %>	
 													<%= link_to (edit_passport_path(t.id)) do %>
 														<span class="glyphicon glyphicon-pencil"></span>
 														<span class="glyphicon-class">Perbaharui</span>
-													<% end %>
-													|&nbsp;
-													<%= link_to('passports/reapply/'+t.id) do %>
-														<span class="glyphicon glyphicon-export"></span>
-														<span class="glyphicon-class">Konfirmasi ke KBRI</span>
-														<% end %>
-													|&nbsp;
+													<% end %>													
+													|&nbsp;													
 													<%= link_to 'passports/'+t.id, :method=>'delete' do %>
 														<span class="glyphicon glyphicon-trash"></span>
-														<span class="glyphicon-class">Buang</span>
+														<span class="glyphicon-class">Batal</span>
 														<% end %>
 													|&nbsp;
+													<%= link_to 'passport/payment/' +t.id do %>
+														<span class="glyphicon glyphicon-credit-card"></span>
+														<span class="glyphicon-class">Pembayaran</span>
+														<% end %>													
+													|&nbsp;
+													<% end %>
 													<%= link_to 'passports/'+t.id+'.pdf', :target => "_blank" do %>
 														<span class="glyphicon glyphicon-save"></span>
-														<span class="glyphicon-class">Unduh</span>
-														<% end %>
+														<span class="glyphicon-class">Tanda Terima</span>
+													<% end %>			
+													
+													
 													</td>
 												</tr>												
 												<% end %>
@@ -135,29 +142,8 @@
 										<% end %>
 									</div>
 								</div>
-								<!-- end: TABLE WITH IMAGES PANEL -->
-		</div>
-		<div class="col-md-3">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4>Passport Payment History</h4>
-				</div>
-				<div class="panel-body">
-					<% if @userpassport.count > 0   %>
-					  <% i = 1; @userpassport.each do |h| %>
-					    <% if h.paspor_type == 24 then %>
-					      <div><%= i.to_s+". " +h.ref_id+' = USD 6' %></div>
-					    <% elsif h.paspor_type == 48  %>
-					      <div><%= i.to_s+". " +h.ref_id+' = USD 22' %></div>
-					    <% end %>
-					    <% i += 1 %>
-					  <% end %>
-					<% else   %>
-					    <div><%= 'Anda tidak mempunyai tagihan aplikasi paspor yang harus dibayar.' %></div>
-					<% end %>
-				</div>
-			</div>
-		</div>
+								<!-- end: TABLE WITH IMAGES PANEL -->		
+		
 		</div>
 <% end %>
 <% if user_signed_in? and current_user.citizenship then %>

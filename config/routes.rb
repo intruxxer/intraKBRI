@@ -79,6 +79,9 @@ EKbri::Application.routes.draw do
   get "dashboard/reference/list", :to => "reference#index"
   get "dashboard/reference/edit/:type/:id", :to => "reference#edit"
   
+  get "passport/payment/:id", :to => "immigration/passport#payment"
+  match "passport/payment/:id", to: "immigration/passport#update_payment", via: :patch, :as => :payment_proceed
+  
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

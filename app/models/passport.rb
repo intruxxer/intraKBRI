@@ -59,6 +59,8 @@ class Passport
   field :vipacounter,           type: Integer
   field :comment,               type: String
   
+  field :printed_date,          type: Date
+  
   validates :application_type,   presence: true
   validates :application_reason, presence: true
   validates :paspor_type,        presence: true
@@ -89,6 +91,8 @@ class Passport
   validates :kabupatenIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
   validates :kecamatanIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
   
+  validates :payment_date, presence: true, :if => :check_paid
+  
   has_mongoid_attached_file :photo, :styles => { :thumb => "90x120>" }
   validates_attachment_content_type :photo, :content_type => %w(image/jpeg image/jpg image/png)
   validates_attachment_presence :photo
@@ -97,6 +101,7 @@ class Passport
   has_mongoid_attached_file :slip_photo, :styles => { :thumb => "90x120>" }
   validates_attachment_content_type :slip_photo, :content_type => %w(image/jpeg image/jpg image/png application/pdf application/x-pdf)
   validates_attachment_size :slip_photo, less_than: 2.megabytes
+  validates_attachment_presence :slip_photo, :if => :check_paid
   
   has_mongoid_attached_file :supporting_doc
   validates_attachment_content_type :supporting_doc, :content_type => %w(application/zip application/x-rar-compressed application/octet-stream)
@@ -118,8 +123,8 @@ class Passport
   end
   
   def check_paid
-    if self.slip_photo.exists? and !self.payment_date.nil?
-      self.status = 'Paid'
+    if self.status == 'Paid'
+      return true
     end
   end
   

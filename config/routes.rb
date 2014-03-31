@@ -32,7 +32,7 @@ EKbri::Application.routes.draw do
   get "inforeports", :to => "immigration/report#info"
   get "marriage/info", :to => "immigration/marriage#info"
   
-  get "dashboard/index"
+  get "dashboard/index", as: :dashboard
   get "dashboard/counsel"
   get "dashboard/immigration"
   get "dashboard/immigration/:document" => "dashboard#immigration" 

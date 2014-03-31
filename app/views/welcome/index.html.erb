@@ -107,7 +107,7 @@
 													<td class="center"><%= t.updated_at.strftime("%-d %b %Y") %></td>	
 													<td class="center"><%= t.status %></td>	
 													<td class="center"><%=  !(t.payment_date.nil?) ? t.payment_date.strftime("%-d %b %Y") : '-' %></td>
-													<td class="center""><%=  !(t.payment_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (t.payment_date+1).strftime("%-d %b %Y") + '</a>').html_safe : '-' %></td>												
+													<td class="center""><%=  !(t.printed_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (t.printed_date+1).strftime("%-d %b %Y") + '</a>').html_safe : '-' %></td>												
 													<td class="center">
 													<% if t.status != 'Printed' %>	
 													<%= link_to (edit_passport_path(t.id)) do %>

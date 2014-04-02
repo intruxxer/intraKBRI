@@ -7,7 +7,7 @@ class Immigration::VisagroupController < ApplicationController
     if session[:add_people] then
       @add_people = true
       
-      @lastvisa = Visa.where(visa_type: 2, user_id: current_user).last
+      @lastvisa = Visa.where(visa_type: 3, user_id: current_user).last
       session[:current_ref_id] = @lastvisa.ref_id
       
       puts "Session add_people = True"
@@ -56,7 +56,8 @@ class Immigration::VisagroupController < ApplicationController
           if session[:add_people].nil? or session[:add_people].blank? or session[:add_people] == false
              session[:add_people] = true
           end
-          redirect_to :controller => 'visagroup', :action => 'index' 
+          flash[:notice] = 'Application saved successfully. You may add another person or end your application by clicking "Finish" '
+          redirect_to :controller => 'visagroup' , :action => 'index' 
       else        
         @errors = { 'Secret Code' => 'Wrong Code Entered'}
         render 'index'

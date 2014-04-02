@@ -32,6 +32,39 @@ class Immigration::VisaController < ApplicationController
     redirect_to root_path, :notice => "You have ended a recent group/family application under # #{app_ref}. Next application will be another group/family."
   end
   
+  def payment
+    @visas = Visa.where(:ref_id => params[:ref_id]).all
+    @visagrouppayment = Visagrouppayment.where(:ref_id => params[:ref_id]).all
+    
+    if @visagrouppayment.count > 0
+      @visagrouppayment = @visagrouppayment.first
+    else
+      @visagrouppayment = Visagrouppayment.new
+    end 
+  end
+  
+  def update_payment
+    @visas = Visa.where(params.require(:visagrouppayment).permit(:ref_id)).all 
+    @visagrouppayment = Visagrouppayment.new(params.require(:visagrouppayment).permit(:payment_date, :slip_photo, :ref_id))
+    if @visagrouppayment.upsert
+      Visa.where(params.require(:visagrouppayment).permit(:ref_id)).all.each do |row|
+        row.update(params.require(:visagrouppayment).permit(:status, :payment_date))
+      end
+      redirect_to :back, :notice => 'Payment Information Successfully saved!'
+    else
+      @errors = @visagrouppayment.errors.messages
+      render 'payment'
+    end       
+  end
+  
+  def show_receipt
+    
+    @visa = Visa.where(:ref_id => params[:ref_id]).all
+    
+    flash[:notice] = 'Your visa application is successfully received!'
+    render 'visaconfirm.html.erb'
+  end
+  
   def reapply
     redirect_to root_path, :notice => "You have successfully notified The Embassy staff #{params[:id]} to recheck your previously incomplete application."
   end

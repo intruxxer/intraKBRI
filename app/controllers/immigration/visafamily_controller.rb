@@ -107,7 +107,8 @@ class Immigration::VisafamilyController < ApplicationController
           if session[:add_people].nil? or session[:add_people].blank? or session[:add_people] == false
              session[:add_people] = true
           end
-          redirect_to :controller => 'visafamily', :action => 'index' 
+          flash[:notice] = 'Application saved successfully. You may add another person or end your application by clicking "Finish" '
+          redirect_to :controller => 'visafamily', :action => 'index'
       else        
         @errors = { 'Secret Code' => 'Wrong Code Entered'}
         render 'index'

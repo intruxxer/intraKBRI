@@ -41,6 +41,8 @@ class DesktopController < ApplicationController
     redirect_to '/dashboard/service/visa', msg
   end
   
+  
+  
   def show_all_sisari
     @visas = Visa.all   
     

@@ -20,11 +20,16 @@ class DashboardController < ApplicationController
       puts "rendering #{@document}"
     elsif params[:document] == "prep_spri" then
       
-      vipacounter = 3000
-      
+      vipacounter = 3000      
       
       @document = "dashboard/tospri_prep"
       @passport = Passport.find(params[:id])
+      
+    elsif params[:document] == "visa_group"
+      
+      
+       @document = "dashboard/service_visa_group"
+      
     else  
     
     end

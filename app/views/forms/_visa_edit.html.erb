@@ -1384,37 +1384,7 @@
 					<section class="col col-3">
 					<pre>(Signature & Full Name)</pre>
 					</section>				
-				</fieldset>
-				
-				
-				<fieldset style='background:#FFCC00;'>
-					<div class="row">
-						<section class="col col-6">
-							<label class="label"> Scanned/Photographed Payment Slip for Visa</label>
-							<label for="file" class="input input-file">
-								<div class="button">
-									<%= f.input_field :slip_photo, as: :file, class: 'fileplaceholder' %>Unggah</div>
-									<input type="text" readonly="readonly" />
-							</label>
-							<% if @visa.slip_photo.exists? %>
-												
-								<% if current_user.has_role? :admin or current_user.has_role? :moderator %>
-									<%= link_to 'Download Slip', @visa.slip_photo.url(:original, false), target: "_blank" %>
-								<%end%>
-											
-							<%end%>
-							<div class="note"><strong>Catatan:</strong> Hanya berkas gambar JPG/JPEG/PNG. Ukuran Maks. 2MB</div>
-						</section>	
-						<section class="col col-6">
-							<label class="label">Date of Visa Fee Payment</label>	
-							<label class="input">
-									<i class="icon-append icon-calendar"></i>
-									<%= f.input_field :payment_date, class: 'datePick' %>
-							</label>
-							<div class="note"><strong>Note:</strong> Format is DD/MM/YYYY. Example: 02/03/2014 is 02 March 2014.</div>
-						</section>		
-					</div>
-				</fieldset>
+				</fieldset>			
 				
 				<footer>
 					<button type="submit" class="button">Update Application</button>

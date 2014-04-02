@@ -82,6 +82,9 @@ EKbri::Application.routes.draw do
   get "passport/payment/:id", :to => "immigration/passport#payment"
   match "passport/payment/:id", to: "immigration/passport#update_payment", via: :patch, :as => :payment_proceed
   
+  get "visas/compile/:ref_id", :to => "immigration/visa#show_receipt"
+  get "visas/payment/:ref_id", :to => "immigration/visa#payment"
+  match "visas/payment/:ref_id", to: "immigration/visa#update_payment", via: :patch, :as => :visa_payment_proceed
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

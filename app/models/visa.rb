@@ -6,6 +6,7 @@ class Visa
   before_create :assign_visa_fee  #, :assign_visa_type
   belongs_to :user, :class_name => "User", :inverse_of => :visa
   
+  
   field :owner_id,               type: String
   field :ref_id,                 type: String
   field :application_type,       type: Integer 
@@ -72,6 +73,9 @@ class Visa
 
   field :is_sync,                type: Integer,     default: 0
   field :visafee,                type: Integer
+  
+  field :comment,                type: String
+  field :printed_date,           type: Date
   
   #validates :owner_id,               presence: true
   #validates :ref_id,                 presence: true

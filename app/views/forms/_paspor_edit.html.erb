@@ -35,36 +35,7 @@
 						</section>
 						<% end %>
 					</div>
-				</fieldset>			
-				
-				<fieldset style='background:#FFCC00;'>
-					<h4>Payment Confirmation</h4>
-					<div class="row">
-						<section class="col col-6">
-							<label class="label" style='background:#FFCC00;'> Scanned/Photographed Payment Slip for Visa</label>
-							<label for="file" class="input input-file">
-								<div class="button">
-									<%= f.input_field :slip_photo, as: :file, class: 'fileplaceholder' %>Unggah</div>
-									<input type="text" readonly="readonly" />
-							</label>
-							<% if @passport.slip_photo.exists? %>
-												
-								<% if current_user.has_role? :admin or current_user.has_role? :moderator %>
-									<%= link_to 'Download Slip', @passport.slip_photo.url(:original, false), target: "_blank" %>
-								<%end%>
-											
-							<%end%>
-							<div class="note"><strong>Catatan:</strong> Hanya berkas JPG/JPEG/PNG/PDF. Ukuran Maks. 2MB</div>
-						</section>	
-						<section class="col col-6">
-							<label class="label" style='background:#FFCC00;'>Date of Visa Fee Payment</label>	
-							<label class="input">
-									<i class="icon-append icon-calendar"></i>
-									<%= f.input_field :payment_date, class: 'datePick' %>
-							</label>
-						</section>		
-					</div>
-				</fieldset>
+				</fieldset>				
 				
 				<fieldset>
 					<div class="row">

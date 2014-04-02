@@ -52,6 +52,11 @@
 				</section>
 			<% end %>
 		</div>
+		<div class="row">
+			<section class="col col-6">
+				<%= link_to 'Check Actual Payment Receipt', visa_compile_path(@visa.ref_id), target: "_blank" %>
+			</section>
+		</div>
 	</fieldset>
 	<fieldset>
 		<% if @visa.photo.exists? %>

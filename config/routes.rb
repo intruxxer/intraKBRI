@@ -60,7 +60,7 @@ EKbri::Application.routes.draw do
   match "passport/tospri/:id", to: "desktop#exec_toSPRI", via: :post
   
   get "passports/:id/check", :to => "immigration/passport#check"
-  get "visa/:id/check", :to => "immigration/visa#check"
+  get "visas/:id/check", :to => "immigration/visa#check"
   
   get "protocol/synccloudtolocal/:collection", :to => "protocol#syncCollectionCloudtoLocal"
   get "protocol/syncdbcomplete", :to => "protocol#syncDBComplete"
@@ -83,7 +83,7 @@ EKbri::Application.routes.draw do
   get "passport/payment/:id", :to => "immigration/passport#payment"
   match "passport/payment/:id", to: "immigration/passport#update_payment", via: :patch, :as => :payment_proceed
   
-  get "visas/compile/:ref_id", :to => "immigration/visa#show_receipt"
+  get "visas/compile/:ref_id", :to => "immigration/visa#show_receipt", :as => :visa_compile
   get "visas/payment/:ref_id", :to => "immigration/visa#payment"
   match "visas/payment/:ref_id", to: "immigration/visa#update_payment", via: :patch, :as => :visa_payment_proceed
   

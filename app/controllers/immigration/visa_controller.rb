@@ -29,7 +29,13 @@ class Immigration::VisaController < ApplicationController
     app_ref = session[:current_ref_id]
     session[:current_ref_id]  = nil
     session[:add_people] = nil
-    redirect_to root_path, :notice => "You have ended a recent group/family application under # #{app_ref}. Next application will be another group/family."
+    
+    @visa = Visa.where(:ref_id => @visa[0].ref_id)
+          
+    flash[:notice] = 'You have ended a recent group/family application under # #{app_ref}. Next application will be another group/family.'
+    render 'visaconfirm.html.erb'
+    
+  #  redirect_to root_path, :notice => "You have ended a recent group/family application under # #{app_ref}. Next application will be another group/family."
   end
   
   def payment
@@ -59,9 +65,8 @@ class Immigration::VisaController < ApplicationController
   
   def show_receipt
     
-    @visa = Visa.where(:ref_id => params[:ref_id]).all
+    @visa = Visa.where(:ref_id => params[:ref_id]).all    
     
-    flash[:notice] = 'Your visa application is successfully received!'
     render 'visaconfirm.html.erb'
   end
   
@@ -94,9 +99,12 @@ class Immigration::VisaController < ApplicationController
           current_user.visas.push(@visa[0])   
           current_user.save
           UserMailer.visa_received_email(current_user).deliver
-          #flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
-          #render 'pasporconfirm.html.erb'
-          redirect_to root_path, :notice => "Your visa application is successfully received!"
+          
+          @visa = Visa.where(:ref_id => @visa[0].ref_id)
+          
+          flash[:notice] = 'Application Saved successfully!'
+          render 'visaconfirm.html.erb'
+          #redirect_to root_path, :notice => "Your visa application is successfully received!"
       else        
         
         
@@ -134,7 +142,12 @@ class Immigration::VisaController < ApplicationController
     #@visa = Visa.find_by(user_id: params[:id])
     @visa = Visa.find(params[:id])
     if @visa.update(post_params)
-      redirect_to root_path, :notice => 'You have updated your visa application data!'
+      
+      if current_user.has_role? :admin or current_user.has_role? :moderator
+        UserMailer.admin_update_visa_email(@visa).deliver
+      end
+      
+      redirect_to :back, :notice => 'You have updated your visa application data!'
     else
       @errors = @visa.errors.messages
       render 'edit'
@@ -169,7 +182,7 @@ class Immigration::VisaController < ApplicationController
       :sponsor_phone_id, :duration_stays, :duration_stays_unit, :num_entry, :checkbox_1, :checkbox_2, :checkbox_3, 
       :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry, :purpose, 
       :passport, :idcard, :photo, :status, :status_code, :slip_photo, :payment_date, :ticket, :supdoc, :ref_id,
-      :approval_no).merge(visa_type: 1)
+      :approval_no, :visafee_ref).merge(visa_type: 1)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

@@ -60,6 +60,7 @@ EKbri::Application.routes.draw do
   match "passport/tospri/:id", to: "desktop#exec_toSPRI", via: :post
   
   get "passports/:id/check", :to => "immigration/passport#check"
+  get "visa/:id/check", :to => "immigration/visa#check"
   
   get "protocol/synccloudtolocal/:collection", :to => "protocol#syncCollectionCloudtoLocal"
   get "protocol/syncdbcomplete", :to => "protocol#syncDBComplete"

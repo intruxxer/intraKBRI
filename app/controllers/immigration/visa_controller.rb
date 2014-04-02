@@ -74,6 +74,11 @@ class Immigration::VisaController < ApplicationController
   
   end
 
+  def check
+    @visa = Visa.find(params[:id])
+    render layout: "dashboard"
+  end
+
   #POST /visa
   def create
     

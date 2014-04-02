@@ -21,23 +21,30 @@
 	<fieldset>
 		<div class="row">			
 			<section class="col col-6">
-				Jenis Aplikasi : <b><%= @passport.application_type %> </b> , Alasan :  <b><%= @passport.application_reason %></b>
+				No Ref.		   :<b> <%= @visa.ref_id %></b> <br />
+				Jenis Aplikasi : <b><%= @visa.application_type %> </b> , Alasan :  <b><%= @visa.reason %></b>
 			</section>
-			<section class="col col-3"></section>
+			<section class="col col-3">
+				Requested Visa 	 : <b><%= @visa.category_type %></b><br />
+				Duration of Stay : <%= @visa.duration_stays %> <%= @visa.duration_stays_unit %><br />
+				Entry type  	 : <%= @visa.num_entry %>
+			</section>
 			<section class="col col-3" style="background:#FFFFCC;">
-				Current Status : <b><%= @passport.status %></b>
+				Current Status : <b><%= @visa.status %></b>
 			</section>
 		</div>
 	</fieldset>
 	<fieldset style="background:#FFCC66;">
-		<div class="row">			
-			<% if @passport.slip_photo.exists? %>
+		<div class="row">
+			<%= (Visa.where(:ref_id => @visa.ref_id).all.count > 1)?'Group/Family':'Individual' %> Application			
+			<%  @vg = Visagrouppayment.where(:ref_id => @visa.ref_id).all
+				if @vg.count > 1 %>
 				<section class="col col-6">
 					Status Pembayaran : <b>Sudah dibayar</b><br />
-					<%= link_to 'Download Slip Pembayaran', @passport.slip_photo.url(:original, false), target: "_blank" %>
+					<%= link_to 'Download Slip Pembayaran', @vg.slip_photo.url(:original, false), target: "_blank" %>
 				</section>
 				<section class="col col-6">
-					Tanggal Pembayaran : <b><%= @passport.payment_date %></b>
+					Tanggal Pembayaran : <b><%= @vg.payment_date %></b>
 				</section>
 			<% else %>
 				<section class="col col-6">
@@ -47,11 +54,11 @@
 		</div>
 	</fieldset>
 	<fieldset>
-		<% if @passport.photo.exists? %>
+		<% if @visa.photo.exists? %>
 		<div class="row" style="float:left;">	
 				<section class="col col-1" style="padding:8px;">
-					<%= image_tag @passport.photo.url(), width: '140'  %>
-					<%= link_to 'Download', @passport.photo.url(:original, false), target: "_blank" %>					
+					<%= image_tag @visa.photo.url(), width: '140'  %>
+					<%= link_to 'Download', @visa.photo.url(:original, false), target: "_blank" %>					
 				</section>				
 		</div>
 		<%end%>	
@@ -59,194 +66,244 @@
 			<section class="col col-4">
 				<label class="label">Nama Lengkap</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.full_name %>							
+					<%= @visa.first_name %>, <%= @visa.last_name %>							
 				</label>
 			</section>
 			<section class="col col-4">
 				<label class="label">Jenis Kelamin</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.kelamin %>							
+					<%= @visa.sex %>							
 				</label>
 			</section>		
 			<section class="col col-4">
-				<label class="label">Kewarganegaraan</label>
+				<label class="label">Marital Status</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.citizenship_status %>							
+					<%= @visa.marital_status %>							
 				</label>
 			</section>	
 			<section class="col col-4">
 				<label class="label">Tanggal Lahir</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.dateBirth %>							
+					<%= @visa.dateBirth %>							
 				</label>
 			</section>
 			<section class="col col-4">
 				<label class="label">Tempat Lahir</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.placeBirth %>							
+					<%= @visa.placeBirth %>							
 				</label>
 			</section>
 			<section class="col col-4">
-				<label class="label">Tinggi Badan</label>
+				<label class="label">Nationality</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.height %> Cm							
+					<%= @visa.nationality %>							
 				</label>
-			</section>		
+			</section>	
+				
 		</div>
 		<div style="clear:both"></div>
 		<div class="row">
 			<section class="col col-2">
-				<label class="label">Nomor Alien Card</label>
+				<label class="label"> Alien Card</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.arc %>						
+					<%= image_tag @visa.idcard.url(), width: '140'  %>
+					<%= link_to 'Download', @visa.idcard.url(:original, false), target: "_blank" %>						
 				</label>
 			</section>
 			<section class="col col-2">
-				<label class="label">Pekerjaan</label>
+				<label class="label">Passport</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.jobStudyInKorea %>							
+					<%= image_tag @visa.passport.url(), width: '140'  %>
+					<%= link_to 'Download', @visa.passport.url(:original, false), target: "_blank" %>							
 				</label>
 			</section>
 			<section class="col col-3">
-				<label class="label">Keterangan Pekerjaan</label>
+				<label class="label">Passport No.</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.jobStudyTypeInKorea %>							
+					<%= @visa.passport_no %>							
 				</label>
 			</section>
 			<section class="col col-3">
-				<label class="label">Nama Perusahaan/Instansi</label>
+				<label class="label">Place of Issue</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.jobStudyOrganization %>							
+					<%= @visa.passport_issued%>							
+				</label>
+			</section>
+			<section class="col col-3">
+				<label class="label">Type of Passport</label>
+				<label class="label" style="font-weight:bold;">
+					<%= @visa.passport_type %>							
 				</label>
 			</section>
 		</div>
 		<div class="row">
-			<section class="col col-4"></section>
 			<section class="col col-3">
-				<label class="label">Alamat Perusahaan/Instansi</label>
+				<label class="label">Date of Issuance</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.jobStudyAddress %>							
+					<%= @visa.passport_date_issued %>							
+				</label>
+			</section>
+			<section class="col col-3">
+				<label class="label">Date of Expiry</label>
+				<label class="label" style="font-weight:bold;">
+					<%= @visa.passport_date_expired %>							
 				</label>
 			</section>
 		</div>	
-	</fieldset>
+	</fieldset>	
 	
-	<% if @passport.application_reason != 'lainnya' %>
 	<fieldset>
-		<h3>Detail Passport Sebelumnya</h3>
+		<h3>Sponsor/Reference Information</h3>
 		<hr /><br />
 		<div class="row">
 			<section class="col col-3">
-				<label class="label">Nomor Passport</label>
+				<label class="label">Type of Sponsor in Korea</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.lastPassportNo %>							
+					<%= @visa.sponsor_type_kr%>							
 				</label>
 			</section>
 			<section class="col col-3">
-				<label class="label">Tanggal dikeluarkan</label>
+				<label class="label">Name of Reference in Korea</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.dateIssued %>							
+					<%= @visa.sponsor_name_kr %>							
 				</label>
 			</section>			
 			<section class="col col-3">
-				<label class="label">Tanggal Habis Berlaku</label>
+				<label class="label">Phone No in Korea</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.dateIssuedEnd %>							
+					<%= @visa.sponsor_phone_kr %>							
 				</label>
 			</section>
 			<section class="col col-3">
-				<label class="label">Tempat dikeluarkan</label>
+				<label class="label">Reference's Address in Korea</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.placeIssued %>							
+					<%= @visa.sponsor_address_kr %> <%= @visa.sponsor_address_city_kr %> <%= @visa.sponsor_address_prov_kr %>							
 				</label>
 			</section>
 		</div>
 		<div class="row">
-			<section class="col col-6"></section>
-			<section class="col col-3"></section>
 			<section class="col col-3">
-				<label class="label">Kantor Imigrasi</label>
+				<label class="label">Type of Sponsor in Korea</label>
 				<label class="label" style="font-weight:bold;">
-					<%= @passport.immigrationOffice %>							
+					<%= @visa.sponsor_type_id %>							
+				</label>
+			</section>
+			<section class="col col-3">
+				<label class="label">Name of Reference in Korea</label>
+				<label class="label" style="font-weight:bold;">
+					<%= @visa.sponsor_name_id %>							
+				</label>
+			</section>			
+			<section class="col col-3">
+				<label class="label">Phone No in Korea</label>
+				<label class="label" style="font-weight:bold;">
+					<%= @visa.sponsor_phone_id %>							
+				</label>
+			</section>
+			<section class="col col-3">
+				<label class="label">Reference's Address in Korea</label>
+				<label class="label" style="font-weight:bold;">
+					<%= @visa.sponsor_address_id %> <%= @visa.sponsor_address_kab_id %> <%= @visa.sponsor_address_prov_id %>							
 				</label>
 			</section>
 		</div>
 	</fieldset>	
-	<% end %>
 	
 	<fieldset>
-		<h3>Keterangan di Indonesia</h3>
-		<hr /><br />
 		<div class="row">
 			<section class="col col-6">
-				<label class="label">Alamat Indonesia</label>
-				<label class="label" style="font-weight:bold;">
-					<%= @passport.addressIndonesia %>							
-				</label>
+			<div class="inline-group">
+			<label class="label">Other Information</label>
+			<label class="checkbox"><input type="checkbox" onclick="return false" <%= (@visa.checkbox_1)?'checked':'' %> ><i></i>Have you ever been to Indonesia before?</label>
+			<label class="checkbox"><input type="checkbox" onclick="return false" <%= (@visa.checkbox_2)?'checked':'' %> ><i></i>Have you ever been convicted in other country?</label>
+			<label class="checkbox"><input type="checkbox" onclick="return false" <%= (@visa.checkbox_3)?'checked':'' %> ><i></i>Are you in posession of any other country?</label>
+			<label class="checkbox"><input type="checkbox" onclick="return false" <%= (@visa.checkbox_4)?'checked':'' %> ><i></i>Do you have previous visa to enter Indonesia?</label>
+			</div>
 			</section>
-			<section class="col col-3">
-				<label class="label">Kelurahan</label>
-				<label class="label" style="font-weight:bold;">
-					<%= @passport.kelurahanIndonesia %>							
-				</label>
+			<section class="col col-6">
+			<div class="inline-group">
+			<label class="label">&nbsp;</label>
+			<label class="checkbox"><input type="checkbox" onclick="return false" <%= (@visa.checkbox_5)?'checked':'' %> ><i></i>Has your visa application been refused before?</label>
+			<label class="checkbox"><input type="checkbox" onclick="return false" <%= (@visa.checkbox_6)?'checked':'' %> ><i></i>Have you ever been deported from Indonesia before?</label>
+			<label class="checkbox"><input type="checkbox" onclick="return false" <%= (@visa.checkbox_7)?'checked':'' %> ><i></i>Have you ever committed crime or any offense?</label>
+			</div>
 			</section>
-			<section class="col col-3">
-				<label class="label">Kabupaten</label>
-				<label class="label" style="font-weight:bold;">
-					<%= @passport.kabupatenIndonesia %>							
-				</label>
-			</section>
-		</div>
-		<div class="row">
-			<section class="col col-3">
-				<label class="label">No. Telepon</label>
-				<label class="label" style="font-weight:bold;">
-					<%= @passport.phoneIndonesia %>							
-				</label>
-			</section>
-			<section class="col col-3"></section>
-			<section class="col col-3">
-				<label class="label">Kecamatan</label>
-				<label class="label" style="font-weight:bold;">
-					<%= @passport.kecamatanIndonesia %>							
-				</label>
-			</section>
-			<section class="col col-3">
-				<label class="label">Propinsi</label>
-				<label class="label" style="font-weight:bold;">
-					<%= @passport.sponsor_address_prov_id %>							
-				</label>
-			</section>		
 		</div>
 	</fieldset>
 	
 	<fieldset>
-		<section class="col col-9">
-				<label class="label">Dokumen Pendukung</label>
-				<label class="label" style="font-weight:bold;">
-					<% if @passport.supporting_doc.exists? %>
-						<%= link_to @passport.supporting_doc_file_name, @passport.supporting_doc.url(:original, false) %>
-					<% else %>
-						<i style="color:orange;">Dokumen Pendukung Tidak Ditemukan</i>
-					<% end %>							
-				</label>
+		<div class="row">
+			<section class="col col-9">
+					<label class="label">Dokumen Pendukung</label>
+					<label class="label" style="font-weight:bold;">
+						<% if @visa.supdoc.exists? %>
+							<%= link_to @visa.supdoc_file_name, @visa.supdoc.url(:original, false) %>
+						<% else %>
+							<i style="color:orange;">Dokumen Pendukung Tidak Ditemukan</i>
+						<% end %>							
+					</label>
 			</section>
+		</div>
+		<div class="row">
+			<section class="col col-9">
+					<label class="label">Return Trip Ticket</label>
+					<label class="label" style="font-weight:bold;">
+						<% if @visa.ticket.exists? %>
+							<%= link_to 'Download Return Ticket', @visa.ticket.url(:original, false) %>
+						<% else %>
+							<i style="color:orange;">Return Trip Ticket Tidak di Temukan</i>
+						<% end %>							
+					</label>
+			</section>
+		</div>
+		
+		<div class="row">
+		  <section class="col col-3">
+			<label class="label">Country of Destination</label>
+			<label class="input">
+				<%= @visa.count_dest %>				
+			</label>			
+		  </section>
+		  
+		  <section class="col col-2">
+		    <label class="label">Flight/Vessel Name</label>
+			<label class="input">
+				<%= @visa.flight_vessel %>				
+			</label>
+		  </section>
+		  
+		  <section class="col col-4">
+			<label class="label">Date of Entry to Indonesia</label>
+			<label class="input">
+				<%= @visa.date_entry %>	
+			</label>
+		  </section>
+		  
+		  <section class="col col-4">
+			<label class="label">Immigration Approval No.</label>
+			<label class="input">
+				<%= @visa.approval_no %>	
+			</label>
+		  </section>	  
+		  
+		</div>
+				
 	</fieldset>
 	<footer>
 		<h3>Actions</h3>
 		<br />
-		<%= simple_form_for @passport, url: passport_path(@passport), :method => :patch, :html => { :class => "sky-form", :multipart => true } do |f| %>
+		<%= simple_form_for @visa, url: visa_path(@visa), :method => :patch, :html => { :class => "sky-form", :multipart => true } do |f| %>
 				
 				<div class="inline-group" style="padding:4px;">
 				    <section class="col col-9">
-				   		<label class="label" style="width:auto;background:inherit">Jenis Passport</label>
+				   		<label class="label" style="width:auto;background:inherit">Assigned Visa</label>
 						<label class="select" style="width:200px;">
-								<%= f.input_field :paspor_type, 
-								collection: { '24 Halaman' => '24', '48 Halaman' => '48' }  %>
+								<%= f.input_field :visafee_ref, collection: Visafee.all, value_method: :_id, label_method: :name_of_visa %>
 							<i></i>
 							</label>
 				    </section>
 			   </div>
+			   
 				<div class="inline-group" style="padding:4px;">		
 				<section class="col col-9">					
 				<label class="label" style="width:auto;background:inherit">Status</label>  							  	
@@ -258,7 +315,7 @@
 		        </div>	
 		       
 		       
-		       <div id="commentcontainer" class="inline-group" style="padding:4px;<% if @passport.status != 'Revision' %>display:none;<% end %>"  >
+		       <div id="commentcontainer" class="inline-group" style="padding:4px;<% if @visa.status != 'Revision' %>display:none;<% end %>"  >
 				    <section class="col col-9">
 				   		<label class="label" style="width:auto;background:inherit">Comment</label>
 						<label class="select" style="width:200px;">
@@ -268,7 +325,7 @@
 			   </div>
 							  
 		  	
-		<a href="/admin/service/prep_spri/<%= @passport.id %>" ><button type="button" class="button" style="background-color:#009933">Insert to SPRI</button></a> 
+		<a href="/visa/tosisari/<%= @visa.id %>" ><button type="button" class="button" style="background-color:#009933">Insert to SISARI</button></a> 
 		<button type="submit" class="button">Simpan</button>
 		<button type="button" class="button button-secondary" onclick="window.history.back();">Kembali</button>
 		
@@ -279,7 +336,7 @@
 <script type="text/javascript">
 			$(function()
 			{					
-				$("input[name='passport[status]']").change(function(){
+				$("input[name='visa[status]']").change(function(){
 					if($(this).val() == 'Revision'){
 						$('#commentcontainer').show();						
 					}else{												

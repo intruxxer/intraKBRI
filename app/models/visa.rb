@@ -73,6 +73,7 @@ class Visa
 
   field :is_sync,                type: Integer,     default: 0
   field :visafee,                type: Integer
+  field :visafee_ref,            type: String
   
   field :comment,                type: String
   field :printed_date,           type: Date
@@ -117,6 +118,7 @@ class Visa
   validates :duration_stays_unit,    presence: true 
 
   validates :num_entry,              presence: true
+  validates :visafee_ref,            presence: true, :if => :check_verified
   
   #validates :checkbox_1,             presence: true
   #validates :checkbox_2,             presence: true
@@ -162,6 +164,13 @@ class Visa
   validates_attachment_size :slip_photo, less_than: 2.megabytes
   
   private
+  def check_verified
+    if self.status = 'Verified'
+      return true
+    else
+      return false
+    end
+  end
   def assign_ref_id
     self.ref_id = generate_string(3)+"-"+Random.new.rand(10**4..10**10).to_s
   end

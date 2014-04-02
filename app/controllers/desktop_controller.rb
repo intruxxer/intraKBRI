@@ -62,9 +62,15 @@ class DesktopController < ApplicationController
     aaData = Array.new    
     
     @visas.each do |visa|
-      editLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update Application</span></a>"
-      printLink = "<a href=\"/visa/tosisari/" + visa.id + "\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
-      aaData.push([ visa.ref_id, visa.first_name + " " + visa.last_name , visa.status, editLink + "&nbsp;|&nbsp;" + printLink])                        
+      editLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update</span></a>"
+      checkLink = "<a href=\"/visa/" + visa.id + "/check\"><span class='glyphicon glyphicon-eye-open'></span><span class='glyphicon-class'>Check</span></a>"
+      #printLink = "<a href=\"/visa/tosisari/" + visa.id + "\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
+      
+      paymentdate = !(visa.payment_date.nil?) ? visa.payment_date.strftime("%-d %b %Y") : '-'
+      retrievedate = !(visa.printed_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (visa.printed_date+3).strftime("%-d %b %Y") + '</a>').html_safe : '-'
+      
+      
+      aaData.push([ visa.ref_id, visa.first_name + " " + visa.last_name , visa.status, paymentdate, retrievedate, checkLink + "&nbsp;|&nbsp;" + editLink])                        
     end
     
     respond_to do |format|

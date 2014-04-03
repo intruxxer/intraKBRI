@@ -11,5 +11,4 @@ ref = Reference.new(
   treasurer_name: 'Damayanti',
   embassy_location: 'Seoul'  
 )
-ref.skip_confirmation!
 ref.save!

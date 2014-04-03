@@ -3,7 +3,7 @@ class Visa
   include Mongoid::Timestamps
   include Mongoid::Paperclip
   
-  before_create :assign_visa_fee  #, :assign_visa_type
+  #before_create :assign_visa_fee  #, :assign_visa_type
   belongs_to :user, :class_name => "User", :inverse_of => :visa
   
   
@@ -165,7 +165,7 @@ class Visa
   
   private
   def check_verified
-    if self.status = 'Verified'
+    if self.status == 'Verified'
       return true
     else
       return false

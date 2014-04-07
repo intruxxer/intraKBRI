@@ -48,6 +48,7 @@
 				</section>
 				<section class="col col-6">
 					Pickup Location : <b><%= @vg.pickup_office %></b>
+					Pickup Date		: <b><%= @visa.pickup_date %></b>
 				</section>
 			<% else %>
 				<section class="col col-6">
@@ -333,7 +334,7 @@
 			   </div>
 							  
 		  	
-		<a href="/visa/tosisari/<%= @visa.id %>" ><button type="button" class="button" style="background-color:#009933">Insert to SISARI</button></a> 
+		<a href="/admin/service/prep_visa/<%= @visa.id %>" ><button type="button" class="button" style="background-color:#009933">Insert to SISARI</button></a> 
 		<button type="submit" class="button">Simpan</button>
 		<button type="button" class="button button-secondary" onclick="window.history.back();">Kembali</button>
 		

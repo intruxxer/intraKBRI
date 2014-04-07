@@ -25,6 +25,11 @@ class DashboardController < ApplicationController
       @document = "dashboard/tospri_prep"
       @passport = Passport.find(params[:id])
       
+    elsif params[:document] == "prep_visa" then
+      
+      @document = "dashboard/tosisari_prep"
+      @visa = Visa.find(params[:id])
+      
     elsif params[:document] == "visa_group"
       
       

@@ -3,7 +3,7 @@ class Visa
   include Mongoid::Timestamps
   include Mongoid::Paperclip
   
-  #before_create :assign_visa_fee  #, :assign_visa_type
+  before_create :set_vipacounter #:assign_visa_fee  #, :assign_visa_type
   belongs_to :user, :class_name => "User", :inverse_of => :visa
   
   
@@ -78,6 +78,7 @@ class Visa
   field :comment,                type: String
   field :printed_date,           type: Date
   field :pickup_office,          type: String, default: 'seoul'
+  field :pickup_date,            type: Date
   
   validates :pickup_office,         presence: true, :if => :check_paid
   
@@ -167,6 +168,17 @@ class Visa
   validates_attachment_size :slip_photo, less_than: 2.megabytes
   
   private
+  def set_vipacounter
+    if Visa.count > 0
+      begin
+        self.vipa_no = Visa.max(:vipa_no) + 1
+      rescue
+        self.vipa_no = 5850
+      end      
+    else
+      self.vipa_no = 5850
+    end
+  end
   def check_verified
     if self.status == 'Verified'
       return true

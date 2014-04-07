@@ -16,28 +16,26 @@
 								<li>
 									<%= link_to "#" do %>
 										<i class="fa fa-check-square"></i> 
-										Imigrasi <i class="icon-arrow"></i>
+										Keimigrasian <i class="icon-arrow"></i>
 									<% end %>
 									<ul class="sub-menu">
 										<li>
-											<%= link_to "#" do %>
+											<%= link_to '/dashboard/service/passport' do %>
 												<i class="fa fa-book"></i>
-												Dokumen Travel<i class="icon-arrow"></i>
+												Paspor
 											<% end %>
-											<ul class="sub-menu">
-												<li>
-													<%= link_to '/dashboard/service/passport' do %>
-														<i class="fa fa-book"></i>
-														Paspor
-													<% end %>
-												</li>												
-											</ul>
+										</li>												
+										<li>
+											<%= link_to '/dashboard/service/visa' do %>
+												<i class="fa fa-briefcase"></i> Visa
+											<% end %>
 										</li>
 										<li>
 											<%= link_to '/dashboard/service/visa' do %>
-												<i class="fa fa-file-text-o"></i> Visa
+												<i class="fa fa-plane"></i> Lapor Diri
 											<% end %>
 										</li>
+										
 																					
 									</ul>
 								</li>								

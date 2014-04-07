@@ -61,6 +61,7 @@ class Passport
   
   field :printed_date,          type: Date
   field :pickup_office,         type: String, default: 'seoul'
+  field :pickup_date,           type: Date
   
   validates :application_type,   presence: true
   validates :application_reason, presence: true
@@ -113,7 +114,7 @@ class Passport
   
   private
   def set_vipacounter
-    if Passport.count > 1
+    if Passport.count > 0
       begin
         self.vipacounter = Passport.max(:vipacounter) + 1
       rescue

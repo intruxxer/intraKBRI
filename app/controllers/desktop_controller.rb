@@ -6,6 +6,13 @@ class DesktopController < ApplicationController
   def exec_toSisari
     @visa = Visa.find(params[:id])
     
+     params.require(:visa).permit(:pickup_date)
+     
+     nextCounter = @@SISARICOUNTER + 1
+    
+      unless @visa.vipa_no.nil?
+        nextCounter = @visa.vipa_no    
+      end
     
     if @visa.passport_type == 3 || @visa.category_type == 'diplomatic'
       folderloc = TARGET_SISARI_DIPLOMATIK_FOLDER + 'Visa_diplomatik.mdb'
@@ -20,18 +27,15 @@ class DesktopController < ApplicationController
     db = Accessdb.new( folderloc )
     db.open('imigrasiRI')    
     
-    nextCounter = @@SISARICOUNTER + 1
-    
-    unless @visa.vipa_no.nil?
-      nextCounter = @visa.vipa_no    
-    end    
+        
              
     begin
+      
+      
       db.execute(query)   
       
-      @visa.update_attributes({:status => 'Printed', :vipa_no => nextCounter})
+      @visa.update_attributes({:status => 'Printed', :vipa_no => nextCounter, :printed_Date => Time.now, :pickup_date => params[:visa][:pickup_date]})       
        
-       @visa.update(:printed_date => Time.now)
        
        msg = { :notice => 'Data berhasil dipindahkan' }
     rescue 
@@ -84,7 +88,7 @@ class DesktopController < ApplicationController
   def exec_toSPRI
     @passport = Passport.find(params[:id])
     
-    params.require(:passport).permit(:passport_no,:reg_no,:lapordiri_no)
+    params.require(:passport).permit(:passport_no,:reg_no,:lapordiri_no,:pickup_date)
     
     db = Accessdb.new( TARGET_SPRI_FOLDER + 'SPRI3.mdb' )
     db.open()    
@@ -94,9 +98,7 @@ class DesktopController < ApplicationController
     begin
       db.execute("INSERT INTO tblData(noFile, pekerjaan, alasanBuat, sponsorLuar, negaraLuar, alamatLuar, kotaLuar, telpLuar, telpDalam, alamatDalam, kelurahan, kabupaten, kecamatan, noPass, noReg, tglKeluar, tglExpire, namaLkP, tmpLahir, tglLahir, jmlHal, noLama, tglKeluarLama, tmpKeluarLama, idCode, KantorPerwakilan, jnsKel, statusWN, namaKlrg) 
         VALUES('" + params[:passport][:lapordiri_no] + "','" + @passport.jobStudyAddress + "','" + @passport.application_reason + "','" +  @passport.jobStudyOrganization.to_s + "','KOREA SELATAN','" +  @passport.addressKorea.to_s + "','" +  @passport.cityKorea.to_s + "','" +  @passport.phoneKorea.to_s + "','" +  @passport.phoneIndonesia.to_s + "','" +  @passport.addressIndonesia.to_s + "','" +  @passport.kelurahanIndonesia.to_s + "','" +  @passport.kabupatenIndonesia.to_s + "','" +  @passport.kecamatanIndonesia.to_s + "','" + params[:passport][:passport_no] + "','" + params[:passport][:reg_no] + "','" + Time.new.year.to_s + "/" + Time.new.month.to_s + "/" + Time.new.day.to_s + "','" + (Time.new.year + 5).to_s + "/" + Time.new.month.to_s + "/" + Time.new.day.to_s + "','" + @passport.full_name + "','" + @passport.placeBirth + "','" + @passport.dateBirth.to_s + "','" +  @passport.paspor_type.to_s + "','" + @passport.lastPassportNo + "','" + @passport.dateIssued.to_s + "','" + @passport.placeIssued + "','37A','KBRI SEOUL', '" +  @passport.kelamin.to_s + "', '" +  @passport.citizenship_status.to_s + "','')")
-      @passport.update_attributes({ :status => 'Printed', :passport_no => params[:passport][:passport_no], :reg_no => params[:passport][:reg_no]})
-      
-      @passport.update(:printed_date => Time.now)
+      @passport.update_attributes({ :status => 'Printed', :passport_no => params[:passport][:passport_no], :reg_no => params[:passport][:reg_no],:printed_date => Time.now, :pickup_date => params[:passport][:pickup_date]})      
        
       msg = { :notice => 'Data berhasil dipindahkan' }  
         

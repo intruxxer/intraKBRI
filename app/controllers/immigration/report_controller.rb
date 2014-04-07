@@ -12,15 +12,24 @@ class Immigration::ReportController < ApplicationController
   
   def create		
    @report =  Report.new(post_params)
-	 current_user.reports = @report
-	 if current_user.save
-	    respond_to do |format|
-        format.html { redirect_to root_path, :notice => "Data Lapor Diri Anda Berhasil Disimpan" }        
+	 
+	 
+	 if @report.valid?
+	   if simple_captcha.valid?
+	     current_user.reports = @report
+	     current_user.save
+	     respond_to do |format|
+          format.html { redirect_to root_path, :notice => "Data Lapor Diri Anda Berhasil Disimpan" }        
+       end            
+      else        
+        @errors = { 'Secret Code' => 'Wrong Code Entered'}
+        render 'index'
       end
-   else      
-      @errors = @report.errors.messages
+	 else
+	   @errors = @report.errors.messages
       render 'index'
-	 end	 	 
+	 end	 
+	 	 	 
   end
   
   #PATCH, PUT /report/:id

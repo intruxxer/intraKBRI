@@ -60,6 +60,7 @@ class Passport
   field :comment,               type: String
   
   field :printed_date,          type: Date
+  field :pickup_office,         type: String, default: 'seoul'
   
   validates :application_type,   presence: true
   validates :application_reason, presence: true
@@ -92,6 +93,7 @@ class Passport
   validates :kecamatanIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
   
   validates :payment_date, presence: true, :if => :check_paid
+  validates :pickup_office, presence: true, :if => :check_paid
   
   has_mongoid_attached_file :photo, :styles => { :thumb => "90x120>" }
   validates_attachment_content_type :photo, :content_type => %w(image/jpeg image/jpg image/png)

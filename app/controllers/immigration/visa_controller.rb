@@ -54,7 +54,7 @@ class Immigration::VisaController < ApplicationController
     @visagrouppayment = Visagrouppayment.new(params.require(:visagrouppayment).permit(:payment_date, :slip_photo, :ref_id))
     if @visagrouppayment.upsert
       Visa.where(params.require(:visagrouppayment).permit(:ref_id)).all.each do |row|
-        row.update(params.require(:visagrouppayment).permit(:status, :payment_date))
+        row.update(params.require(:visagrouppayment).permit(:status, :payment_date, :pickup_office))
       end
       redirect_to :back, :notice => 'Payment Information Successfully saved!'
     else

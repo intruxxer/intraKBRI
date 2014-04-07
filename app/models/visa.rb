@@ -77,6 +77,9 @@ class Visa
   
   field :comment,                type: String
   field :printed_date,           type: Date
+  field :pickup_office,          type: String, default: 'seoul'
+  
+  validates :pickup_office,         presence: true, :if => :check_paid
   
   #validates :owner_id,               presence: true
   #validates :ref_id,                 presence: true
@@ -171,6 +174,15 @@ class Visa
       return false
     end
   end
+  
+  def check_paid
+    if self.status == 'Paid'
+      return true
+    else
+      return false
+    end
+  end
+  
   def assign_ref_id
     self.ref_id = generate_string(3)+"-"+Random.new.rand(10**4..10**10).to_s
   end

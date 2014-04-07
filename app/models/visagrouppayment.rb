@@ -6,6 +6,7 @@ class Visagrouppayment
    
   field :payment_date,           type: Date
   field :ref_id,                 type: String  
+  field :pickup_office,          type: String
     
   validates :payment_date, presence: true
   validates :ref_id,       presence: true

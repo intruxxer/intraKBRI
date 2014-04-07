@@ -56,7 +56,7 @@ class UserMailer < ActionMailer::Base
     #userpassport = Passport.where(user_id: user.id).last
     @ref_id = visa.ref_id
     #@uid = user.id
-    @passport = visa
+    @visa = visa
     attachments["garuda.png"] = File.read("#{Rails.root}/public/assets/images/garuda.png")
     #attachments["ot-presentation-small.png"] = File.read("#{Rails.root}/public/images/ot-presentation-small.png")
     mail(

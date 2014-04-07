@@ -3,8 +3,11 @@
 <h1>Welcome to electronic KBRI Seoul services (E-KBRI)</h1>
 <hr />
 <% if user_signed_in? then %>
+
+<% if !current_user.citizenship or current_user.has_role? :admin or current_user.has_role? :moderator %>
 		<div class="row">
-		
+		<div class="col-md-9">
+
 								<!-- start: TABLE WITH IMAGES PANEL -->
 								<div class="panel panel-default">
 									<div class="panel-heading">
@@ -60,6 +63,7 @@
 														<% end %>
 													|&nbsp;
 													<!--
+
 													<%= link_to('visas/reapply/'+t.id) do %>
 														<span class="glyphicon glyphicon-export"></span>
 														<span class="glyphicon-class">Notify Update to Embassy</span>
@@ -97,16 +101,19 @@
 									</div>
 								</div>
 								<!-- end: TABLE WITH IMAGES PANEL -->
+
 		
 	</div>
 <% end %>
 <% if user_signed_in? and current_user.citizenship then %>	
 		<div class="row">		
+
 								<!-- start: TABLE WITH IMAGES PANEL -->
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<i class="fa fa-external-link-square"></i>
 										<h4>Rekaman Aplikasi Paspor</h4>										
+
 									</div>
 									<div class="panel-body">
 										<% if @userpassport.count > 0 %>
@@ -166,8 +173,7 @@
 										<% end %>
 									</div>
 								</div>
-								<!-- end: TABLE WITH IMAGES PANEL -->		
-		
+
 		</div>
 <% end %>
 <% if user_signed_in? and current_user.citizenship then %>

@@ -1095,6 +1095,7 @@
 					</div>
 				</fieldset>				
 				
+
 				<fieldset>
 				<div class="row">
 					<section class="col col-6">
@@ -1126,6 +1127,7 @@
 									<%= f.input_field :supdoc, as: :file, class: 'fileplaceholder' %>Upload</div>
 									<input type="text" readonly="readonly" />
 							</label>
+
 							<% if @visa.supdoc.exists? %>
 												
 								<% if current_user.has_role? :admin or current_user.has_role? :moderator %>
@@ -1133,6 +1135,7 @@
 								<%end%>
 											
 							<%end%>
+
 							<div class="note">
 								<strong>Note:</strong> 
 								It could be company reference letter, sponsor letter, school admission letter, etc. 
@@ -1154,6 +1157,7 @@
 								<%end%>
 											
 							<%end%>
+
 							<div class="note"><strong>Note:</strong> Format : JPG/JPEG/PNG/PDF. Max Size: 2MB</div>
 						</section>	
 					</div>	
@@ -1327,7 +1331,9 @@
 				</div>  
 				</fieldset>
 				
+
 				<fieldset id="limited-stay">
+
 			      <div class="row">
 			        <section class="col col-4">
 				      <label class="label">Immigration Approval No.</label>
@@ -1371,11 +1377,13 @@
 				</fieldset>
 				
 				
+
 				<fieldset>
 					<section><p style="text-align: right; font-weight: bold;">Seoul, <%= Date.current.strftime("%A, %v") %></p></section>
 				</fieldset>
 				
 				<fieldset >
+
 					<section class="col col-9">
 					I hereby declare that statements given above are true and I understand that even if granted a visa, 
 					the admission at the airport fully remains the discretion of the immigration authorities in Indonesia.
@@ -1384,7 +1392,9 @@
 					<section class="col col-3">
 					<pre>(Signature & Full Name)</pre>
 					</section>				
+
 				</fieldset>			
+
 				
 				<footer>
 					<button type="submit" class="button">Update Application</button>

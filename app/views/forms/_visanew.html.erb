@@ -1,4 +1,6 @@
+
  <!-- Red color scheme -->
+
 	<% if controller_name == "visa" then  %>
 		<% @url_response = visas_path %>
 	<% elsif controller_name == "visafamily"  %>
@@ -38,7 +40,9 @@
 							<i></i>
 							</label>
 						</section>
+
 						<section class="col col-3">
+
 							<label class="label">Requested Visa</label>
 							<label class="select">
 							<%= f.input_field :category_type, 
@@ -1259,8 +1263,9 @@
 				  </section>
 				</div>  
 				</fieldset>
-				
+
 				<fieldset id="limited-stay" class="specialFieldCat">
+
 			      <div class="row">
 			        <section class="col col-4">
 				      <label class="label">Immigration Approval No.</label>
@@ -1302,6 +1307,7 @@
 					</section>	
 				  </div>
 				</fieldset>
+
 				<fieldset>
 					<section class="col col-6">
 						<div class="note">Please rewrite below code</div>					
@@ -1311,6 +1317,7 @@
 					</section>
 				</fieldset>
 				<fieldset class="newVisa specialFieldType">
+
 					<section class="col col-9">
 					I hereby declare that statements given above are true and I understand that even if granted a visa, 
 					the admission at the airport remains fully the discretion of the immigration authorities in Indonesia.
@@ -1320,8 +1327,10 @@
 					<pre>(Signature & Full Name)</pre>
 					</section>				
 				</fieldset>
+
 				<footer>
 					<%= f.input_field :ref_id, type: 'hidden', value: @ref_id %>	
+
 				
 					<% if controller_name == "visafamily" or controller_name == "visagroup"  %>
 						<button type="submit" class="button">Create & Add More Applicant(s)</button>
@@ -1334,16 +1343,18 @@
 <!--/ Red color scheme -->
 
 
+
 <script type="text/javascript">
 	$(function()
-		{
-				
+		{				
+
 				$('input[type=text]').keyup(function() {
 				    $(this).val($(this).val().toUpperCase());
 				});
 				$('textarea').keyup(function() {
 				    $(this).val($(this).val().toUpperCase());
 				});				
+
 				
 				
 				

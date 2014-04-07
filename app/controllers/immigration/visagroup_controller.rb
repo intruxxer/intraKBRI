@@ -1,15 +1,17 @@
 class Immigration::VisagroupController < ApplicationController
   include SimpleCaptcha::ControllerHelpers
   before_filter :authenticate_user!
+
   #GET /visa
   def index
     @visa = Visa.new
     if session[:add_people] then
       @add_people = true
+
       
       @lastvisa = Visa.where(visa_type: 3, user_id: current_user).last
       session[:current_ref_id] = @lastvisa.ref_id
-      
+
       puts "Session add_people = True"
       puts "Session current_ref_id = #{session[:current_ref_id]}"
       #@lastvisa = Visa.where(visa_type: 3, user_id: current_user).last
@@ -31,6 +33,7 @@ class Immigration::VisagroupController < ApplicationController
   #POST /visa
   def create
      
+
    @visa =  [Visa.new(post_params)]  
    
    
@@ -68,7 +71,7 @@ class Immigration::VisagroupController < ApplicationController
       render 'index'
     end  
     
-    
+
     #*Debugging*#
     # logger.debug "We are inspecting VISA PROCESSING PARAMS as follows:"
     # puts params.inspect
@@ -122,7 +125,7 @@ class Immigration::VisagroupController < ApplicationController
       :sponsor_name_kr, :sponsor_address_kr, :sponsor_address_city_kr, :sponsor_address_prov_kr, :sponsor_phone_kr, 
       :sponsor_type_id, :sponsor_name_id, :sponsor_address_id, :sponsor_address_kab_id, :sponsor_address_prov_id,
       :sponsor_phone_id, :duration_stays, :duration_stays_unit, :num_entry, :checkbox_1, :checkbox_2, :checkbox_3, 
-      :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry, 
+      :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry,
       :purpose, :passport, :idcard, :photo, :status, :status_code, :slip_photo, :payment_date, :ticket, 
       :supdoc, :ref_id, :approval_no).merge(visa_type: 3)
     end

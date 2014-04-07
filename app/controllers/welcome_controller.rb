@@ -7,10 +7,12 @@ class WelcomeController < ApplicationController
   	    @userreport = Report.all
   	  else
   	    visadata = Visa.where(user_id: current_user)
+
         @uservisa = Visa.where(user_id: current_user.id)
         
         passportdata = Passport.where(user_id: current_user)
         @userpassport = Passport.where(user_id: current_user.id)
+
         
         @userreport = Report.where(user_id: current_user)
         allunpaidvisa = Visa.where(user_id: current_user, status: 'Received')

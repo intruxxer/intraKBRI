@@ -29,13 +29,16 @@
 								<%= f.input_field :status, 
 								collection: { 'Received' => 'Received', 'Paid' => 'Paid', 
 									'Verified' => 'Verified', 'Rejected' => 'Rejected', 'Revision' => 'Revision' 
+
 									} %>
 							<i></i>
 							</label>
 						</section>
 						<% end %>
 					</div>
-				</fieldset>				
+
+				</fieldset>			
+
 				
 				<fieldset>
 					<div class="row">
@@ -54,24 +57,29 @@
 								<%= f.input_field :application_reason, 
 								collection: { 'Paspor Habis (Masa Berlakunya)' => 'habis-masa', 'Paspor Habis (Halamannya)' => 'habis-halaman',
 								          	  'Paspor Hilang/Rusak' => 'hilang', 'Lainnya' => 'lainnya' } %>
+
 							<i></i>
 							</label>
 						</section>
 					</div>
 					
 					<% if current_user.has_role? :admin or current_user.has_role? :moderator %>
+
 					<div class="row" id="paspor_type" >
 						<section class="col col-6">
 							<label class="label">Jenis Paspor</label>
 							<label class="select">
 								<%= f.input_field :paspor_type, 
 								collection: { '24 Halaman' => '24', '48 Halaman' => '48' }  %>
+
 							<i></i>
 							</label>
 						</section>
 					</div>
+
 					<% end %>
 					
+
 				</fieldset>
 				
 				<fieldset>
@@ -157,10 +165,12 @@
 						</section>
 					</div>					
 				</fieldset>
+
 				
 				<fieldset id="pasporsebelumnya" <% if @passport.application_reason == 'lainnya' %>
 													style="display:none;" 
 												<% end %>>
+
 					<h3>Detail Paspor Sebelumnya</h3>	
 					<hr /><br />
 					<div class="row">
@@ -209,7 +219,9 @@
 						
 					</div>
 				</fieldset>
+
 				
+
 				<fieldset>
 					<h3>Detail Pekerjaan</h3>	
 					<hr /><br />
@@ -841,6 +853,7 @@
 
 
 
+
 <script type="text/javascript">
 			$(function()
 			{			
@@ -850,6 +863,7 @@
 				$('textarea').keyup(function() {
 				    $(this).val($(this).val().toUpperCase());
 				});				
+
 				
 				$('#passport_application_reason').change(function(){
 					if($(this).val() == 'lainnya'){
@@ -859,6 +873,7 @@
 					}
 				});	
 				
+
 				// Regular datepicker
 				$('.datePick').datepicker({
 					dateFormat: 'yy/mm/dd',
@@ -867,6 +882,7 @@
 					changeMonth: true,
       				changeYear: true,
       				yearRange: '1900:2040'
+
 				});
 				
 				$('.fileplaceholder').change(function(){					

@@ -1,3 +1,2 @@
 module Immigration::PassportHelper
-	
 end

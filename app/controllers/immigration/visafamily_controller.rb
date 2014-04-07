@@ -1,15 +1,16 @@
 class Immigration::VisafamilyController < ApplicationController
   include SimpleCaptcha::ControllerHelpers
   before_filter :authenticate_user!
+
   #GET /visa
   def index
     @visa = Visa.new
     if session[:add_people] then
+
       @add_people = true      
       
       @lastvisa = Visa.where(visa_type: 2, user_id: current_user).last
-      session[:current_ref_id] = @lastvisa.ref_id  
-         
+      session[:current_ref_id] = @lastvisa.ref_id 
       puts "Session add_people = True"
       puts "Session current_ref_id = #{session[:current_ref_id]}"
       #@lastvisa = Visa.where(visa_type: 2, user_id: current_user).last
@@ -81,6 +82,7 @@ class Immigration::VisafamilyController < ApplicationController
    end
 =end
      
+
    @visa =  [Visa.new(post_params)]  
      
    
@@ -117,8 +119,6 @@ class Immigration::VisafamilyController < ApplicationController
       @errors = @visa[0].errors.messages
       render 'index'
     end
-    
-    
     #*Debugging*#
     #logger.debug "We are inspecting VISA PROCESSING PARAMS as follows:"
     #puts params.inspect
@@ -175,6 +175,7 @@ class Immigration::VisafamilyController < ApplicationController
       :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry, 
       :purpose, :passport, :idcard, :photo, :status, :status_code, :slip_photo, 
       :payment_date, :ticket, :supdoc, :ref_id, :approval_no).merge(visa_type: 2)
+
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

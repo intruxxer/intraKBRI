@@ -9,8 +9,12 @@
 passport_48halaman = Passportfee.new(
   passport_type: 'passport_48',
   passport_fee: 22,
+<<<<<<< HEAD
   passport_category: 'IAI',
   passport_reason: 'regular'
+=======
+  passport_category: 'IAI'
+>>>>>>> cloud/master
 )
 passport_48halaman.save!
 
@@ -25,8 +29,12 @@ passport_48halaman_hilang.save!
 passport_24halaman = Passportfee.new(
   passport_type: 'passport_24',
   passport_fee: 6,
+<<<<<<< HEAD
   passport_category: 'IAI',
   passport_reason: 'regular'
+=======
+  passport_category: 'IAI'
+>>>>>>> cloud/master
 )
 passport_24halaman.save!
 
@@ -41,7 +49,11 @@ passport_24halaman_hilang.save!
 splp = Passportfee.new(
   passport_type: 'splp',
   passport_fee: 5,
+<<<<<<< HEAD
   passport_category: 'ICI',
   passport_reason: 'regular'
+=======
+  passport_category: 'ICI'
+>>>>>>> cloud/master
 )
 splp.save!

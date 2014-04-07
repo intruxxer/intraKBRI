@@ -13,6 +13,7 @@ class DashboardController < ApplicationController
   
   def immigration
     if params[:document] == "visa" then
+
       @document = "dashboard/service_visa"
       
     elsif params[:document] == "passport"
@@ -35,6 +36,7 @@ class DashboardController < ApplicationController
       @document = "dashboard/service_report"
       
     else  
+
     
     end
   end
@@ -55,6 +57,7 @@ class DashboardController < ApplicationController
   
   end 
   
+
   def syncpanel
     
     @syncdata = current_user.sync
@@ -107,14 +110,17 @@ class DashboardController < ApplicationController
       
   end
   
+
   def check_access
     if !current_user.has_role? :admin then
       redirect_to root_path, :flash => { :warning => "The URL you attempt to access is not exist." }
     else  
     end
   end
+
   
   def periodical_post_params
     params.require(:periodical).permit(:startperiod, :endperiod)
   end
+
 end

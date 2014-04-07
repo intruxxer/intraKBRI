@@ -76,6 +76,7 @@ Silahkan cek kembali data pemohon
 							</label>
 							<div class="note">System akan mengisi No. Lapor diri (Jika Ada)</div>
 						</section>
+
 						<section class="col col-6">
 							<label class="label">Tanggal Pengambilan</label>
 							<label class="input">
@@ -83,11 +84,14 @@ Silahkan cek kembali data pemohon
 								<%= f.input_field :pickup_date, :class => 'datePick' %>
 							</label>
 						</section>
+
 					</div>
 				</fieldset>				
 				<footer>
 					<button type="submit" class="button">Insert to SPRI</button>
+
 					<button type="button" class="button button-secondary" onclick="window.history.back();">Kembali</button>
+
 				</footer>
 <% end %>
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -106,6 +110,7 @@ Silahkan cek kembali data pemohon
 						}, 
 						dataType: "json" 
 					})					
+
 					$('.datePick').datepicker("setDate", 2);
 				});
 				$('.datePick').datepicker({
@@ -115,6 +120,7 @@ Silahkan cek kembali data pemohon
 					changeMonth: true,
       				changeYear: true,      				
       				yearRange: '1900:2040'      				
+
 				});
 			});			
 </script>

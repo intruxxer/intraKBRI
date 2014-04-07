@@ -1,4 +1,6 @@
-class Immigration::ReportController < ApplicationController  
+class Immigration::ReportController < ApplicationController 
+  include SimpleCaptcha::ControllerHelpers
+
   before_filter :authenticate_user!
   
   def index
@@ -38,6 +40,7 @@ class Immigration::ReportController < ApplicationController
 	   #@post = Report.find(params[:id])
   end
   
+
   def findbyNameandBirth
     params.permit(:name, :datebirth)        
     @report = Report.where( name: params[:name] ).where( datebirth: params[:datebirth] ).all
@@ -48,6 +51,7 @@ class Immigration::ReportController < ApplicationController
     render :json => catch
   end
   
+
   def show
     @report = Report.find(params[:id])
       respond_to do |format|
@@ -65,6 +69,19 @@ class Immigration::ReportController < ApplicationController
     end
   end
   
+
+  
+  def findbyNameandBirth
+    params.permit(:name, :datebirth)        
+    @report = Report.where( name: params[:name] ).where( datebirth: params[:datebirth] ).all
+    catch = { 'ref_id' => 'null' }
+    if @report.exists?
+      catch = { 'ref_id' => @report.first.ref_id }
+    end    
+    render :json => catch
+  end
+  
+
   private
 	def post_params	    
 		params.require(:report).permit(:name, :height, :birthplace, :datebirth, :marriagestatus, :nopaspor, :dateissued, :dateend, :passportplace, :immigrationOffice, :visatype, :visadateissued, :visadateend,

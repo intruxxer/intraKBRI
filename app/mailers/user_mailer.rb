@@ -4,11 +4,13 @@ class UserMailer < ActionMailer::Base
   def visa_received_email(user)
   	@url = "http://id-embassy.kr"
   	@email = user.email
+
   	uservisa = Visa.where(user_id: user.id).last
   	@ref_id = uservisa.ref_id
   	@uid = user.id
   	attachments["garuda.png"] = File.read("#{Rails.root}/public/assets/images/garuda.png")
   	#attachments["ot-presentation-small.png"] = File.read("#{Rails.root}/public/images/ot-presentation-small.png")
+
   	mail(
   		:to => @email, 
   		:subject => "Thank you for using e-KBRI to gain entry to Indonesia!", 
@@ -20,11 +22,13 @@ class UserMailer < ActionMailer::Base
   def passport_received_email(user)
     @url = "http://id-embassy.kr"
     @email = user.email
+
     userpassport = Passport.where(user_id: user.id).last
     @ref_id = userpassport.ref_id
     @uid = user.id
     attachments["garuda.png"] = File.read("#{Rails.root}/public/assets/images/garuda.png")
     #attachments["ot-presentation-small.png"] = File.read("#{Rails.root}/public/images/ot-presentation-small.png")
+
     mail(
       :to => @email, 
       :subject => "Terimakasih atas penggunaan e-KBRI untuk pengurusan paspor anda!", 
@@ -32,6 +36,7 @@ class UserMailer < ActionMailer::Base
       :reply_to => "Fungsi Konsuler KBRI Seoul <paspor@kbri.seoul.kr>" 
       )
   end
+
   
   def admin_update_passport_email(passport)
     @url = "http://id-embassy.kr"
@@ -67,4 +72,5 @@ class UserMailer < ActionMailer::Base
       )
   end
   
+
 end

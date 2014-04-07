@@ -1,6 +1,7 @@
 class Immigration::VisaController < ApplicationController
   include SimpleCaptcha::ControllerHelpers
   before_filter :authenticate_user!
+
   
   #GET /visa
   def index
@@ -15,6 +16,7 @@ class Immigration::VisaController < ApplicationController
       coded_date = time.strftime("%y%m%d")
       @ref_id = '1'+coded_date+generate_string(3)
       
+
      #redirect_to :controller => 'immigration/visa', :action => 'index', :type => 2, :format => 'json'
      respond_to do |format|
         format.html { } # {redirect_to root_path, :notice => "Your visa application is successfully received!" }
@@ -29,6 +31,7 @@ class Immigration::VisaController < ApplicationController
     app_ref = session[:current_ref_id]
     session[:current_ref_id]  = nil
     session[:add_people] = nil
+
     
     @visa = Visa.where(:ref_id => @visa[0].ref_id)
           
@@ -79,6 +82,7 @@ class Immigration::VisaController < ApplicationController
   
   end
 
+
   def check
     @visa = Visa.find(params[:id])
     render layout: "dashboard"
@@ -116,6 +120,7 @@ class Immigration::VisaController < ApplicationController
      
       @errors = @visa[0].errors.messages
       render 'index'
+
     end
     
   end
@@ -132,7 +137,8 @@ class Immigration::VisaController < ApplicationController
                :disposition    => "inline", #{attachment, inline}
                :show_as_html   => params[:debug].present?,
                :template       => "immigration/visa/visapayment.html.erb",
-               :layout         => "pdf_layout.html"               
+               :layout         => "pdf_layout.html"              
+
       end
     end
   end
@@ -142,12 +148,14 @@ class Immigration::VisaController < ApplicationController
     #@visa = Visa.find_by(user_id: params[:id])
     @visa = Visa.find(params[:id])
     if @visa.update(post_params)
+
       
       if current_user.has_role? :admin or current_user.has_role? :moderator
         UserMailer.admin_update_visa_email(@visa).deliver
       end
       
       redirect_to :back, :notice => 'You have updated your visa application data!'
+
     else
       @errors = @visa.errors.messages
       render 'edit'
@@ -183,6 +191,7 @@ class Immigration::VisaController < ApplicationController
       :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry, :purpose, 
       :passport, :idcard, :photo, :status, :status_code, :slip_photo, :payment_date, :ticket, :supdoc, :ref_id,
       :approval_no, :visafee_ref).merge(visa_type: 1)
+
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

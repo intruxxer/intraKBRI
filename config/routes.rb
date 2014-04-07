@@ -51,7 +51,7 @@ EKbri::Application.routes.draw do
   get "test", :to => "playground#test"
   
   get "visa/show/all", :to => "desktop#show_all_sisari"
-  
+  get "lapordiri/show/all", :to => "desktop#show_all_lapordiri"
   get "passport/show/all", :to => "desktop#show_all_spri"
   get "dashboard/service/:document", :to => "dashboard#immigration"
   get "admin/service/:document/:id", :to => "dashboard#immigration"

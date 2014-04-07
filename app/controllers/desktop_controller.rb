@@ -3,6 +3,39 @@ class DesktopController < ApplicationController
   @@SISARICOUNTER = 5850
   @@VIPACOUNTER = 3000
   
+  def show_all_lapordiri
+    @reports = Report.all   
+    
+    params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
+    
+    unless (params[:sSearch].nil? || params[:sSearch] == "")    
+      searchparam = params[:sSearch]  
+      @reports = @reports.any_of({:name => /#{searchparam}/},{:ref_id => /#{searchparam}/})
+    end   
+    
+    unless (params[:iDisplayStart].nil? || params[:iDisplayLength] == '-1')
+      @reports = @reports.skip(params[:iDisplayStart]).limit(params[:iDisplayLength])      
+    end    
+    
+    iTotalRecords = Report.count
+    iTotalDisplayRecords = @reports.count
+    aaData = Array.new    
+    
+    @reports.each do |row|
+      editLink = "<a href=\"/lapordiri/" + row.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update</span></a>"
+      checkLink = "<a href=\"/lapordiri/" + row.id + "/check\"><span class='glyphicon glyphicon-eye-open'></span><span class='glyphicon-class'>Check</span></a>"
+      #printLink = "<a href=\"/visa/tosisari/" + visa.id + "\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
+      
+      
+      aaData.push([ row.ref_id, row.name, row.updated_at.strftime("%Y %b %d %H:%M:%S").to_s , checkLink + "&nbsp;|&nbsp;" + editLink])                        
+    end
+    
+    respond_to do |format|
+      format.json { render json: {'sEcho' => params[:sEcho].to_i , 'aaData' => aaData , 'iTotalRecords' => iTotalRecords, 'iTotalDisplayRecords' => iTotalDisplayRecords } }
+    end
+    
+  end
+  
   def exec_toSisari
     @visa = Visa.find(params[:id])
     
@@ -29,13 +62,10 @@ class DesktopController < ApplicationController
     
         
              
-    begin
+    begin      
       
-      
-      db.execute(query)   
-      
+      db.execute(query)      
       @visa.update_attributes({:status => 'Printed', :vipa_no => nextCounter, :printed_Date => Time.now, :pickup_date => params[:visa][:pickup_date]})       
-       
        
        msg = { :notice => 'Data berhasil dipindahkan' }
     rescue 

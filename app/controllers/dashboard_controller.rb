@@ -14,10 +14,10 @@ class DashboardController < ApplicationController
   def immigration
     if params[:document] == "visa" then
       @document = "dashboard/service_visa"
-      @visa = Visa
+      
     elsif params[:document] == "passport"
       @document = "dashboard/service_passport"
-      puts "rendering #{@document}"
+      
     elsif params[:document] == "prep_spri" then
       
       vipacounter = 3000      
@@ -28,12 +28,11 @@ class DashboardController < ApplicationController
     elsif params[:document] == "prep_visa" then
       
       @document = "dashboard/tosisari_prep"
-      @visa = Visa.find(params[:id])
+      @visa = Visa.find(params[:id])    
+       
+    elsif params[:document] == "lapordiri" then
       
-    elsif params[:document] == "visa_group"
-      
-      
-       @document = "dashboard/service_visa_group"
+      @document = "dashboard/service_report"
       
     else  
     

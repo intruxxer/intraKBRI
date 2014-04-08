@@ -15,8 +15,8 @@ class Immigration::ReportController < ApplicationController
 	 
 	 
 	 if @report.valid?
-	   if simple_captcha.valid?
-	     current_user.reports = @report
+	   if simple_captcha_valid?
+	     current_user.reports.push(@report)
 	     current_user.save
 	     respond_to do |format|
           format.html { redirect_to root_path, :notice => "Data Lapor Diri Anda Berhasil Disimpan" }        
@@ -35,17 +35,31 @@ class Immigration::ReportController < ApplicationController
   #PATCH, PUT /report/:id
   def update
 	  #@post = Report.find_by(user_id: params[:id])
-	  @report = Report.find(params[:id])
-    if @report.update(post_params)
-    	 redirect_to :back, :notice => 'Data Lapor Diri Anda Berhasil Diubah!'
-    else
-      @errors = @report.errors.messages
-    	 render 'edit'
-    end
+	  #@report = Report.find(params[:id])
+	  
+	  @report = Report.new(post_params)
+	  #keep every save as new record but not valid until admin verified it
+	  
+	  if @report.valid?
+	    if simple_captcha_valid?
+	      current_user.reports.push(@report)
+	      current_user.save
+	      respond_to do |format|
+	        format.html { redirect_to root_path, :notice => "Revisi Data Lapor Diri Anda Berhasil Disimpan" }
+	      end
+	    else
+	      @errors = { 'Secret Code' => 'Wrong Code Entered' }
+	      render 'edit'
+	    end
+	  else
+	    @errors = @report.errors.messages
+	    render 'edit'    
+	  end	  
+    
   end
   
   def edit   
-	   @report = Report.find_by(user_id: params[:id])
+	   @report = Report.where(user_id: params[:id]).where(is_valid: true).desc(:updated_at).first
 	   #@post = Report.find(params[:id])
   end
   
@@ -98,7 +112,7 @@ class Immigration::ReportController < ApplicationController
 		:koreanphone, :koreanaddress, :koreanaddresscity, :koreanaddressprovince, :koreanaddresspostalcode, :indonesianphone, :indonesianaddress, :indonesianaddresskelurahan, 
 		:indonesianaddresskecamatan, :indonesianaddresskabupaten, :indonesianaddressprovince, :indonesianaddresspostalcode, :relationname, :relationstatus, :relationaddress,
 		:relationphone, :relationaddresskelurahan, :relationaddresskecamatan, :relationaddresskabupaten, :relationaddressprovince, :relationaddresspostalcode, :arrivaldate, :indonesianinstance,
-		:paspor, :aliencard, :photo, :stayinkorea).merge(owner_id: current_user.id)
+		:paspor, :aliencard, :photo, :stayinkorea, :is_valid, :ref_id)
 	end
   
   

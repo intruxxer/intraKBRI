@@ -14,7 +14,7 @@
 			
 			<!-- Red color scheme -->
 			
-			<%= simple_form_for @report, url: report_path(@report), method: :patch, :html => { :class => "sky-form", :multipart => true } do |f| %>
+			<%= simple_form_for @report, url: report_path, method: :patch, :html => { :class => "sky-form", :multipart => true } do |f| %>
 				<header>Revisi Informasi Lapor Diri dan Pendataan WNI di Korea Selatan</header>
 				<fieldset style="text-align:justify;">
 					Silahkan mengisi formulir  ini dengan hati-hati dan sampai tuntas. Semua data ditanyakan adalah <b>penting</b> kecuali dinyatakan sebagai 'TIDAK'.
@@ -164,6 +164,13 @@
 							<div class="note"><strong>Note:</strong> Format : JPG/JPEG/PNG. Ukuran Maks : 2MB<br />Harap scan dan gabungkan kedua sisi kartu</div>
 						</section>	
 						
+						<section class="col col-3">
+							<label class="label">Nomor Alien Card</label>
+							<label class="input">
+								<i class="icon-append icon-globe"></i>
+								<%= f.input_field :no_arc %>
+							</label>
+						</section>
 						
 						<section class="col col-2">
 							<label class="label">Jenis Visa</label>

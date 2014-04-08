@@ -10,6 +10,11 @@ class Immigration::ReportController < ApplicationController
 	   end
   end
   
+  def check
+    @report = Report.find(params[:id])
+    render layout: "dashboard"
+  end
+  
   def create		
    @report =  Report.new(post_params)
 	 
@@ -32,6 +37,25 @@ class Immigration::ReportController < ApplicationController
 	 	 	 
   end
   
+  def adminupdate
+    @report = Report.find(params[:id])
+    if @report.update(post_params)
+        
+          if @report.is_valid == true
+            @col = Report.where(user_id: @report.user_id).ne(id: @report.id)
+            @col.each do |row|
+              row.update(is_valid: false)            
+            end
+          end
+          UserMailer.admin_update_report_email(@report).deliver
+        
+        redirect_to :back, :notice => 'Anda telah berhasil memperbaharui data lapor diri'
+    else
+      @errors = @report.errors.messages
+      render 'edit'
+    end
+  end
+  
   #PATCH, PUT /report/:id
   def update
 	  #@post = Report.find_by(user_id: params[:id])
@@ -44,8 +68,11 @@ class Immigration::ReportController < ApplicationController
 	    if simple_captcha_valid?
 	      current_user.reports.push(@report)
 	      current_user.save
+	      
+	      
+	      
 	      respond_to do |format|
-	        format.html { redirect_to root_path, :notice => "Revisi Data Lapor Diri Anda Berhasil Disimpan" }
+	        format.html { redirect_to :back, :notice => "Revisi Data Lapor Diri Anda Berhasil Disimpan. Silahkan tunggu email konfirmasi dari admin" }
 	      end
 	    else
 	      @errors = { 'Secret Code' => 'Wrong Code Entered' }
@@ -59,7 +86,7 @@ class Immigration::ReportController < ApplicationController
   end
   
   def edit   
-	   @report = Report.where(user_id: params[:id]).where(is_valid: true).desc(:updated_at).first
+	   @report = Report.where(id: params[:id]).first
 	   #@post = Report.find(params[:id])
   end
   
@@ -78,7 +105,7 @@ class Immigration::ReportController < ApplicationController
   def show
     @report = Report.find(params[:id])
       respond_to do |format|
-      format.html #visa_processing/show.html.erb
+      format.html { render 'edit' }
       format.json { render json: @report }
       format.xml  { render xml: @report }
       format.pdf do
@@ -112,7 +139,7 @@ class Immigration::ReportController < ApplicationController
 		:koreanphone, :koreanaddress, :koreanaddresscity, :koreanaddressprovince, :koreanaddresspostalcode, :indonesianphone, :indonesianaddress, :indonesianaddresskelurahan, 
 		:indonesianaddresskecamatan, :indonesianaddresskabupaten, :indonesianaddressprovince, :indonesianaddresspostalcode, :relationname, :relationstatus, :relationaddress,
 		:relationphone, :relationaddresskelurahan, :relationaddresskecamatan, :relationaddresskabupaten, :relationaddressprovince, :relationaddresspostalcode, :arrivaldate, :indonesianinstance,
-		:paspor, :aliencard, :photo, :stayinkorea, :is_valid, :ref_id)
+		:paspor, :aliencard, :photo, :stayinkorea, :is_valid, :ref_id, :no_arc)
 	end
   
   

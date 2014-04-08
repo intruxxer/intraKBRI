@@ -157,7 +157,15 @@
 						<section class="col col-1">
 							<%= image_tag @report.aliencard.url(:thumb) %>
 						</section>				
-						<%end%>	
+						<%end%>
+						
+						<section class="col col-3">
+							<label class="label">Nomor Alien Card</label>
+							<label class="input">
+								<i class="icon-append icon-globe"></i>
+								<%= f.input_field :no_arc %>
+							</label>
+						</section>	
 						
 						<section class="col col-2">
 							<label class="label">Jenis Visa</label>

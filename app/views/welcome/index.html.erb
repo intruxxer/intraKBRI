@@ -197,7 +197,7 @@
 													<td class="center"><%= t.updated_at.strftime("%-d %b %y") %></td>	
 													<td class="center"><%= "Terdaftar di KBRI Seoul" %></td>													
 													<td class="center">
-													<%= link_to (edit_report_path(t.user_id)) do %>
+													<%= link_to (edit_report_path(t.id)) do %>
 														<span class="glyphicon glyphicon-pencil"></span>
 														<span class="glyphicon-class">Revisi Data/Ubah Informasi</span>
 													<% end %>

@@ -72,5 +72,21 @@ class UserMailer < ActionMailer::Base
       )
   end
   
-
+  def admin_update_report_email(report)
+    @url = "http://id-embassy.kr"
+    @email = User.find(report.user_id).email
+    #userpassport = Passport.where(user_id: user.id).last
+    @ref_id = report.ref_id
+    #@uid = user.id
+    @report = report
+    attachments["garuda.png"] = File.read("#{Rails.root}/public/assets/images/garuda.png")
+    #attachments["ot-presentation-small.png"] = File.read("#{Rails.root}/public/images/ot-presentation-small.png")
+    mail(
+      :to => @email, 
+      :subject => "Konfirmasi Perubahan Informasi Lapor Diri", 
+      :from => "Administrator of e-KBRI <admin@kbri.seoul.kr>",
+      :reply_to => "Fungsi Konsuler KBRI Seoul <paspor@kbri.seoul.kr>" 
+      )
+  end
+  
 end

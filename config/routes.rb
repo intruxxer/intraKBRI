@@ -58,7 +58,7 @@ EKbri::Application.routes.draw do
   
   get "visa/show/all", :to => "desktop#show_all_sisari"
   get "lapordiri/show/all", :to => "desktop#show_all_lapordiri"
-
+  get "lapordiri/show/history/:user_id", :to => "desktop#show_all_lapordiri_history"
   get "passport/show/all", :to => "desktop#show_all_spri"
   get "dashboard/service/:document", :to => "dashboard#immigration"
   get "admin/service/:document/:id", :to => "dashboard#immigration"
@@ -70,7 +70,7 @@ EKbri::Application.routes.draw do
   
   get "passports/:id/check", :to => "immigration/passport#check"
   get "visas/:id/check", :to => "immigration/visa#check"
-
+  get "reports/:id/check", :to => "immigration/report#check"
   
   get "protocol/synccloudtolocal/:collection", :to => "protocol#syncCollectionCloudtoLocal"
   get "protocol/syncdbcomplete", :to => "protocol#syncDBComplete"
@@ -98,6 +98,7 @@ EKbri::Application.routes.draw do
   get "visas/payment/:ref_id", :to => "immigration/visa#payment"
   match "visas/payment/:ref_id", to: "immigration/visa#update_payment", via: :patch, :as => :visa_payment_proceed
 
+  match "report/admin/:id/edit", to: "immigration/report#adminupdate", via: :patch, :as => :adminreportedit
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

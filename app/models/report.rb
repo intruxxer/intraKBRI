@@ -36,6 +36,9 @@ class Report
   validates :visadateissued, presence: true 
   field :visadateend,               type:Date 
   validates :visadateend, presence: true
+
+  field :no_arc,        type: String
+  validates :no_arc, presence: true
   
   field :jobStudyInKorea,        type: String
   validates :jobStudyInKorea, presence: true
@@ -96,6 +99,7 @@ class Report
    
   field :stayinkorea,               type: Boolean, default: true  
   field :is_valid,                  type: Boolean, default: false
+  field :comment,                   type: String
   
   has_mongoid_attached_file :photo, :styles => { :thumb => "90x120>" }
   validates_attachment_content_type :photo, :content_type => %w(image/jpeg image/jpg image/png)

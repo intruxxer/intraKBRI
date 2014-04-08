@@ -39,7 +39,7 @@ class Immigration::PassportController < ApplicationController
   def show
     @passport = Passport.find(params[:id])
       respond_to do |format|
-      format.html #visa_processing/show.html.erb
+      format.html { render 'edit' }
       format.json { render json: @passport }
       format.xml { render xml: @passport }
       format.pdf do

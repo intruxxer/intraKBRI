@@ -129,7 +129,7 @@ class Immigration::VisaController < ApplicationController
   def show
     @visa = Visa.find(params[:id])
       respond_to do |format|
-      format.html #visa_processing/show.html.erb
+      format.html { render 'edit' }
       format.json { render json: @visa }
       format.xml { render xml: @visa }
       format.pdf do

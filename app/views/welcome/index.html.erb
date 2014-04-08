@@ -191,7 +191,7 @@
 												</tr>
 											</thead>
 											<tbody>												
-												<% @userreport.each do |t| %>
+												<% t = @userreport.first %>
 												<tr>													
 													<td align="left"><%= t.ref_id %></td>
 													<td class="center"><%= t.updated_at.strftime("%-d %b %y") %></td>	
@@ -199,21 +199,16 @@
 													<td class="center">
 													<%= link_to (edit_report_path(t.user_id)) do %>
 														<span class="glyphicon glyphicon-pencil"></span>
-														<span class="glyphicon-class">Perbaharui</span>
+														<span class="glyphicon-class">Revisi Data/Ubah Informasi</span>
 													<% end %>
-													&nbsp;atau&nbsp;
-													<%= link_to (edit_report_path(t.user_id)) do %>
-														<span class="glyphicon glyphicon-plane"></span>
-														<span class="glyphicon-class">Laporkan Kepulangan</span>
-														<% end %>
-													|&nbsp;
+													&nbsp;|&nbsp;													
 													<%= link_to 'reports/'+t.id+'.pdf', :target => "_blank" do %>
 														<span class="glyphicon glyphicon-save"></span>
-														<span class="glyphicon-class">Unduh</span>
+														<span class="glyphicon-class">Note Print</span>
 														<% end %>
 													</td>
 												</tr>												
-												<% end %>
+												
 											</tbody>											
 										</table>
 										<% else %>

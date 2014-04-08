@@ -17,7 +17,7 @@
 				<header>Formulir Lapor Diri dan Pendataan WNI di Korea Selatan</header>
 				<fieldset style="text-align:justify;">
 					Silahkan mengisi formulir  ini dengan hati-hati dan sampai tuntas. Semua data ditanyakan adalah <b>penting</b> kecuali dinyatakan sebagai 'TIDAK'.
-
+					<%= f.input_field :is_valid, :as => :hidden, :value => true %>
 				</fieldset>
 				<fieldset>					
 					<div class="row">
@@ -1274,7 +1274,7 @@
 			<% end %>
 			<!--/ Red color scheme -->			
 </div>
-<script type="text/javascript" src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+
 <script type="text/javascript">
 			$(function()
 			{

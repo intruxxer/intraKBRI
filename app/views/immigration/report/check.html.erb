@@ -362,6 +362,51 @@
 		</section>
 		
 	</fieldset>
+	<fieldset>
+		<h3>Document Journal</h3>
+		<hr /><br />
+		
+		<section class="col col-12">
+		
+		<script type="text/javascript">	
+			$(document).ready(function(){									
+			    $("#sample-table-3").dataTable({
+			    	 "bProcessing": true,
+			         "bServerSide": true,
+			         "sAjaxSource": "<%= document_journal_path(@report.id) %>",
+			         "bPaginate": false,
+			         "aoColumns": [
+				      null,
+				      null,
+				      null			      											      
+				    ]
+			    });
+			});									
+		</script>									
+		
+		<style>
+			#sample-table-3 td {
+				text-align:center;
+			}
+		</style>
+			
+		<table class="table table-striped table-bordered table-hover" id="sample-table-3">
+			<thead>
+				<tr>												
+					<th class="center" width="300">Action</th>
+					<th class="center" >Method</th>
+					<th class="center" width="300">Timestamp</th>														
+				</tr>
+			</thead>
+			<tbody>								
+															
+
+			</tbody>
+		</table>
+		
+		</section>
+		
+	</fieldset>
 	<footer>
 		<h3>Actions</h3>
 		<br />

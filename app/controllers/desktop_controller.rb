@@ -4,7 +4,7 @@ class DesktopController < ApplicationController
   @@VIPACOUNTER = 3000
   
   def show_all_lapordiri_history
-    @reports = Report.where(:is_valid => false).where(:user_id => params[:user_id]).all   
+    @reports = Report.desc(:created_at).where(:is_valid => false).where(:user_id => params[:user_id]).all   
     origin = @reports
     
     params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
@@ -21,7 +21,8 @@ class DesktopController < ApplicationController
     iTotalRecords = origin.count
     iTotalDisplayRecords = @reports.count
     aaData = Array.new    
-    
+    @reports.desc(:created_at)
+    i = 1
     @reports.each do |row|
       
       revisionLink = '-'
@@ -35,7 +36,8 @@ class DesktopController < ApplicationController
       #printLink = "<a href=\"/visa/tosisari/" + visa.id + "\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
       
       
-      aaData.push([ row.ref_id, row.name, row.created_at.strftime("%Y %b %d %H:%M:%S").to_s , checkLink ])                        
+      aaData.push([i, row.ref_id, row.name, row.created_at.strftime("%Y %b %d %H:%M:%S").to_s , checkLink ])
+      i += 1                        
     end
     
     respond_to do |format|
@@ -45,7 +47,7 @@ class DesktopController < ApplicationController
   end
   
   def show_all_lapordiri
-    @reports = Report.where(:is_valid => true).all   
+    @reports = Report.desc(:created_at).where(:is_valid => true).all   
     origin = @reports
     
     params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
@@ -63,6 +65,8 @@ class DesktopController < ApplicationController
     iTotalDisplayRecords = @reports.count
     aaData = Array.new    
     
+    i = 1
+    @reports.desc(:created_at)
     @reports.each do |row|
       
       revisionLink = '-'
@@ -76,7 +80,8 @@ class DesktopController < ApplicationController
       #printLink = "<a href=\"/visa/tosisari/" + visa.id + "\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
       
       
-      aaData.push([ row.ref_id, row.name, row.updated_at.strftime("%Y %b %d %H:%M:%S").to_s, revisionLink , checkLink + "&nbsp;|&nbsp;" + editLink])                        
+      aaData.push([i, row.ref_id, row.name, row.updated_at.strftime("%Y %b %d %H:%M:%S").to_s, revisionLink , checkLink + "&nbsp;|&nbsp;" + editLink])
+      i += 1                        
     end
     
     respond_to do |format|
@@ -129,7 +134,7 @@ class DesktopController < ApplicationController
   
   
   def show_all_sisari
-    @visas = Visa.all   
+    @visas = Visa.desc(:created_at).all   
     
     params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
     
@@ -146,6 +151,8 @@ class DesktopController < ApplicationController
     iTotalDisplayRecords = @visas.count
     aaData = Array.new    
     
+    i = 1
+    
     @visas.each do |visa|
       editLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update</span></a>"
       checkLink = "<a href=\"/visas/" + visa.id + "/check\"><span class='glyphicon glyphicon-eye-open'></span><span class='glyphicon-class'>Check</span></a>"
@@ -155,7 +162,8 @@ class DesktopController < ApplicationController
       retrievedate = !(visa.printed_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (visa.printed_date+3).strftime("%-d %b %Y") + '</a>').html_safe : '-'
       
       
-      aaData.push([ visa.ref_id, visa.first_name + " " + visa.last_name , visa.status, paymentdate, retrievedate, checkLink + "&nbsp;|&nbsp;" + editLink])                        
+      aaData.push([i, visa.ref_id, visa.first_name + " " + visa.last_name , visa.status, paymentdate, retrievedate, checkLink + "&nbsp;|&nbsp;" + editLink])
+      i += 1                        
     end
     
     respond_to do |format|
@@ -193,7 +201,7 @@ class DesktopController < ApplicationController
   end
   
   def show_all_spri
-    @passport = Passport.all   
+    @passport = Passport.desc(:created_at).all   
     
     params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
     
@@ -210,8 +218,8 @@ class DesktopController < ApplicationController
     iTotalDisplayRecords = @passport.count
     aaData = Array.new    
     
-    @passport.asc(:created_at)
     
+    i = 1
     @passport.each do |passport|
       #deleteLink = "<a rel=\"nofollow\" data-method=\"delete\" href=\"/passports/" + passport.id + "\"><span class='glyphicon glyphicon-trash'></span><span class='glyphicon-class'>Delete</span></a>"
       editLink = "<a href=\"/passports/" + passport.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Edit</span></a>"
@@ -221,7 +229,8 @@ class DesktopController < ApplicationController
       paymentdate = !(passport.payment_date.nil?) ? passport.payment_date.strftime("%-d %b %Y") : '-'
       retrievedate = !(passport.printed_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (passport.printed_date+1).strftime("%-d %b %Y") + '</a>').html_safe : '-'
       
-      aaData.push([ passport.ref_id, passport.full_name, passport.status, paymentdate , retrievedate , checkLink + "&nbsp;|&nbsp;" + editLink + "&nbsp;"])                        
+      aaData.push([i, passport.ref_id, passport.full_name, passport.status, paymentdate , retrievedate , checkLink + "&nbsp;|&nbsp;" + editLink + "&nbsp;"])
+      i += 1                        
     end
     
     respond_to do |format|

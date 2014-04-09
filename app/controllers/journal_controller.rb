@@ -3,7 +3,7 @@ class JournalController < ApplicationController
   def retrieve_user_journal 
     userid = params[:user_id]
     
-    @journal = User.find(userid).journals       
+    @journal = User.find(userid).journals.desc(:created_at)       
     origin = @journal
     
     params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
@@ -20,9 +20,10 @@ class JournalController < ApplicationController
     iTotalRecords = origin.count
     iTotalDisplayRecords = @journal.count
     aaData = Array.new    
-    
+    i = 1
     @journal.each do |row|      
-      aaData.push([ row.action, row.model, row.method, row.created_at.strftime("%Y %b %d %H:%M:%S").to_s, row.record_id ])                        
+      aaData.push([i,  row.action, row.model, row.method, row.created_at.strftime("%Y %b %d %H:%M:%S").to_s, row.record_id ])
+      i += 1                        
     end
     
     respond_to do |format|
@@ -34,7 +35,7 @@ class JournalController < ApplicationController
   def retrieve_document_journal 
     recordid = params[:id]
     
-    @journal = Journal.where(:record_id => recordid)     
+    @journal = Journal.desc(:created_at).where(:record_id => recordid)     
     origin = @journal
     
     params.permit(:sSearch,:iDisplayLength,:iDisplayStart)
@@ -52,6 +53,8 @@ class JournalController < ApplicationController
     iTotalDisplayRecords = @journal.count
     aaData = Array.new    
     
+    i = 1
+    @journal.desc(:created_at)
     @journal.each do |row|      
       respected_user = User.where(:id => row.user_id)
       if respected_user.count > 0
@@ -60,7 +63,8 @@ class JournalController < ApplicationController
         respected_user = "Deleted User"
       end
       action = row.action + ' by ' + respected_user
-      aaData.push([ action, row.method, row.created_at.strftime("%Y %b %d %H:%M:%S").to_s ])                        
+      aaData.push([i, action, row.method, row.created_at.strftime("%Y %b %d %H:%M:%S").to_s ])
+      i += 1                        
     end
     
     respond_to do |format|

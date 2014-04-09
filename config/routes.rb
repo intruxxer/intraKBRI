@@ -99,6 +99,7 @@ EKbri::Application.routes.draw do
   match "visas/payment/:ref_id", to: "immigration/visa#update_payment", via: :patch, :as => :visa_payment_proceed
 
   match "report/admin/:id/edit", to: "immigration/report#adminupdate", via: :patch, :as => :adminreportedit
+
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

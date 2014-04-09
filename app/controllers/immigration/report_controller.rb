@@ -109,12 +109,12 @@ class Immigration::ReportController < ApplicationController
       format.json { render json: @report }
       format.xml  { render xml: @report }
       format.pdf do
-        render :pdf            => "Data Lapor Diri ["+"#{current_user.full_name}"+"]",
+        render :pdf            => "Data Lapor Diri [" + @report.name + "]",
                :disposition    => "inline", #{attachment, inline}
                :show_as_html   => params[:debug].present?,
                #:template       => "immigration/visa/visarecapitulation.html.erb",
-               :layout         => "visa_pdf.html",
-               :footer         => { :center => "The Embassy of Republic of Indonesia at Seoul" }
+               :template       => "immigration/report/adminprint.html.erb"
+                              
       end
     end
   end

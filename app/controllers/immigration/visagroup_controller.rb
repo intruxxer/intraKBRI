@@ -53,6 +53,7 @@ class Immigration::VisagroupController < ApplicationController
       if simple_captcha_valid?
           current_user.visas.push(@visa[0])   
           current_user.save
+          current_user.journals.push(Journal.new(:action => 'Created', :model => 'Visa', :method => 'Insert', :agent => request.user_agent, :record_id => @visa[0].id ))
           UserMailer.visa_received_email(current_user).deliver
           #flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
           #render 'pasporconfirm.html.erb'
@@ -93,6 +94,7 @@ class Immigration::VisagroupController < ApplicationController
     #@visa = Visa.find_by(user_id: params[:id])
     @visa = Visa.find(params[:id])
     if @visa.update(post_params)
+      current_user.journals.push(Journal.new(:action => @visa.status, :model => 'Visa', :method => 'Update', :agent => request.user_agent, :record_id => @visa.id ))
       redirect_to root_path, :notice => 'You have updated your visa application data!'
     else
       render 'edit'
@@ -111,6 +113,7 @@ class Immigration::VisagroupController < ApplicationController
     @visa = Visa.find(params[:id])
     reference = @visa.ref_id
     if @visa.delete
+      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Visa', :method => 'Delete', :agent => request.user_agent, :record_id => params[:id] ))
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} has been erased."
     else
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."

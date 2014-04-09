@@ -32,56 +32,6 @@ class Immigration::VisafamilyController < ApplicationController
 
   #POST /visa
   def create
-=begin   
-   uploaded_passport = params[:visa][:passport]
-   if (uploaded_passport != nil)
-      new_passport = uploaded_passport.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_passport.original_filename), 'wb') do |file|
-        file.write(new_passport)
-      end
-   end
-   
-   uploaded_idcard = params[:visa][:idcard]
-   if (uploaded_idcard != nil)
-      new_idcard = uploaded_idcard.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_idcard.original_filename), 'wb') do |file|
-        file.write(new_idcard)
-      end
-   end
-   
-   uploaded_passport_picture = params[:visa][:photo]
-   if (uploaded_passport_picture != nil)
-      new_pass_picture = uploaded_passport_picture.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_passport_picture.original_filename), 'wb') do |file|
-        file.write(new_pass_picture)
-      end
-   end
-   
-   uploaded_paymentslip = params[:visa][:slip_photo]
-   if (uploaded_paymentslip != nil)
-      new_pay_picture = uploaded_paymentslip.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_paymentslip.original_filename), 'wb') do |file|
-        file.write(new_pay_picture)
-      end
-   end
-   
-   uploaded_supdoc = params[:visa][:supdoc]
-   if (uploaded_supdoc != nil)
-      new_supdoc_picture = uploaded_supdoc.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_supdoc.original_filename), 'wb') do |file|
-        file.write(new_supdoc_picture)
-      end
-   end
-   
-   uploaded_ticket = params[:visa][:supdoc]
-   if (uploaded_ticket != nil)
-      new_ticket_picture = uploaded_ticket.read
-      File.open(Rails.root.join('public', 'uploads', uploaded_ticket.original_filename), 'wb') do |file|
-        file.write(new_ticket_picture)
-      end
-   end
-=end
-     
 
    @visa =  [Visa.new(post_params)]  
      
@@ -102,6 +52,7 @@ class Immigration::VisafamilyController < ApplicationController
       if simple_captcha_valid?
           current_user.visas.push(@visa[0])   
           current_user.save
+          current_user.journals.push(Journal.new(:action => 'Created', :model => 'Visa', :method => 'Insert', :agent => request.user_agent, :record_id => @visa[0].id ))
           UserMailer.visa_received_email(current_user).deliver
           #flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
           #render 'pasporconfirm.html.erb'
@@ -140,6 +91,7 @@ class Immigration::VisafamilyController < ApplicationController
     #@visa = Visa.find_by(user_id: params[:id])
     @visa = Visa.find(params[:id])
     if @visa.update(post_params)
+      current_user.journals.push(Journal.new(:action => @visa.status, :model => 'Visa', :method => 'Update', :agent => request.user_agent, :record_id => @visa.id ))
       redirect_to root_path, :notice => 'You have updated your visa application data!'
     else
       render 'edit'
@@ -158,6 +110,7 @@ class Immigration::VisafamilyController < ApplicationController
     @visa = Visa.find(params[:id])
     reference = @visa.ref_id
     if @visa.delete
+      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Visa', :method => 'Delete', :agent => request.user_agent, :record_id => params[:id] ))
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} has been erased."
     else
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."

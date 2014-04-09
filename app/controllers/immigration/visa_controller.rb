@@ -54,10 +54,16 @@ class Immigration::VisaController < ApplicationController
   
   def update_payment
     @visas = Visa.where(params.require(:visagrouppayment).permit(:ref_id)).all 
-    @visagrouppayment = Visagrouppayment.new(params.require(:visagrouppayment).permit(:payment_date, :slip_photo, :ref_id))
+    @visagrouppayment = Visagrouppayment.new(params.require(:visagrouppayment).permit(:payment_date, :slip_photo, :ref_id))   
+    
+    
     if @visagrouppayment.upsert
+      
+      current_user.journals.push(Journal.new(:action => 'Payment', :model => 'Visagrouppayment', :method => 'Insert', :agent => request.user_agent, :record_id => @visagrouppayment.id ))
+      
       Visa.where(params.require(:visagrouppayment).permit(:ref_id)).all.each do |row|
         row.update(params.require(:visagrouppayment).permit(:status, :payment_date, :pickup_office))
+        current_user.journals.push(Journal.new(:action => 'Paid', :model => 'Visa', :method => 'Update', :agent => request.user_agent, :record_id => row.id ))
       end
       redirect_to :back, :notice => 'Payment Information Successfully saved!'
     else
@@ -103,7 +109,7 @@ class Immigration::VisaController < ApplicationController
           current_user.visas.push(@visa[0])   
           current_user.save
           UserMailer.visa_received_email(current_user).deliver
-          
+          current_user.journals.push(Journal.new(:action => 'Created', :model => 'Visa', :method => 'Insert', :agent => request.user_agent, :record_id => @visa[0].id ))
           @visa = Visa.where(:ref_id => @visa[0].ref_id)
           
           flash[:notice] = 'Application Saved successfully!'
@@ -151,6 +157,7 @@ class Immigration::VisaController < ApplicationController
 
       
       if current_user.has_role? :admin or current_user.has_role? :moderator
+        current_user.journals.push(Journal.new(:action => @visa.status, :model => 'Visa', :method => 'Update', :agent => request.user_agent, :record_id => @visa.id ))
         UserMailer.admin_update_visa_email(@visa).deliver
       end
       
@@ -174,6 +181,7 @@ class Immigration::VisaController < ApplicationController
     @visa = Visa.find(params[:id])
     reference = @visa.ref_id
     if @visa.delete
+      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Visa', :method => 'Delete', :agent => request.user_agent, :record_id => params[:id] ))
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} has been erased."
     else
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."

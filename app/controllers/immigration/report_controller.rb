@@ -21,8 +21,11 @@ class Immigration::ReportController < ApplicationController
 	 
 	 if @report.valid?
 	   if simple_captcha_valid?
+	     
 	     current_user.reports.push(@report)
 	     current_user.save
+	     
+	     current_user.journals.push(Journal.new(:action => 'Create', :model => 'Report', :method => 'Insert', :agent => request.user_agent, :record_id => @report.id ))
 	     respond_to do |format|
           format.html { redirect_to root_path, :notice => "Data Lapor Diri Anda Berhasil Disimpan" }        
        end            
@@ -43,10 +46,12 @@ class Immigration::ReportController < ApplicationController
         
           if @report.is_valid == true
             @col = Report.where(user_id: @report.user_id).ne(id: @report.id)
-            @col.each do |row|
-              row.update(is_valid: false)            
+            @col.each do |row|              
+              row.update(is_valid: false)      
+              current_user.journals.push(Journal.new(:action => 'Validated : ' + row.is_valid.to_s , :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => row.id ))      
             end
           end
+          current_user.journals.push(Journal.new(:action => 'Validated : ' + @report.is_valid.to_s , :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => row.id ))
           UserMailer.admin_update_report_email(@report).deliver
         
         redirect_to :back, :notice => 'Anda telah berhasil memperbaharui data lapor diri'
@@ -69,7 +74,7 @@ class Immigration::ReportController < ApplicationController
 	      current_user.reports.push(@report)
 	      current_user.save
 	      
-	      
+	      current_user.journals.push(Journal.new(:action => 'Create', :model => 'Report', :method => 'Insert', :agent => request.user_agent, :record_id => @report.id ))
 	      
 	      respond_to do |format|
 	        format.html { redirect_to :back, :notice => "Revisi Data Lapor Diri Anda Berhasil Disimpan. Silahkan tunggu email konfirmasi dari admin" }

@@ -65,6 +65,7 @@ class Immigration::PassportController < ApplicationController
           current_user.passports.push(tempcache)   
           current_user.save
           UserMailer.passport_received_email(current_user).deliver
+          current_user.journals.push(Journal.new(:action => 'Created', :model => 'Passport', :method => 'Insert', :agent => request.user_agent, :record_id => @passport.id ))
           flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
           render 'pasporconfirm.html.erb'
       else        
@@ -95,10 +96,10 @@ class Immigration::PassportController < ApplicationController
     #@passport = Passport.find_by(user_id: params[:id])
     if @passport.update(post_params)
 
-      if current_user.has_role? :admin or current_user.has_role? :moderator
+      if current_user.has_role? :admin or current_user.has_role? :moderator        
         UserMailer.admin_update_passport_email(@passport).deliver
       end
-
+      current_user.journals.push(Journal.new(:action => @passport.status, :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => @passport.id ))
       redirect_to :back, :notice => 'Anda telah berhasil memperbaharui data pengurusan paspor anda!'
     else
       @errors = @passport.errors.messages
@@ -109,7 +110,8 @@ class Immigration::PassportController < ApplicationController
 
   def update_payment 
     @passport = Passport.find(params[:id])
-    if @passport.update(post_params)      
+    if @passport.update(post_params)    
+      current_user.journals.push(Journal.new(:action => @passport.status, :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => @passport.id  ))  
       redirect_to :back, :notice => 'Data Pembayaran anda berhasil disimpan!'
     else
       @errors = @passport.errors.messages
@@ -123,6 +125,7 @@ class Immigration::PassportController < ApplicationController
    @passport = Passport.find(params[:id])
     reference = @passport.ref_id
     if @passport.delete
+      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Passport', :method => 'Delete', :agent => request.user_agent, :record_id => params[:id] ))
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} has been erased."
     else
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."

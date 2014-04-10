@@ -2,6 +2,14 @@
 <div style="text-align: center;">
   <%= image_tag("/assets/images/garuda.png", height: '160', width: '160') %>
 </div>
+<% unless @errors.nil? %>
+			<h2 style="color:white;background:red;">Registration Failed. Please check messages below</h2>
+				<div style="padding:4px;color:red;font-size:10pt;">
+					<% @errors.each do |fs| %>
+						<%= simple_format(fs[0].to_s + " = " + fs[1].to_s + "\n")  %>
+					<%end%>
+				</div>
+			<%end%>
 <%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => {:class => 'sky-form' }) do |f| %>
   <header>Registration Form for E-KBRI Account</header>
   <fieldset>

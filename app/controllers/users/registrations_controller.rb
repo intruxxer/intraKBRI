@@ -7,9 +7,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
   
   # POST /user
-  def create
-    if simple_captcha_valid?
-      build_resource(sign_up_params)
+  def create    
+    build_resource(sign_up_params)
+    if simple_captcha_valid?    
       resource_saved = resource.save
       yield resource if block_given?
       if resource_saved
@@ -23,6 +23,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
           respond_with resource, location: after_inactive_sign_up_path_for(resource)
         end
       else
+        @errors = resource.errors.messages
         clean_up_passwords resource
         respond_with resource
       end

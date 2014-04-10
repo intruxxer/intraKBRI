@@ -13,7 +13,7 @@ class Visa
   field :ref_id,                 type: String
   field :application_type,       type: Integer 
   field :category_type,          type: String
-  field :visa_type,              type: Integer #1 = individual, #2 = Family, 3 = Group
+  field :visa_type,              type: Integer, default: 1 #1 = individual, #2 = Family, 3 = Group
   field :reason,                 type: String
   
   field :first_name,					   type: String

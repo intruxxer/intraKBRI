@@ -5,8 +5,9 @@ class Immigration::ReportController < ApplicationController
   
   def index
      @report = Report.new
-	   if Report.where(user_id: current_user).count > 0
-		    redirect_to edit_report_path(current_user)
+     @last = Report.where(user_id: current_user).where(is_valid: true)
+	   if  @last.count > 0
+		    redirect_to edit_report_path(@last.first.id)
 	   end
   end
   
@@ -51,7 +52,7 @@ class Immigration::ReportController < ApplicationController
               current_user.journals.push(Journal.new(:action => 'Validated : ' + row.is_valid.to_s , :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => row.id ))      
             end
           end
-          current_user.journals.push(Journal.new(:action => 'Validated : ' + @report.is_valid.to_s , :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => row.id ))
+          current_user.journals.push(Journal.new(:action => 'Validated : ' + @report.is_valid.to_s , :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => @report.id ))
           UserMailer.admin_update_report_email(@report).deliver
         
         redirect_to :back, :notice => 'Anda telah berhasil memperbaharui data lapor diri'

@@ -162,7 +162,7 @@ class DesktopController < ApplicationController
       retrievedate = !(visa.printed_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (visa.printed_date+3).strftime("%-d %b %Y") + '</a>').html_safe : '-'
       
       
-      aaData.push([i, visa.ref_id, visa.first_name + " " + visa.last_name , visa.status, paymentdate, retrievedate, checkLink + "&nbsp;|&nbsp;" + editLink])
+      aaData.push([i, visa.ref_id, visa.first_name + " " + visa.last_name , visa.status, visa.created_at.strftime("%-d %b %Y") , paymentdate, retrievedate, checkLink + "&nbsp;|&nbsp;" + editLink])
       i += 1                        
     end
     
@@ -229,7 +229,7 @@ class DesktopController < ApplicationController
       paymentdate = !(passport.payment_date.nil?) ? passport.payment_date.strftime("%-d %b %Y") : '-'
       retrievedate = !(passport.printed_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (passport.printed_date+1).strftime("%-d %b %Y") + '</a>').html_safe : '-'
       
-      aaData.push([i, passport.ref_id, passport.full_name, passport.status, paymentdate , retrievedate , checkLink + "&nbsp;|&nbsp;" + editLink + "&nbsp;"])
+      aaData.push([i, passport.ref_id, passport.full_name, passport.status, passport.created_at.strftime("%-d %b %Y"), paymentdate , retrievedate , checkLink + "&nbsp;|&nbsp;" + editLink + "&nbsp;"])
       i += 1                        
     end
     

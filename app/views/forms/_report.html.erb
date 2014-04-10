@@ -274,7 +274,15 @@
 									'Chungcheongbuk-nam' => 'Chungcheongbuk-do',
 									'Gyeongsamnam-do' => 'Gyeongsam_nam-do',
 									'Gyeongsangbuk-do' => 'Gyeongsang_bu-do',
-									'Jeju Island' => 'Jeju'
+									'Jeju Island' => 'Jeju',
+									'특별시 Seoul' => 'Seoul',
+									'광역시 Busan' => 'Busan',
+									'광역시 Daegu' => 'Daegu',
+									'광역시 Daejeon' => 'Daejeon',
+									'광역시 Gwangju' => 'Gwangju',
+									'광역시 Incheon' => 'Incheon',
+									'광역시 Ulsan' => 'Ulsan',
+									'특별자치시 Sejong' => 'Sejong'
 									 } %>
 								<i></i>
 							  </label>							
@@ -378,7 +386,8 @@
 						<label class="label">Kode Pos</label>
 							<label class="input">								
 								<%= f.input_field :koreanaddresspostalcode %>
-							</label>							
+							</label>	
+							<div class="note">Cek kodepos alamat <a target="_blank" href="http://www.koreapost.go.kr/eng/sub/ZipCodeFinder.jsp?contId=e1030700">disini</a></div>						
 						</section>
 					</div>					
 					
@@ -787,9 +796,9 @@
 						<section class="col col-2">
 						<label class="label">Kode Pos</label>
 							<label class="input">								
-								<%= f.input_field :indonesianaddresspostalcode%>
-							<i></i>
-							</label>														
+								<%= f.input_field :indonesianaddresspostalcode%>							
+							</label>	
+							<div class="note">Cek kodepos alamat <a target="_blank" href="http://kodepos.posindonesia.co.id/kodeposalamatindonesialist.php">disini</a></div>													
 						</section>
 					</div>
 
@@ -1217,9 +1226,9 @@
 						<section class="col col-2">
 						<label class="label">Kode Pos</label>
 							<label class="input">								
-								<%= f.input_field :relationaddresspostalcode%>
-							<i></i>
-							</label>														
+								<%= f.input_field :relationaddresspostalcode%>							
+							</label>											
+							<div class="note">Cek kodepos alamat <a target="_blank" href="http://kodepos.posindonesia.co.id/kodeposalamatindonesialist.php">disini</a></div>			
 						</section>
 						
 					</div>

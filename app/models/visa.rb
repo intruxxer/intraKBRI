@@ -33,7 +33,7 @@ class Visa
   field :passport_date_issued,	 type: Date 
   field :passport_date_expired,	 type: Date
   
-  field :sponsor_type_kr,			   type: Integer
+  field :sponsor_type_kr,			   type: String
   field :sponsor_name_kr,			   type: String  
   field :sponsor_address_kr,		 type: String
   field :sponsor_address_city_kr,type: String

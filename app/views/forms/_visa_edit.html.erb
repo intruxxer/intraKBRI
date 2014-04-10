@@ -1109,18 +1109,18 @@
 					<section class="col col-6">
 					<div class="inline-group">
 					<label class="label">Other Information (Tick each item if you want to say: "Yes".)</label>
-					<label class="checkbox"><input type="checkbox" name="visa[checkbox_1]"><i></i>Have you ever been to Indonesia before?</label>
-					<label class="checkbox"><input type="checkbox" name="visa[checkbox_2]"><i></i>Have you ever been convicted in other country?</label>
-					<label class="checkbox"><input type="checkbox" name="visa[checkbox_3]"><i></i>Are you in posession of any other country?</label>
-					<label class="checkbox"><input type="checkbox" name="visa[checkbox_4]"><i></i>Do you have previous visa to enter Indonesia?</label>
+					<label class="checkbox"><input type="checkbox" value="true" name="visa[checkbox_1]" <%= (@visa.checkbox_1)?'checked':'' %>><i></i>Have you ever been to Indonesia before?</label>
+					<label class="checkbox"><input type="checkbox" value="true" name="visa[checkbox_2]" <%= (@visa.checkbox_2)?'checked':'' %>><i></i>Have you ever been convicted in other country?</label>
+					<label class="checkbox"><input type="checkbox" value="true" name="visa[checkbox_3]" <%= (@visa.checkbox_3)?'checked':'' %>><i></i>Are you in posession of any other country?</label>
+					<label class="checkbox"><input type="checkbox" value="true" name="visa[checkbox_4]" <%= (@visa.checkbox_4)?'checked':'' %>><i></i>Do you have previous visa to enter Indonesia?</label>
 					</div>
 					</section>
 					<section class="col col-6">
 					<div class="inline-group">
 					<label class="label">&nbsp;</label>
-					<label class="checkbox"><input type="checkbox" name="visa[checkbox_5]"><i></i>Has your visa application been refused before?</label>
-					<label class="checkbox"><input type="checkbox" name="visa[checkbox_6]"><i></i>Have you ever been deported from Indonesia before?</label>
-					<label class="checkbox"><input type="checkbox" name="visa[checkbox_7]"><i></i>Have you ever committed crime or any offense?</label>
+					<label class="checkbox"><input type="checkbox" value="true" name="visa[checkbox_5]" <%= (@visa.checkbox_5)?'checked':'' %>><i></i>Has your visa application been refused before?</label>
+					<label class="checkbox"><input type="checkbox" value="true" name="visa[checkbox_6]" <%= (@visa.checkbox_6)?'checked':'' %>><i></i>Have you ever been deported from Indonesia before?</label>
+					<label class="checkbox"><input type="checkbox" value="true" name="visa[checkbox_7]" <%= (@visa.checkbox_7)?'checked':'' %>><i></i>Have you ever committed crime or any offense?</label>
 					</div>
 					</section>
 				</div>

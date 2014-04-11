@@ -53,7 +53,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     if change_password
       is_valid = @user.update_with_password(updated_params)
     else
-      @user.update_without_password(updated_params)
+      is_valid = @user.update_without_password(updated_params)      
     end
     
     if is_valid

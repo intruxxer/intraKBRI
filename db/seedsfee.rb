@@ -222,3 +222,13 @@ biaya_kawat_ijinvisa = Visafee.new(
   fee_of_visa: 6
 )
 biaya_kawat_ijinvisa.save!
+
+visawisata = Visafee.new(
+  application_of_visa: 'visit',
+  type_of_visa: 'wisata',
+  name_of_visa: 'Visa Wisata',
+  fee_of_visa: 45,
+  category_of_visa: 'B',
+  num_entry: 'S'
+)
+visawisata.save!

@@ -3,7 +3,7 @@
   <%= image_tag("/assets/images/garuda.png", height: '160', width: '160') %>
 </div>
 <%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => 'sky-form' }) do |f| %>
-  <header>E-KBRI Account Modification</header>
+  <header>eKBRI Account Modification</header>
   <fieldset>
 	<div class="row">
 		<section class="col col-4">
@@ -357,8 +357,8 @@
 </div>
 
 
-<h3>Hapus akun di E-KBRI</h3>
-<p>Ada kesalahan? Enggan menggunakan layanan E-KBRI? <%= link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %>.</p>
+<h3>Revoke your Account</h3>
+<p>Revoke your account? <%= link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %>.</p>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript" src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script type="text/javascript">

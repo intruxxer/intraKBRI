@@ -1,6 +1,6 @@
 module ApplicationHelper
   def site_name
-    "E-KBRI Seoul"
+    "eKBRI : Indonesian Embassy in South Korea"
   end
   
   def site_url

@@ -43,7 +43,7 @@
 		<section class="col col-4">
 		  <label class="label">Email</label>
 		  <label class="input">
-		    <%= f.input_field :email, :required => true %>
+		    <%= f.input_field :email, :required => true, :readonly => true %>
 		    <i class="icon-append icon-envelope"></i>
 		  </label>
 		</section>
@@ -70,7 +70,7 @@
 		<section class="col col-3">
 		  <label class="label">Are you Indonesian?</label>
 		  <label class="select">
-		    <%= f.input_field :citizenship, collection: { 'Indonesian' => 'true', 'Foreigner' => 'false' } %>
+		    <%= f.input_field :citizenship, collection: { 'Indonesian' => 'true', 'Non-Indonesian' => 'false' } %>
 		  <i></i>
 		  </label>
 		</section>

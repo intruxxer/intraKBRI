@@ -6,7 +6,7 @@
 
 <ul class="nav navbar-nav navbar-right">
 <% if user_signed_in? %>
-  <li><p class="navbar-text" href="#"> Selamat Datang, <%= "#{current_user.full_name}" %>.</p></li>
+  <li><p class="navbar-text" href="#"> Welcome, <%= "#{current_user.full_name}" %>.</p></li>
 <% end %>
 <% if user_signed_in? %>
     <li><%= link_to '(Logout)', destroy_user_session_path, :method=>'delete' %></li>

@@ -1,25 +1,19 @@
 source "https://rubygems.org"
 
 gem "rails", "4.0.0"
-
-gem "mongoid"
-
+gem "mongoid", github: "mongoid/mongoid"
 gem "bson"
 gem "bson_ext"
 gem "mongo_session_store-rails4"
 
 gem "simple_form"
-
 gem "devise"
 gem "devise-encryptable"
-
 gem "cancan"
 gem "omniauth"
 gem "omniauth-facebook"
 gem "omniauth-twitter"
-
-gem "hashugar"
-
+gem "hashugar", github: "alex-klepa/hashugar"
 
 gem "bootstrap-sass", "~> 3.0.2.0"
 gem "sass-rails", "~> 4.0.0"
@@ -31,16 +25,12 @@ gem "jquery-rails"
 gem "turbolinks"
 gem "jbuilder", "~> 1.2"
 gem "introjs-rails"
+gem "jquery-turbolinks"
 
-gem 'jquery-turbolinks'
-
-gem 'paperclip', "~> 3.5.3"
+gem "paperclip", "~> 3.5.3"
 gem "mongoid-paperclip", :require => "mongoid_paperclip"
-gem 'aws-sdk', '~> 1.3.4'
-
+gem "aws-sdk", "~> 1.3.4"
 gem "wicked_pdf"
-
-
 gem 'simple_captcha2', require: 'simple_captcha'
 
 group :development do
@@ -48,7 +38,7 @@ group :development do
   gem "pry"
   gem "quiet_assets"
   gem "thin"
-
+  
   gem "rspec-rails"
   gem "factory_girl_rails"
   gem "better_errors"
@@ -61,6 +51,4 @@ group :test do
   gem "simplecov", require: false
   gem "database_cleaner"
   gem "rb-inotify", "~> 0.9"
-
 end
-

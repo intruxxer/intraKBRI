@@ -180,10 +180,10 @@ class Visa
       begin
         self.vipa_no = Visa.max(:vipa_no) + 1
       rescue
-        self.vipa_no = 5850
+        self.vipa_no = 100
       end      
     else
-      self.vipa_no = 5850
+      self.vipa_no = 100
     end
   end
   def check_verified

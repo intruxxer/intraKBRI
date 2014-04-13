@@ -10,7 +10,7 @@ development:
       # Provides the hosts the default session can connect to. Must be an array
       # of host:port pairs. (required)
       hosts:
-        - 127.0.0.1:27017
+        - 162.243.144.189:27017
       options:
         # Change the default write concern. (default = { w: 1 })
         # write:
@@ -68,7 +68,7 @@ production:
     default:
       database: e_kbri_production
       hosts:
-        - 127.0.0.1:27017
+        - 162.243.144.189:27017
       options:
         read: primary
         # In the test environment we lower the retries and retry interval to

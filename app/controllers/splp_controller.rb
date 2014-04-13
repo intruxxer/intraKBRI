@@ -1,0 +1,2 @@
+class SplpController < ApplicationController
+end

@@ -70,7 +70,7 @@ class DesktopController < ApplicationController
     @reports.each do |row|
       
       revisionLink = '-'
-      @revision = Report.where(:user_id => row.user_id).where(:created_at.gte => row.updated_at)
+      @revision = Report.where(:user_id => row.user_id).where(:created_at.gte => row.updated_at).where(:is_valid => false)
       if @revision.count > 0
         revisionLink = "<a href=\"/reports/" + @revision.last.id + "/check\">Revisi</a> (" + @revision.last.created_at.strftime("%Y %b %d %H:%M:%S").to_s + ")"
       end
@@ -116,7 +116,7 @@ class DesktopController < ApplicationController
     #begin      
       
       db.execute(query)      
-      @visa.update_attributes({:print_code => print_code,:status => 'Printed', :vipa_no => nextCounter, :printed_date => Time.now, :pickup_date => params[:visa][:pickup_date]})       
+      @visa.update_attributes({:print_code => print_code,:status => 'Printed', :printed_date => Time.now, :pickup_date => params[:visa][:pickup_date]})       
     begin   
        msg = { :notice => 'Data berhasil dipindahkan' }
     rescue 

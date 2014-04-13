@@ -5,11 +5,15 @@
 			
 			<% unless @errors.nil? %>
 			<h2 style="color:white;background:red;">Penyimpanan Data Gagal. Silahkan cek pesan dibawah ini</h2>
+			
 				<div style="padding:4px;color:red;font-size:10pt;">
 					<% @errors.each do |fs| %>
 						<%= simple_format(fs[0].to_s + " = " + fs[1].to_s + "\n")  %>
 					<%end%>
+					<br />
+					Silahkan Upload File - file anda kembali.
 				</div>
+				
 			<%end%>	
 			
 			<!-- Red color scheme -->
@@ -89,7 +93,7 @@
 									<%= f.input_field :paspor, as: :file, class: 'fileplaceholder'  %>Unggah</div>
 									<input type="text" readonly="readonly" />
 							</label>
-							<div class="note"><strong>Note:</strong> Format : JPG/JPEG/PNG. Ukuran Maks : 2MB</div>
+							<div class="note"><strong><u>Note:</u></strong> Format : JPG/JPEG/PNG. Ukuran Maks : 2MB</div>
 						</section>	
 						<% if @report.paspor.exists? %>
 						<section class="col col-1">
@@ -98,7 +102,7 @@
 						<%end%>		
 						
 						<section class="col col-2">
-							<label class="label">No Passport</label>
+							<label class="label">No. Passport</label>
 							<label class="input">
 								<i class="icon-append icon-book"></i>
 								<%= f.input_field :nopaspor %>
@@ -1282,7 +1286,7 @@
 						Dengan melaporkan data - data di atas kepada KBRI anda telah menjamin dan memastikan bahwa informasi yang dikirimkan 
 						adalah yang sebenar-benarnya. Kesalahan maupun ketidaksesuaian informasi adalah tanggung jawab pengisi sepenuhnya. 
 						Kerahasiaan data pengisi akan kami jaga sebaik-baiknya dan akan dipergunakan untuk kepentingan yang sesuai.
-						Jika terjadi perubahan data, harap segera hubungi staff KBRI Korea melalui kontak yang telah disediakan.
+						Jika terjadi perubahan data, harap segera hubungi staff KBRI Seoul melalui kontak yang telah disediakan.
 					</p>
 				</fieldset>
 

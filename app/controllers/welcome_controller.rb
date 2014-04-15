@@ -1,6 +1,24 @@
 class WelcomeController < ApplicationController
   def index	
+    
     @ip_visitor = request.remote_ip
+    session[:ip_address]  = @ip_visitor
+    if !user_signed_in? then
+      @visitorname = "Visitor"
+    else
+      @visitorname = current_user.full_name
+    end
+    @visitor =  Visitor.new( who: @visitorname, ip_address: @ip_visitor.to_s, action: "Visiting Main Page")
+    if @visitor.valid?
+        @visitor.save!
+        message_one = "Dear "+ @visitorname.to_s + ",  Please kindly be notified that your IP address & Location is automatically 
+                       logged for security monitoring during your active access to E-KBRI."
+        message_two = "Your IP address is<b> #{@ip_visitor} </b>that is identified to be located in <b> #{@visitor.coordinates[0]} long </b> & <b> #{@visitor.coordinates[1]} lat </b>."
+        warning = [ message_one, message_two ]
+        flash[:warning] = warning.join("<br/>").html_safe
+                           
+    end
+                         
   	if user_signed_in?
   	  @userreport = Report.where(user_id: current_user.id).where(is_valid: true).desc(:updated_at)
   	  if current_user.has_role? :admin then

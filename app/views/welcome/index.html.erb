@@ -2,7 +2,9 @@
 <%= image_tag("/assets/images/garuda.png", height: '160', width: '160') %>
 <h1>Welcome to electronic KBRI Seoul services (E-KBRI)</h1>
 <hr />
-<p><%= "Your IP address is: #{@ip_visitor}. Your IP is automatically logged" %></p>
+<% if !user_signed_in? and false then %>
+<p><%= "Your IP address is: #{@ip_visitor}. Your IP is automatically logged for monitoring." %></p>
+<% end %>
 <% if user_signed_in? then %>
 <% if !current_user.citizenship or current_user.has_role? :admin or current_user.has_role? :moderator %>
 		<div class="row">
@@ -21,7 +23,8 @@
 													<th>Reference No.</th>
 													<th><center>Application</center></th>	
 													<th><center>Payment</center></th>
-													<th><center>Retrieve</center></th>													
+													<th><center>Retrieve</center></th>	
+													<th><center>Application Receipt</center></th>												
 													<th><center></center></th>
 													<th><center>Status</center></th>
 												</tr>
@@ -36,12 +39,24 @@
 												<% unless first %>
 												
 													<% if prevref == t.ref_id and found == false %>
+														<td class="center" style="vertical-align: middle;" valign="middle" rowspan="<%= Visa.where(:ref_id => t.ref_id).all.count %>" <% found = true %>>
+															<%= link_to 'visas/group/'+t.ref_id+'.pdf', :target => "_blank" do %>
+															<span class="glyphicon glyphicon-save"></span>
+															<span class="glyphicon-class">Download Receipt</span>
+															<% end %>
+														</td>
 														<td class="center" style="vertical-align: middle;" valign="middle" rowspan="<%= Visa.where(:ref_id => t.ref_id).all.count %>" <% found = true %>><%= status.html_safe %></td>												
 													<% elsif prevref == t.ref_id and found == true %>
 														
 													<% elsif prevref != t.ref_id and found == true %>
 														<% found = false %>
 													<% else %>
+														<td>
+														<%= link_to 'visas/'+t.id+'.pdf', :target => "_blank" do %>
+															<span class="glyphicon glyphicon-save"></span>
+															<span class="glyphicon-class">Download Receipt</span>
+															<% end %>
+														</td>
 														<td class="center"><%= status.html_safe %></td> <% found = false %>
 													<% end %>												
 														
@@ -54,7 +69,7 @@
 													<td align="left"><%= t.ref_id %></td>
 													<td class="center"><%= t.updated_at.strftime("%-d %b %y") %></td>
 													<td class="center"><%=  !(t.payment_date.nil?) ? t.payment_date.strftime("%-d %b %Y") : '-' %></td>	
-													<td class="center""><%=  !(t.printed_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (t.printed_date+3).strftime("%-d %b %Y") + '</a>').html_safe : '-' %></td>																										
+													<td class="center""><%=  !(t.pickup_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (t.pickup_date).strftime("%-d %b %Y") + '</a>').html_safe : '-' %></td>																										
 													<td class="center">
 													<%= link_to edit_visa_path(t.id) do %>
 														<span class="glyphicon glyphicon-pencil"></span>
@@ -71,12 +86,8 @@
 														<span class="glyphicon glyphicon-trash"></span>
 														<span class="glyphicon-class">Cancel</span>
 														<% end %>
-													|&nbsp;
-													<%= link_to 'visas/'+t.id+'.pdf', :target => "_blank" do %>
-														<span class="glyphicon glyphicon-save"></span>
-														<span class="glyphicon-class">Download Receipt</span>
-														<% end %>
 													</td>
+													
 																	
 																												
 													
@@ -85,6 +96,12 @@
 												<% end %>
 												
 												<% unless found %>
+													<td>
+													<%= link_to 'visas/'+t.id+'.pdf', :target => "_blank" do %>
+														<span class="glyphicon glyphicon-save"></span>
+														<span class="glyphicon-class">Download Receipt</span>
+														<% end %>
+													</td>
 													<td class="center"><%= status %></td> 
 												<% end %>
 												</tr>
@@ -131,7 +148,7 @@
 													<td align="left"><%= t.ref_id %></td>
 													<td class="center"><%= t.updated_at.strftime("%-d %b %Y") %></td>													
 													<td class="center"><%=  !(t.payment_date.nil?) ? t.payment_date.strftime("%-d %b %Y") : '-' %></td>
-													<td class="center""><%=  !(t.printed_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (t.printed_date+1).strftime("%-d %b %Y") + '</a>').html_safe : '-' %></td>												
+													<td class="center""><%=  !(t.pickup_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (t.pickup_date).strftime("%-d %b %Y") + '</a>').html_safe : '-' %></td>												
 													<td class="center">
 													<% if t.status != 'Printed' %>	
 													<%= link_to (edit_passport_path(t.id)) do %>
@@ -226,7 +243,7 @@
 <div>An initiative towards e-Government movement by</div>
 <h2>The Embassy of Republic of Indonesia in Seoul.</h2>
 <p>
-	380 Yeouidebangro, Yeongdeungpo-gu, Seoul (in front of KBS Annex)
+	380 Yeouidebangro, Yeongdeungpo-gu, Seoul Metropolitan City
 </p>
 <p>
 	<b>Telephone :</b> +82-2-7835675 - 7 or +82-2-7835371 - 2

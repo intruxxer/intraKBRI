@@ -33,9 +33,9 @@ class Immigration::VisaController < ApplicationController
     session[:add_people] = nil
 
     
-    @visa = Visa.where(:ref_id => @visa[0].ref_id)
+    @visa = Visa.where(:ref_id => app_ref)
           
-    flash[:notice] = 'You have ended a recent group/family application under # #{app_ref}. Next application will be another group/family.'
+    flash[:notice] = 'You have ended a recent group/family application under ##{app_ref}. Next application will be another group/family member.'
     render 'visaconfirm.html.erb'
     
   #  redirect_to root_path, :notice => "You have ended a recent group/family application under # #{app_ref}. Next application will be another group/family."
@@ -101,7 +101,7 @@ class Immigration::VisaController < ApplicationController
     
     time = Time.new
     coded_date = time.strftime("%y%m%d")
-    @ref_id = '1'+coded_date+generate_string(3)
+    @ref_id = 'A'+coded_date+generate_string(3)
     
     
     if @visa[0].valid?
@@ -112,7 +112,6 @@ class Immigration::VisaController < ApplicationController
           current_user.journals.push(Journal.new(:action => 'Created', :model => 'Visa', :method => 'Insert', :agent => request.user_agent, :record_id => @visa[0].id ))
           @visa = Visa.where(:ref_id => @visa[0].ref_id)
           
-          flash[:notice] = 'Application Saved successfully!'
           render 'visaconfirm.html.erb'
           #redirect_to root_path, :notice => "Your visa application is successfully received!"
       else        
@@ -145,6 +144,21 @@ class Immigration::VisaController < ApplicationController
                :disposition    => "inline", #{attachment, inline}
                :show_as_html   => params[:debug].present?,
                :template       => "immigration/visa/visapayment.html.erb",
+               :layout         => "pdf_layout.html",
+               :encoding       => "utf8"              
+
+      end
+    end
+  end
+  
+  def group_recap
+    @visas = Visa.where(:ref_id => params[:ref_id])
+      respond_to do |format|      
+      format.pdf do
+        render :pdf            => "Visa Application Form Group/Family["+"#{params[:ref_id]}"+"]",
+               :disposition    => "inline", #{attachment, inline}
+               :show_as_html   => params[:debug].present?,
+               :template       => "immigration/visa/visarecapitulation.html.erb",
                :layout         => "pdf_layout.html",
                :encoding       => "utf8"              
 
@@ -201,7 +215,7 @@ class Immigration::VisaController < ApplicationController
       :sponsor_phone_id, :duration_stays, :duration_stays_unit, :num_entry, :checkbox_1, :checkbox_2, :checkbox_3, 
       :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry, :purpose, 
       :passport, :idcard, :photo, :status, :status_code, :slip_photo, :payment_date, :ticket, :supdoc, :ref_id,
-      :approval_no, :visafee_ref, :comment, :pickup_office)
+      :approval_no, :visafee_ref, :comment, :pickup_office, :pickup_date)
 
     end
     #Notes: to add attribute/variable after POST params received, do

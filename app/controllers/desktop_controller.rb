@@ -164,7 +164,7 @@ class DesktopController < ApplicationController
       end
       
       
-      aaData.push([i, visa.ref_id, print_code, visa.first_name + " " + visa.last_name , visa.status, visa.created_at.strftime("%-d %b %Y") , paymentdate, retrievedate, checkLink + "&nbsp;|&nbsp;" + editLink])
+      aaData.push([i, visa.ref_id, print_code, visa.first_name + " " + visa.last_name , visa.status, 'N/A' , paymentdate, retrievedate, checkLink + "&nbsp;|&nbsp;" + editLink])
       i += 1                        
     end
     

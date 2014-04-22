@@ -153,6 +153,7 @@ class DesktopController < ApplicationController
     @visas.each do |visa|
       editLink = "<a href=\"/visas/" + visa.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Update</span></a>"
       checkLink = "<a href=\"/visas/" + visa.id + "/check\"><span class='glyphicon glyphicon-eye-open'></span><span class='glyphicon-class'>Check</span></a>"
+      deleteLink = "<a rel=\"nofollow\" data-method=\"delete\" href=\"/deletevisaviadashboard/#{visa.id}\"><span class='glyphicon glyphicon-trash'></span><span class='glyphicon-class'>Delete</span></a>"
       #printLink = "<a href=\"/visa/tosisari/" + visa.id + "\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SISARI</span></a>"
       
       paymentdate = !(visa.payment_date.nil?) ? visa.payment_date.strftime("%-d %b %Y") : '-'
@@ -164,7 +165,7 @@ class DesktopController < ApplicationController
       end
       
       
-      aaData.push([i, visa.ref_id, print_code, visa.first_name + " " + visa.last_name , visa.status, 'N/A' , paymentdate, retrievedate, checkLink + "&nbsp;|&nbsp;" + editLink])
+      aaData.push([i, visa.ref_id, print_code, visa.first_name + " " + visa.last_name , visa.status, visa.created_at.strftime("%-d %b %Y") , paymentdate, retrievedate, checkLink + "&nbsp;|&nbsp;" + editLink + "&nbsp;|&nbsp;" + deleteLink + "&nbsp;"])
       i += 1                        
     end
     
@@ -177,7 +178,7 @@ class DesktopController < ApplicationController
   def exec_toSPRI
     @passport = Passport.find(params[:id])
     
-    params.require(:passport).permit(:passport_no,:reg_no,:lapordiri_no,:pickup_date)
+    params.require(:passport).permit(:passport_no,:reg_no,:lapordiri_no,:pickup_date, :datanglgs)
     
     db = Accessdb.new( TARGET_SPRI_FOLDER + 'SPRI3.mdb' )
     db.open()    
@@ -188,6 +189,10 @@ class DesktopController < ApplicationController
       db.execute("INSERT INTO tblData(kntrKeluarLama, noFile, pekerjaan, alasanBuat, sponsorLuar, negaraLuar, alamatLuar, kotaLuar, alamatDalam, kelurahan, kabupaten, kecamatan, noPass, noReg, tglKeluar, tglExpire, namaLkP, tmpLahir, tglLahir, jmlHal, noLama, tglKeluarLama, tmpKeluarLama, idCode, KantorPerwakilan, jnsKel, statusWN, namaKlrg) 
         VALUES('" + @passport.placeIssued + "','" + params[:passport][:lapordiri_no] + "','" + @passport.jobStudyInKorea + "','" + @passport.application_reason + "','" +  @passport.jobStudyOrganization.to_s + "','KOREA SELATAN','" +  @passport.addressKorea.to_s + "','" +  @passport.cityKorea.to_s + "','" +  @passport.addressIndonesia.to_s + "','" +  @passport.kelurahanIndonesia.to_s + "','" +  @passport.kabupatenIndonesia.to_s + "','" +  @passport.kecamatanIndonesia.to_s + "','" + params[:passport][:passport_no] + "','" + params[:passport][:reg_no] + "','" + Time.new.year.to_s + "/" + Time.new.month.to_s + "/" + Time.new.day.to_s + "','" + (Time.new.year + 5).to_s + "/" + Time.new.month.to_s + "/" + Time.new.day.to_s + "','" + @passport.full_name + "','" + @passport.placeBirth + "','" + @passport.dateBirth.to_s + "','" +  @passport.paspor_type.to_s + "','" + @passport.lastPassportNo + "','" + @passport.dateIssued.to_s + "','" + @passport.placeIssued + "','37A','KBRI SEOUL', '" +  @passport.kelamin.to_s + "', '" +  @passport.citizenship_status.to_s + "','')")
       @passport.update_attributes({ :status => 'Printed', :passport_no => params[:passport][:passport_no], :reg_no => params[:passport][:reg_no],:printed_date => Time.now, :pickup_date => params[:passport][:pickup_date]})      
+      
+      if params[:passport][:datanglgs] == true
+        @passport.update_attributes({ :payment_date => Time.now })
+      end
       
       UserMailer.admin_update_passport_email(@passport).deliver 
       msg = { :notice => 'Data berhasil dipindahkan' }  
@@ -224,15 +229,16 @@ class DesktopController < ApplicationController
     
     i = 1
     @passport.each do |passport|
-      #deleteLink = "<a rel=\"nofollow\" data-method=\"delete\" href=\"/passports/" + passport.id + "\"><span class='glyphicon glyphicon-trash'></span><span class='glyphicon-class'>Delete</span></a>"
       editLink = "<a href=\"/passports/" + passport.id + "/edit\" target=\"_blank\"><span class='glyphicon glyphicon-pencil'></span><span class='glyphicon-class'>Edit</span></a>"
       #printLink = "<a href=\"/admin/service/prep_spri/" + passport.id + "\" target=\"_blank\"><span class='glyphicon glyphicon-export'></span><span class='glyphicon-class'>Send to SPRI</span></a>"
       checkLink = "<a href=\"/passports/" + passport.id + "/check\"><span class='glyphicon glyphicon-eye-open'></span><span class='glyphicon-class'>Check</span></a>"
+      #deleteLink = "<a rel=\"nofollow\" data-method=\"delete\" href=\"/deletepassportviadashboard/#{passport.id}\"><span class='glyphicon glyphicon-trash'></span><span class='glyphicon-class'>Delete</span></a>"
+      deleteLink = "<a rel=\"nofollow\" data-method=\"delete\" href=\"/deletepassportviadashboard/#{passport.id}\"><span class='glyphicon glyphicon-trash'></span><span class='glyphicon-class'>Delete</span></a>"
       
       paymentdate = !(passport.payment_date.nil?) ? passport.payment_date.strftime("%-d %b %Y") : '-'
       retrievedate = !(passport.pickup_date.nil?) ? ('<a style="color:#009933;font-weight:bold;">' + (passport.pickup_date).strftime("%-d %b %Y") + '</a>').html_safe : '-'
       
-      aaData.push([i, passport.ref_id, passport.full_name, passport.status, passport.created_at.strftime("%-d %b %Y"), paymentdate , retrievedate , checkLink + "&nbsp;|&nbsp;" + editLink + "&nbsp;"])
+      aaData.push([i, passport.ref_id, passport.full_name, passport.status, passport.created_at.strftime("%-d %b %Y"), paymentdate , retrievedate , checkLink + "&nbsp;|&nbsp;" + editLink + "&nbsp;|&nbsp;" + deleteLink + "&nbsp;" ])
       i += 1                        
     end
     
@@ -240,6 +246,47 @@ class DesktopController < ApplicationController
       format.json { render json: {'sEcho' => params[:sEcho].to_i , 'aaData' => aaData , 'iTotalRecords' => iTotalRecords, 'iTotalDisplayRecords' => iTotalDisplayRecords } }
     end
     
+  end
+  
+  #DELETE /passport/:id
+  def destroy_passport
+   @passport = Passport.find(params[:id])
+    reference = @passport.ref_id
+    if @passport.delete
+      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Passport', :method => 'Delete from Dashboard', :agent => request.user_agent, :record_id => params[:id] ))
+      redirect_to :back, :notice => "Passport Application dengan No Ref #{reference} sudah berhasil dihapus dari sistem."
+    else
+      redirect_to :back, :notice => "Passport Application dengan No Ref #{reference} tidak ditemukan."
+    end
+  end
+  
+    #DELETE /visa/:id
+  def destroy_visa
+   @visa = Visa.find(params[:id])
+    reference = @visa.ref_id
+    if @visa.delete
+      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Visa', :method => 'Delete from Dashboard', :agent => request.user_agent, :record_id => params[:id] ))
+      redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is successfully deleted from our database."
+    else
+      redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."
+    end
+  end
+  
+  def destroy_user
+    authorize! :destroy, @user, :message => 'Not authorized as an administrator.'
+    @user = User.find(params[:id])
+    name = @user.full_name
+    email = @user.email
+    if @user.destroy
+      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'User', :method => 'Delete from Dashboard', :agent => request.user_agent, :record_id => params[:id] ))
+      respond_to do |format|
+        format.html { redirect_to users_url, :notice => "User eKBRI bernama #{name.titleize} (#{email}) berhasil dihapus dari sistem." }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to users_url, :notice => "User eKBRI bernama #{name} & email #{email} tidak berhasil dihapus dari sistem." }
+      end
+    end
   end
   
 end

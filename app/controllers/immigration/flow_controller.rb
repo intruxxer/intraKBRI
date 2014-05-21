@@ -1,5 +1,11 @@
 class Immigration::FlowController < ApplicationController
   
+  def systemoverview
+  end
+  
+  def systempayment
+  end
+  
   def visa
   end
   

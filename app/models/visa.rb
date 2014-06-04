@@ -117,7 +117,7 @@ class Visa
   validates :sponsor_phone_kr,       presence: true, :if => :check_not_reentry
       
   validates :sponsor_type_id,        presence: true
-  validates :sponsor_name_id,        presence: true  
+  validates :sponsor_name_id,        presence: true, length: { minimum: 1, maximum: 25 }  
   validates :sponsor_address_id,     presence: true
   validates :sponsor_address_kab_id, presence: true
   validates :sponsor_address_prov_id,presence: true
@@ -154,23 +154,31 @@ class Visa
   ##validates :approval_no,            presence: true
   
   has_mongoid_attached_file :photo, :styles => { :thumb => "90x120>" }
-  validates_attachment_content_type :photo, :content_type => %w(image/jpeg image/jpg image/png)
+  validates_attachment_content_type :photo, :content_type => %w(image/jpeg image/jpg image/png application/pdf)
   validates_attachment_presence :photo
   validates_attachment_size :photo, less_than: 2.megabytes
   
   has_mongoid_attached_file :idcard, :styles => { :thumb => "90x120>" }
-  validates_attachment_content_type :idcard, :content_type => %w(image/jpeg image/jpg image/png)
+  validates_attachment_content_type :idcard, :content_type => %w(image/jpeg image/jpg image/png application/pdf)
   validates_attachment_presence :idcard
   validates_attachment_size :idcard, less_than: 2.megabytes
   
   has_mongoid_attached_file :passport, :styles => { :thumb => "90x120>" }
-  validates_attachment_content_type :passport, :content_type => %w(image/jpeg image/jpg image/png)
+  validates_attachment_content_type :passport, :content_type => %w(image/jpeg image/jpg image/png application/pdf)
   validates_attachment_presence :passport
   validates_attachment_size :passport, less_than: 2.megabytes
   
   has_mongoid_attached_file :supdoc
-  validates_attachment_content_type :supdoc, :content_type => %w(application/zip application/x-rar-compressed application/octet-stream image/jpeg image/jpg image/png application/pdf)
-  validates_attachment_size :supdoc, less_than: 5.megabytes
+  validates_attachment_content_type :supdoc, :content_type => %w(application/octet-stream application/zip application/x-rar-compressed application/octet-stream image/jpeg image/jpg image/png application/pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+  validates_attachment_size :supdoc, less_than: 2.megabytes
+  
+  has_mongoid_attached_file :supdoc_2
+  validates_attachment_content_type :supdoc_2, :content_type => %w(application/octet-stream application/zip application/x-rar-compressed application/octet-stream image/jpeg image/jpg image/png application/pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+  validates_attachment_size :supdoc_2, less_than: 2.megabytes
+  
+  has_mongoid_attached_file :supdoc_3
+  validates_attachment_content_type :supdoc_3, :content_type => %w(application/octet-stream application/zip application/x-rar-compressed application/octet-stream image/jpeg image/jpg image/png application/pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+  validates_attachment_size :supdoc_3, less_than: 2.megabytes
   
   has_mongoid_attached_file :ticket, :styles => { :thumb => "90x120>" }
   validates_attachment_content_type :ticket, :content_type => %w(image/jpeg image/jpg image/png application/pdf)  

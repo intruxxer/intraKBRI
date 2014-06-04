@@ -24,9 +24,9 @@ class Passport
   field :citizenship_status,     type: String
   
   field :lastPassportNo,         type: String
-  field :dateIssued,             type: Date
+  field :dateIssued,             type: Date, default: Date.today
   field :placeIssued,            type: String
-  field :dateIssuedEnd,          type: String
+  field :dateIssuedEnd,          type: String, default: Date.today
   field :immigrationOffice,      type: String, default: 'Imigrasi'
   
   field :jobStudyInKorea,        type: String
@@ -78,24 +78,24 @@ class Passport
   validates :citizenship_status, presence: true
   
 
-  validates :lastPassportNo,     presence: true, length: { minimum: 0, maximum: 32 }, :if => :check_application_reason
-  validates :placeIssued,        presence: true, length: { minimum: 0, maximum: 30 }, :if => :check_application_reason
+  validates :lastPassportNo,     presence: true, length: { minimum: 1, maximum: 32 }, :if => :check_application_reason
+  validates :placeIssued,        presence: true, length: { minimum: 1, maximum: 30 }, :if => :check_application_reason
   validates :dateIssued,         presence: true, :if => :check_application_reason
   validates :dateIssuedEnd,      presence: true, :if => :check_application_reason
   #validates :immigrationOffice,  presence: true, :if => :check_application_reason
 
   
   validates :jobStudyInKorea,    presence: true, length: { minimum: 1, maximum: 50 }
-  validates :jobStudyTypeInKorea,presence: true
-  validates :jobStudyOrganization,length: { minimum: 0, maximum: 50 }
-  validates :jobStudyAddress,    length: { minimum: 0, maximum: 50 }
+  validates :jobStudyTypeInKorea, presence: true
+  validates :jobStudyOrganization, length: { minimum: 1, maximum: 50 }
+  validates :jobStudyAddress,    length: { minimum: 1, maximum: 50 }
   
   validates :phoneKorea,         presence: true, length: { minimum: 1, maximum: 30 }
-  validates :addressKorea,       presence: true, length: { minimum: 1, maximum: 100 }
+  validates :addressKorea,       presence: true #, length: { minimum: 1, maximum: 100 } #maximum of 100 characters for SPRI
   validates :cityKorea,          presence: true
   
   validates :phoneIndonesia,     presence: true, length: { minimum: 1, maximum: 30 }
-  validates :addressIndonesia,   presence: true, length: { minimum: 1, maximum: 50 }
+  validates :addressIndonesia,   presence: true #, length: { minimum: 1, maximum: 50 } #maximum of 50 characters for SPRI
   validates :kelurahanIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
   validates :kabupatenIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
   validates :kecamatanIndonesia, presence: true, length: { minimum: 1, maximum: 30 }
@@ -116,8 +116,20 @@ class Passport
 
   
   has_mongoid_attached_file :supporting_doc
-  validates_attachment_content_type :supporting_doc, :content_type => %w(application/zip application/x-rar-compressed application/octet-stream)
-  validates_attachment_size :supporting_doc, less_than: 5.megabytes
+  validates_attachment_content_type :supporting_doc, :content_type => %w(application/octet-stream application/zip application/x-rar-compressed image/jpeg image/jpg image/png application/pdf application/x-pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+  validates_attachment_size :supporting_doc, less_than: 2.megabytes
+  
+  has_mongoid_attached_file :supporting_doc_2
+  validates_attachment_content_type :supporting_doc_2, :content_type => %w(application/octet-stream application/zip application/x-rar-compressed image/jpeg image/jpg image/png application/pdf application/x-pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+  validates_attachment_size :supporting_doc_2, less_than: 2.megabytes
+  
+  has_mongoid_attached_file :supporting_doc_3
+  validates_attachment_content_type :supporting_doc_3, :content_type => %w(application/octet-stream application/zip application/x-rar-compressed image/jpeg image/jpg image/png application/pdf application/x-pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+  validates_attachment_size :supporting_doc_3, less_than: 2.megabytes
+  
+  has_mongoid_attached_file :supporting_doc_4
+  validates_attachment_content_type :supporting_doc_4, :content_type => %w(application/octet-stream application/zip application/x-rar-compressed image/jpeg image/jpg image/png application/pdf application/x-pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+  validates_attachment_size :supporting_doc_4, less_than: 2.megabytes
   
   
   

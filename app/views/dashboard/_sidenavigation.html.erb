@@ -68,17 +68,41 @@
 						     </ul>	
 						</li>		
 						
-						<li>
-							<%= link_to "/report/panel/periodical" do %>
-								<i class="clip-bars"></i>
-								<span class="title"> Laporan Berkala </span>
+						<li class="active open">
+							<%= link_to "#" do %>
+								<i class="clip-screen"></i>
+								<span class="title"> Rekapitulasi & Laporan </span><i class="icon-arrow"></i>
 								<span class="arrow "></span>
 							<% end %>
+							<ul class="sub-menu">								
+								<li>
+									<%= link_to "/report/panel/periodical" do %>
+										<i class="clip-bars"></i>
+										<span class="title"> Basis Tanggal Pembayaran  </span>
+										<span class="arrow "></span>
+									<% end %>
+								</li>	
+								<li>
+									<%= link_to "/report/panel/periodical_printed_based" do %>
+										<i class="clip-bars"></i>
+										<span class="title"> Basis Tanggal Pencetakan </span>
+										<span class="arrow "></span>
+									<% end %>
+								</li>							
+							</ul>
+							
 						</li>
 						<li>
 							<%= link_to users_path do %>
 								<i class="clip-users"></i>
 								<span class="title"> Manajemen User </span>
+								<span class="arrow "></span>
+							<% end %>	
+						</li>
+						<li>
+							<%= link_to '/dashboard/service/journal' do %>
+								<i class="clip-wrench"></i>
+								<span class="title"> Journals </span>
 								<span class="arrow "></span>
 							<% end %>	
 						</li>	

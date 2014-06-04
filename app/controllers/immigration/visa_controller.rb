@@ -58,12 +58,18 @@ class Immigration::VisaController < ApplicationController
     
     
     if @visagrouppayment.valid?
-      @visagrouppayment.save
-      current_user.journals.push(Journal.new(:action => 'Payment', :model => 'Visagrouppayment', :method => 'Insert', :agent => request.user_agent, :record_id => @visagrouppayment.id ))
       
-      Visa.where(params.require(:visagrouppayment).permit(:ref_id)).all.each do |row|
+      @vgs = Visagrouppayment.where(params.require(:visagrouppayment).permit(:ref_id))
+      if @vgs.count > 0
+        @vgs.delete
+      end
+      
+      @visagrouppayment.save
+      current_user.journals.push(Journal.new(:action => 'Payment', :model => 'Visagrouppayment', :method => 'Insert', :agent => request.user_agent, :record_id => @visagrouppayment.id, :ref_id => @visagrouppayment.ref_id ))
+      
+      Visa.where(params.require(:visagrouppayment).permit(:ref_id)).each do |row|
         row.update(params.require(:visagrouppayment).permit(:status, :payment_date, :pickup_office))
-        current_user.journals.push(Journal.new(:action => 'Paid', :model => 'Visa', :method => 'Update', :agent => request.user_agent, :record_id => row.id ))
+        current_user.journals.push(Journal.new(:action => 'Paid', :model => 'Visa', :method => 'Update', :agent => request.user_agent, :record_id => row.id, :ref_id => row.ref_id ))
       end
       redirect_to root_path, :notice => 'Payment Information Successfully saved!'
     else
@@ -109,7 +115,7 @@ class Immigration::VisaController < ApplicationController
           current_user.visas.push(@visa[0])   
           current_user.save
           UserMailer.visa_received_email(@visa[0]).deliver
-          current_user.journals.push(Journal.new(:action => 'Created', :model => 'Visa', :method => 'Insert', :agent => request.user_agent, :record_id => @visa[0].id ))
+          current_user.journals.push(Journal.new(:action => 'Created', :model => 'Visa', :method => 'Insert', :agent => request.user_agent, :record_id => @visa[0].id, :ref_id => @visa[0].ref_id ))
           @visa = Visa.where(:ref_id => @visa[0].ref_id)
           
           render 'visaconfirm.html.erb'
@@ -172,13 +178,13 @@ class Immigration::VisaController < ApplicationController
     @visa = Visa.find(params[:id])
     if @visa.update(post_params)
 
-      
-      if current_user.has_role? :admin or current_user.has_role? :moderator
-        current_user.journals.push(Journal.new(:action => @visa.status, :model => 'Visa', :method => 'Update', :agent => request.user_agent, :record_id => @visa.id ))
+      current_user.journals.push(Journal.new(:action => @visa.status, :model => 'Visa', :method => 'Update', :agent => request.user_agent, :record_id => @visa.id, :ref_id => @visa.ref_id ))
+      if current_user.has_role? :admin or current_user.has_role? :moderator        
         UserMailer.admin_update_visa_email(@visa).deliver
-      end
-      
-      redirect_to :back, :notice => 'You have updated your visa application data!'
+        redirect_to :back, :notice => 'A Visa Application Data has been updated'
+      else
+        redirect_to root_path, :notice => 'You have updated your visa application data!'
+      end      
 
     else
       @errors = @visa.errors.messages
@@ -198,7 +204,7 @@ class Immigration::VisaController < ApplicationController
     @visa = Visa.find(params[:id])
     reference = @visa.ref_id
     if @visa.delete
-      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Visa', :method => 'Delete', :agent => request.user_agent, :record_id => params[:id] ))
+      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Visa', :method => 'Delete', :agent => request.user_agent, :record_id => params[:id], :ref_id => reference ))
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} has been erased."
     else
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."
@@ -215,7 +221,7 @@ class Immigration::VisaController < ApplicationController
       :sponsor_phone_id, :duration_stays, :duration_stays_unit, :num_entry, :checkbox_1, :checkbox_2, :checkbox_3, 
       :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry, :purpose, 
       :passport, :idcard, :photo, :status, :status_code, :slip_photo, :payment_date, :ticket, :supdoc, :ref_id,
-      :approval_no, :visafee_ref, :comment, :pickup_office, :pickup_date)
+      :approval_no, :visafee_ref, :comment, :pickup_office, :pickup_date, :supdoc_2, :supdoc_3)
 
     end
     #Notes: to add attribute/variable after POST params received, do

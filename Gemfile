@@ -1,10 +1,15 @@
 source "https://rubygems.org"
 
 gem "rails", "4.0.0"
-gem "mongoid", github: "mongoid/mongoid"
+gem "mongoid"
 gem "bson"
 gem "bson_ext"
 gem "mongo_session_store-rails4"
+gem "geocoder"
+gem "kaminari"
+
+gem "axlsx"
+gem 'axlsx_rails'
 
 gem "simple_form"
 gem "devise"
@@ -13,7 +18,7 @@ gem "cancan"
 gem "omniauth"
 gem "omniauth-facebook"
 gem "omniauth-twitter"
-gem "hashugar", github: "alex-klepa/hashugar"
+gem "hashugar"
 
 gem "bootstrap-sass", "~> 3.0.2.0"
 gem "sass-rails", "~> 4.0.0"

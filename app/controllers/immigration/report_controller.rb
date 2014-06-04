@@ -26,7 +26,7 @@ class Immigration::ReportController < ApplicationController
 	     current_user.reports.push(@report)
 	     current_user.save
 	     
-	     current_user.journals.push(Journal.new(:action => 'Create', :model => 'Report', :method => 'Insert', :agent => request.user_agent, :record_id => @report.id ))
+	     current_user.journals.push(Journal.new(:action => 'Create', :model => 'Report', :method => 'Insert', :agent => request.user_agent, :record_id => @report.id, :ref_id => @report.ref_id ))
 	     respond_to do |format|
           format.html { redirect_to root_path, :notice => "Data Lapor Diri Anda Berhasil Disimpan" }        
        end            
@@ -49,45 +49,61 @@ class Immigration::ReportController < ApplicationController
             @col = Report.where(user_id: @report.user_id).ne(id: @report.id)
             @col.each do |row|              
               row.update(is_valid: false)      
-              current_user.journals.push(Journal.new(:action => 'Validated : ' + row.is_valid.to_s , :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => row.id ))      
+              current_user.journals.push(Journal.new(:action => 'Validated : ' + row.is_valid.to_s , :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => row.id, :ref_id => row.ref_id ))      
             end
           end
-          current_user.journals.push(Journal.new(:action => 'Validated : ' + @report.is_valid.to_s , :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => @report.id ))
+          current_user.journals.push(Journal.new(:action => 'Validated : ' + @report.is_valid.to_s , :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => @report.id, :ref_id => @report.ref_id ))
           UserMailer.admin_update_report_email(@report).deliver
         
-        redirect_to :back, :notice => 'Anda telah berhasil memperbaharui data lapor diri'
+        redirect_to root_path, :notice => 'Anda telah berhasil memperbaharui data lapor diri'
     else
       @errors = @report.errors.messages
       render 'edit'
     end
   end
-  
+ 
+=begin  
   #PATCH, PUT /report/:id
   def update
-	  #@post = Report.find_by(user_id: params[:id])
-	  #@report = Report.find(params[:id])
-	  
-	  @report = Report.new(post_params)
-	  #keep every save as new record but not valid until admin verified it
-	  
-	  if @report.valid?
-	    if simple_captcha_valid?
-	      current_user.reports.push(@report)
-	      current_user.save
-	      
-	      current_user.journals.push(Journal.new(:action => 'Create', :model => 'Report', :method => 'Insert', :agent => request.user_agent, :record_id => @report.id ))
-	      
-	      respond_to do |format|
-	        format.html { redirect_to :back, :notice => "Revisi Data Lapor Diri Anda Berhasil Disimpan. Silahkan tunggu email konfirmasi dari admin" }
-	      end
-	    else
-	      @errors = { 'Secret Code' => 'Wrong Code Entered' }
-	      render 'edit'
-	    end
+	  @report = Report.find(params[:id])
+	  if @report.update(post_params)
+	    current_user.journals.push(Journal.new(:action => 'Updating Report', :model => 'Report', :method => 'Update', :agent => request.user_agent, :record_id => @report.id ))
+	    redirect_to :back, :notice => "Revisi Data Lapor Diri Anda Berhasil Disimpan. Silahkan tunggu email konfirmasi dari admin" 
+	    if current_user.has_role? :admin or current_user.has_role? :moderator        
+        UserMailer.admin_update_report_email(@report).deliver
+      end
 	  else
 	    @errors = @report.errors.messages
 	    render 'edit'    
 	  end	  
+  end
+=end
+
+  def update
+    #@post = Report.find_by(user_id: params[:id])
+    #@report = Report.find(params[:id])
+    
+    @report = Report.new(post_params)
+    #keep every save as new record but not valid until admin verified it
+    
+    if @report.valid?
+      if simple_captcha_valid?
+        current_user.reports.push(@report)
+        current_user.save
+        
+        current_user.journals.push(Journal.new(:action => 'Create', :model => 'Report', :method => 'Insert', :agent => request.user_agent, :record_id => @report.id, :ref_id => @report.ref_id ))
+        
+        respond_to do |format|
+          format.html { redirect_to :back, :notice => "Revisi Data Lapor Diri Anda Berhasil Disimpan. Silahkan tunggu email konfirmasi dari admin" }
+        end
+      else
+        @errors = { 'Secret Code' => 'Wrong Code Entered' }
+        render 'edit'
+      end
+    else
+      @errors = @report.errors.messages
+      render 'edit'    
+    end   
     
   end
   
@@ -110,6 +126,16 @@ class Immigration::ReportController < ApplicationController
 
   def show
     @report = Report.find(params[:id])
+    templateReport = "immigration/report/adminprint.html.erb"
+    if !params[:whosign].nil? or !params[:whosign].blank?
+      if params[:whosign] == 'first'
+          templateReport = "immigration/report/adminprint.html.erb"
+      elsif params[:whosign] == 'second'
+          templateReport = "immigration/report/adminprinttwo.html.erb"
+      end 
+    else
+        templateReport = "immigration/report/userprint.html.erb"
+    end
       respond_to do |format|
       format.html { render 'edit' }
       format.json { render json: @report }
@@ -119,7 +145,7 @@ class Immigration::ReportController < ApplicationController
                :disposition    => "inline", #{attachment, inline}
                :show_as_html   => params[:debug].present?,
                #:template       => "immigration/visa/visarecapitulation.html.erb",
-               :template       => "immigration/report/adminprint.html.erb",
+               :template       => templateReport,
                :encoding       => "utf8"
                               
       end

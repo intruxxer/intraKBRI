@@ -1,4 +1,4 @@
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
 </script>
 <!-- CONTENT 1-->
 <div class="row">
@@ -6,29 +6,35 @@
 		<div class="row space12">
 			<ul class="mini-stats col-sm-12">
 				<li class="col-sm-4">
+					<!--
 					<div class="sparkline_bar_good">
 						<span>3,5,9,8,13,11,14</span>+10%
 					</div>
+					-->
 					<div class="values">
 						<strong><%= @allvisa %></strong>
 						Aplikasi Visa
 					</div>
 				</li>
 				<li class="col-sm-4">
+					<!--
 					<div class="sparkline_bar_neutral">
 						<span>20,15,18,14,10,12,15,20</span>0%
 					</div>
+					-->
 						<div class="values">
 						<strong><%= @allpassport %></strong>
 							Aplikasi Paspor/SPLP
 						</div>
 				</li>
 				<li class="col-sm-4">
+					<!--
 					<div class="sparkline_bar_bad">
 						<span>4,6,10,8,12,21,11</span>+50%
 					</div>
+					-->
 					<div class="values">
-						<strong><%= @allpassport %></strong>
+						<strong><%= @allreport %></strong>
 											Lapor Diri
 										</div>
 									</li>
@@ -39,7 +45,7 @@
 							<div class="row space12">
 								<div class="col-sm-6">
 									<div class="easy-pie-chart">
-										<span class="bounce number" data-percent="44"> <span class="percent">44</span> </span>
+										<span class="bounce number" data-percent="44"> <span class="percent">37</span> </span>
 										<div class="label-chart">
 											Paspor/SPLP Pending
 										</div>
@@ -201,3 +207,115 @@
 						</div>
 </div>
 <!-- END CONTENT 3-->				
+<script type="text/javascript" >
+$( document ).ready(function() {
+	function randValue() {
+        return (Math.floor(Math.random() * (1 + 40 - 20))) + 20;
+    };
+    var pageviews = [
+        [1, randValue()],
+        [2, randValue()],
+        [3, 2 + randValue()],
+        [4, 3 + randValue()],
+        [5, 5 + randValue()],
+        [6, 10 + randValue()],
+        [7, 15 + randValue()],
+        [8, 20 + randValue()],
+        [9, 25 + randValue()],
+        [10, 30 + randValue()],
+        [11, 35 + randValue()],
+        [12, 25 + randValue()],
+        [13, 15 + randValue()],
+        [14, 20 + randValue()],
+        [15, 45 + randValue()],
+        [16, 50 + randValue()],
+        [17, 65 + randValue()],
+        [18, 70 + randValue()],
+        [19, 85 + randValue()],
+        [20, 80 + randValue()],
+        [21, 75 + randValue()],
+        [22, 80 + randValue()],
+        [23, 75 + randValue()],
+        [24, 70 + randValue()],
+        [25, 65 + randValue()],
+        [26, 75 + randValue()],
+        [27, 80 + randValue()],
+        [28, 85 + randValue()],
+        [29, 90 + randValue()],
+        [30, 95 + randValue()]
+    ];
+    var visitors = [
+        [1, randValue() - 5],
+        [2, randValue() - 5],
+        [3, randValue() - 5],
+        [4, 6 + randValue()],
+        [5, 5 + randValue()],
+        [6, 20 + randValue()],
+        [7, 25 + randValue()],
+        [8, 36 + randValue()],
+        [9, 26 + randValue()],
+        [10, 38 + randValue()],
+        [11, 39 + randValue()],
+        [12, 50 + randValue()],
+        [13, 51 + randValue()],
+        [14, 12 + randValue()],
+        [15, 13 + randValue()],
+        [16, 14 + randValue()],
+        [17, 15 + randValue()],
+        [18, 15 + randValue()],
+        [19, 16 + randValue()],
+        [20, 17 + randValue()],
+        [21, 18 + randValue()],
+        [22, 19 + randValue()],
+        [23, 20 + randValue()],
+        [24, 21 + randValue()],
+        [25, 14 + randValue()],
+        [26, 24 + randValue()],
+        [27, 25 + randValue()],
+        [28, 26 + randValue()],
+        [29, 27 + randValue()],
+        [30, 31 + randValue()]
+    ];
+    $.plot($("#placeholder-h1"), [{
+        data: pageviews,
+        label: "Aplikasi Visa"
+    }, {
+        data: visitors,
+        label: "Aplikasi Paspor"
+    }], {
+        series: {
+            lines: {
+                show: true,
+                lineWidth: 2,
+                fill: true,
+                fillColor: {
+                    colors: [{
+                        opacity: 0.05
+                    }, {
+                        opacity: 0.01
+                    }]
+                }
+            },
+            points: {
+                show: false
+            },
+            shadowSize: 2
+        },
+        grid: {
+            hoverable: true,
+            clickable: true,
+            tickColor: "#eee",
+            borderWidth: 0
+        },
+        colors: ["#d12610", "#37b7f3", "#52e136"],
+        xaxis: {
+            ticks: 11,
+            tickDecimals: 0
+        },
+        yaxis: {
+            ticks: 11,
+            tickDecimals: 0
+        }
+    });
+});
+</script>

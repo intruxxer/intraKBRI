@@ -225,16 +225,54 @@
 	</fieldset>
 	
 	<fieldset>
-		<section class="col col-9">
-				<label class="label">Dokumen Pendukung</label>
+		<div class="row">
+			<section class="col col-9">
+				<label class="label">Dokumen Pendukung 1</label>
 				<label class="label" style="font-weight:bold;">
 					<% if @passport.supporting_doc.exists? %>
-						<%= link_to @passport.supporting_doc_file_name, @passport.supporting_doc.url(:original, false) %>
+						<%= link_to @passport.supporting_doc_file_name, @passport.supporting_doc.url(:original, false), target: "_blank" %>
 					<% else %>
 						<i style="color:orange;">Dokumen Pendukung Tidak Ditemukan</i>
 					<% end %>							
 				</label>
 			</section>
+		</div>
+		<div class="row">
+			<section class="col col-9">
+				<label class="label">Dokumen Pendukung 2</label>
+				<label class="label" style="font-weight:bold;">
+					<% if @passport.supporting_doc_2.exists? %>
+						<%= link_to @passport.supporting_doc_2_file_name, @passport.supporting_doc_2.url(:original, false), target: "_blank" %>
+					<% else %>
+						<i style="color:orange;">Dokumen Pendukung Tidak Ditemukan</i>
+					<% end %>							
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-9">
+				<label class="label">Dokumen Pendukung 3</label>
+				<label class="label" style="font-weight:bold;">
+					<% if @passport.supporting_doc_3.exists? %>
+						<%= link_to @passport.supporting_doc_3_file_name, @passport.supporting_doc_3.url(:original, false), target: "_blank" %>
+					<% else %>
+						<i style="color:orange;">Dokumen Pendukung Tidak Ditemukan</i>
+					<% end %>							
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-9">
+				<label class="label">Dokumen Pendukung 4</label>
+				<label class="label" style="font-weight:bold;">
+					<% if @passport.supporting_doc_4.exists? %>
+						<%= link_to @passport.supporting_doc_4_file_name, @passport.supporting_doc_4.url(:original, false), target: "_blank" %>
+					<% else %>
+						<i style="color:orange;">Dokumen Pendukung Tidak Ditemukan</i>
+					<% end %>							
+				</label>
+			</section>
+		</div>
 	</fieldset>
 	
 	<fieldset>
@@ -315,7 +353,8 @@
 				<label class="label" style="width:auto;background:inherit">Status</label>  							  	
 				<%= f.input_field :status, as: :radio_buttons, :class => 'radio' ,
 					collection: { 'Received' => 'Received', 
-									'<b style="color:green;">Verify</b>' => 'Verified','<b>Approved</b>' => 'Approved', 'Paid' => 'Paid', '<b style="color:red;">Reject</b>' => 'Rejected', '<b style="color:orange;">Revision</b>' => 'Revision' 
+									'<b style="color:green;">Verify</b>' => 'Verified','<b>Approved</b>' => 'Approved', 'Paid' => 'Paid', '<b style="color:red;">Reject</b>' => 'Rejected', '<b style="color:orange;">Revision</b>' => 'Revision',
+									'<b style="color:green;">Printed</b>' => 'Printed' 
 									}, label_method: lambda { |obj| ('<i></i>' + obj[0]).html_safe } %>
 				</section>								
 		        </div>	
@@ -325,7 +364,7 @@
 				    <section class="col col-9">
 				   		<label class="label" style="width:auto;background:inherit">Comment</label>
 						<label class="select" style="width:200px;">
-								<%= f.input_field :comment, :rows => 5, :maxlength => 100, as: :text %>							
+								<%= f.input_field :comment, :rows => 5, :maxlength => 200, as: :text %>							
 							</label>
 				    </section>
 			   </div>
@@ -342,7 +381,7 @@
 <script type="text/javascript">
 			$(function()
 			{					
-				$("input[name='visa[status]']").change(function(){
+				$("input[name='passport[status]']").change(function(){
 					if($(this).val() == 'Revision'){
 						$("#pickupdatecont").hide();
 						$('#commentcontainer').show();						

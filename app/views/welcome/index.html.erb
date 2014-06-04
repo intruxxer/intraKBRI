@@ -1,9 +1,16 @@
+<div id="dialog-confirm" title="Delete this Application? " style="display:none;">
+  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. <br />Any payment made to this point <b>WILL BE NON-REFUNDABLE</b> <br />Are you sure?</p>
+</div>
+
 <div style="text-align: center; padding-top: 20px; position: relative;">
 <%= image_tag("/assets/images/garuda.png", height: '160', width: '160') %>
-<h1>Welcome to electronic KBRI Seoul services (E-KBRI)</h1>
+<h1>Welcome to Electronic KBRI Seoul Services (E-KBRI)</h1>
 <hr />
-<% if !user_signed_in? and false then %>
-<p><%= "Your IP address is: #{@ip_visitor}. Your IP is automatically logged for monitoring." %></p>
+
+<% if !user_signed_in? then %>
+<div class="row">
+	<img src="/images/welcome-ekbri.gif" />
+</div >
 <% end %>
 <% if user_signed_in? then %>
 <% if !current_user.citizenship or current_user.has_role? :admin or current_user.has_role? :moderator %>
@@ -54,11 +61,22 @@
 														<% found = false %>
 													<% else %>
 														<td>
-														<%= link_to 'visas/'+t.id+'.pdf', :target => "_blank" do %>
-															<span class="glyphicon glyphicon-save"></span>
-															<span class="glyphicon-class">Download Receipt</span>
-															<% end %>
-														</td>
+														
+														<% if Visa.where(:ref_id => currefid).count > 1 %>
+															<%= link_to 'visas/group/'+currefid+'.pdf', :target => "_blank" do %>
+																<span class="glyphicon glyphicon-save"></span>
+																<span class="glyphicon-class">Download Receipt</span>
+																<% end %>
+															</td>
+														<% else %>
+															<%= link_to 'visas/'+curid+'.pdf', :target => "_blank" do %>
+																<span class="glyphicon glyphicon-save"></span>
+																<span class="glyphicon-class">Download Receipt</span>
+																<% end %>
+															</td>
+														<% end %>	
+															
+														
 														<td class="center"><%= status.html_safe %></td> <% found = false %>
 													<% end %>												
 														
@@ -86,7 +104,7 @@
 														<span class="glyphicon-class">Notify Update to Embassy</span>
 														<% end %>
 													|&nbsp;-->
-													<%= link_to'visas/'+t.id, :method=>'delete' do %>
+													<%= link_to userdeletevisa_path(t.id), :class=>'deldata' do %>
 														<span class="glyphicon glyphicon-trash"></span>
 														<span class="glyphicon-class">Cancel</span>
 														<% end %>
@@ -161,7 +179,7 @@
 														<span class="glyphicon-class">Perbaharui</span>
 													<% end %>													
 													|&nbsp;													
-													<%= link_to 'passports/'+t.id, :method=>'delete' do %>
+													<%= link_to userdeletepassport_path(t.id), :class=>'deldata' do %>
 														<span class="glyphicon glyphicon-trash"></span>
 														<span class="glyphicon-class">Batal</span>
 														<% end %>
@@ -215,8 +233,9 @@
 													<th><center>Menu Pengubahan</center></th>
 												</tr>
 											</thead>
-											<tbody>												
-												<% t = @userreport.first %>
+											<tbody>
+										    <% if current_user.has_role? :admin or current_user.has_role? :moderator %>												
+												<% @userreport.each do |t| %>
 												<tr>													
 													<td align="left"><%= t.ref_id %></td>
 													<td class="center"><%= t.updated_at.strftime("%-d %b %y") %></td>	
@@ -232,14 +251,34 @@
 														<span class="glyphicon-class">Note Print</span>
 														<% end %>
 													</td>
+												</tr>
+												<% end %>
+											<% else %>
+												<% t = @userreport.last %>
+												<tr>													
+													<td align="left"><%= t.ref_id %></td>
+													<td class="center"><%= t.updated_at.strftime("%-d %b %y") %></td>	
+													<td class="center"><%= "Terdaftar di KBRI Seoul" %></td>													
+													<td class="center">
+													<%= link_to (edit_report_path(t.id)) do %>
+														<span class="glyphicon glyphicon-pencil"></span>
+														<span class="glyphicon-class">Revisi Data/Ubah Informasi</span>
+													<% end %>
+													&nbsp;|&nbsp;													
+													<%= link_to 'reports/user/print/'+t.id+'.pdf', :target => "_blank" do %>
+														<span class="glyphicon glyphicon-save"></span>
+														<span class="glyphicon-class">Note Print</span>
+														<% end %>
+													</td>
 												</tr>												
-												
+											<% end %>	
 											</tbody>											
 										</table>
 										<% else %>
 										Anda belum pernah melaporkan diri ke KBRI Seoul melalui sistem e-KBRI.
 										<% end %>
 									</div>
+									<%= paginate @userreport %>
 								</div>
 								<!-- end: TABLE WITH IMAGES PANEL -->
 		</div>
@@ -247,7 +286,7 @@
 
 <br />
 <div>An initiative towards e-Government movement by</div>
-<h2>The Embassy of Republic of Indonesia in Seoul.</h2>
+<h2>The Embassy of The Republic of Indonesia in Seoul.</h2>
 <p>
 	380 Yeouidebangro, Yeongdeungpo-gu, Seoul Metropolitan City
 </p>
@@ -257,24 +296,44 @@
 	<b>| Email :</b> seoul.kbri@kemlu.go.id
 </p>
 </div>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script type="text/javascript" src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/jquery-ui/jquery-ui-1.10.4.custom.min.js"></script>
+<%= stylesheet_link_tag "/assets/plugins/jquery-ui/jquery-ui-1.10.4.custom.min.css"%>
+
 <script type="text/javascript">
 	$(function($)
-		{
-				// Regular datepicker
-				$( '.datePick' ).datepicker({
-					dateFormat: 'dd.mm.yy',
-					prevText: '<i class="icon-chevron-left"></i>',
-					nextText: '<i class="icon-chevron-right"></i>'
-				});
-				
-				$('.fileplaceholder').change(function(){					
-					filename = $(this).val();
-					$(this).parent().next().val(filename.split("\\").pop());
-				});
-								
-				//console.log();
-				
-		});			
+	{
+			// Regular datepicker
+			$( '.datePick' ).datepicker({
+				dateFormat: 'dd.mm.yy',
+				prevText: '<i class="icon-chevron-left"></i>',
+				nextText: '<i class="icon-chevron-right"></i>'
+			});
+			
+			$('.fileplaceholder').change(function(){					
+				filename = $(this).val();
+				$(this).parent().next().val(filename.split("\\").pop());
+			});
+							
+			//console.log();
+			$(".deldata").click(function(e){												
+			    link =  $(this).attr("href");
+		    	e.preventDefault();							    								
+				$( "#dialog-confirm" ).dialog({
+			      resizable: false,
+			      height:250,
+			      modal: true,
+			      buttons: {
+			        "Delete" : function() {
+			           window.location = link;
+			        },
+			        Cancel: function() {											         	
+			          $( this ).dialog( "close" );
+			        }
+			      }
+			    });
+			});	
+			
+	});		
+	
 </script>

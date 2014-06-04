@@ -53,7 +53,7 @@ class Immigration::VisagroupController < ApplicationController
       if simple_captcha_valid?
           current_user.visas.push(@visa[0])   
           current_user.save
-          current_user.journals.push(Journal.new(:action => 'Created', :model => 'Visa', :method => 'Insert', :agent => request.user_agent, :record_id => @visa[0].id ))
+          current_user.journals.push(Journal.new(:action => 'Created', :model => 'Visa', :method => 'Insert', :agent => request.user_agent, :record_id => @visa[0].id, :ref_id => @visa[0].ref_id ))
           UserMailer.visa_received_email(@visa[0]).deliver
           #flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
           #render 'pasporconfirm.html.erb'
@@ -97,7 +97,7 @@ class Immigration::VisagroupController < ApplicationController
     #@visa = Visa.find_by(user_id: params[:id])
     @visa = Visa.find(params[:id])
     if @visa.update(post_params)
-      current_user.journals.push(Journal.new(:action => @visa.status, :model => 'Visa', :method => 'Update', :agent => request.user_agent, :record_id => @visa.id ))
+      current_user.journals.push(Journal.new(:action => @visa.status, :model => 'Visa', :method => 'Update', :agent => request.user_agent, :record_id => @visa.id, :ref_id => @visa.ref_id ))
       redirect_to root_path, :notice => 'You have updated your visa application data!'
     else
       render 'edit'
@@ -116,7 +116,7 @@ class Immigration::VisagroupController < ApplicationController
     @visa = Visa.find(params[:id])
     reference = @visa.ref_id
     if @visa.delete
-      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Visa', :method => 'Delete', :agent => request.user_agent, :record_id => params[:id] ))
+      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Visa', :method => 'Delete', :agent => request.user_agent, :record_id => params[:id], :ref_id => reference ))
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} has been erased."
     else
       redirect_to :back, :notice => "Visa Application of Ref. No #{reference} is not found."
@@ -133,7 +133,7 @@ class Immigration::VisagroupController < ApplicationController
       :sponsor_phone_id, :duration_stays, :duration_stays_unit, :num_entry, :checkbox_1, :checkbox_2, :checkbox_3, 
       :checkbox_4, :checkbox_5, :checkbox_6, :checkbox_7, :count_dest, :flight_vessel, :air_sea_port, :date_entry,
       :purpose, :passport, :idcard, :photo, :status, :status_code, :slip_photo, :payment_date, :ticket, 
-      :supdoc, :ref_id, :approval_no).merge(visa_type: 3)
+      :supdoc, :ref_id, :approval_no, :supdoc_2, :supdoc_3).merge(visa_type: 3)
     end
     #Notes: to add attribute/variable after POST params received, do
     #def post_params

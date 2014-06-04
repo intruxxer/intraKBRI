@@ -66,7 +66,7 @@ class Immigration::PassportController < ApplicationController
           current_user.passports.push(tempcache)   
           current_user.save
           UserMailer.passport_received_email(@passport).deliver
-          current_user.journals.push(Journal.new(:action => 'Created', :model => 'Passport', :method => 'Insert', :agent => request.user_agent, :record_id => @passport.id ))
+          current_user.journals.push(Journal.new(:action => 'Created', :model => 'Passport', :method => 'Insert', :agent => request.user_agent, :record_id => @passport.id, :ref_id => @passport.ref_id ))
           flash[:notice] = 'Pengurusan aplikasi paspor anda, berhasil!'
           render 'pasporconfirm.html.erb'
       else        
@@ -96,12 +96,15 @@ class Immigration::PassportController < ApplicationController
     @passport = Passport.find(params[:id])
     #@passport = Passport.find_by(user_id: params[:id])
     if @passport.update(post_params)
-
+      
+      current_user.journals.push(Journal.new(:action => @passport.status, :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => @passport.id, :ref_id => @passport.ref_id ))
       if current_user.has_role? :admin or current_user.has_role? :moderator        
         UserMailer.admin_update_passport_email(@passport).deliver
-      end
-      current_user.journals.push(Journal.new(:action => @passport.status, :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => @passport.id ))
-      redirect_to :back, :notice => 'Anda telah berhasil memperbaharui data pengurusan paspor anda!'
+        redirect_to :back, :notice => 'A Passport Application Data has been updated'
+      else
+        redirect_to root_path, :notice => 'Anda telah berhasil memperbaharui data pengurusan paspor anda!'
+      end     
+      
     else
       @errors = @passport.errors.messages
       render 'edit'
@@ -112,7 +115,7 @@ class Immigration::PassportController < ApplicationController
   def update_payment 
     @passport = Passport.find(params[:id])
     if @passport.update(post_params)    
-      current_user.journals.push(Journal.new(:action => @passport.status, :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => @passport.id  ))  
+      current_user.journals.push(Journal.new(:action => @passport.status, :model => 'Passport', :method => 'Update', :agent => request.user_agent, :record_id => @passport.id, :ref_id => @passport.ref_id  ))  
       redirect_to root_path, :notice => 'Data Pembayaran anda berhasil disimpan!'
     else
       @errors = @passport.errors.messages
@@ -126,7 +129,7 @@ class Immigration::PassportController < ApplicationController
    @passport = Passport.find(params[:id])
     reference = @passport.ref_id
     if @passport.delete
-      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Passport', :method => 'Delete', :agent => request.user_agent, :record_id => params[:id] ))
+      current_user.journals.push(Journal.new(:action => 'Removed', :model => 'Passport', :method => 'Delete', :agent => request.user_agent, :record_id => params[:id], :ref_id => reference ))
       redirect_to :back, :notice => "Paspor dengan No. Ref. #{reference} telah berhasil dihapuskan dari sistem."
     else
       redirect_to :back, :notice => "Paspor No. Ref. #{reference} tidak dapat ditemukan."
@@ -137,7 +140,7 @@ class Immigration::PassportController < ApplicationController
     def post_params()
       params.require(:passport).permit(:application_type, :application_reason, :paspor_type, :full_name, :height, :kelamin, :placeBirth, :dateBirth,              
       :citizenship_status, :lastPassportNo, :dateIssued, :placeIssued, :jobStudyInKorea, :jobStudyTypeInKorea, :jobStudyOrganization, :jobStudyAddress, 
-      :phoneKorea, :addressKorea, :cityKorea, :phoneIndonesia, :addressIndonesia, :kelurahanIndonesia, :kecamatanIndonesia, :kabupatenIndonesia, :dateArrival, :sendingParty, :photo, :status, :slip_photo, :payment_date, :arc, :dateIssuedEnd, :immigrationOffice, :sponsor_address_prov_kr, :sponsor_address_prov_id, :supporting_doc, :comment, :pickup_office, :pickup_date)
+      :phoneKorea, :addressKorea, :cityKorea, :phoneIndonesia, :addressIndonesia, :kelurahanIndonesia, :kecamatanIndonesia, :kabupatenIndonesia, :dateArrival, :sendingParty, :photo, :status, :slip_photo, :payment_date, :arc, :dateIssuedEnd, :immigrationOffice, :sponsor_address_prov_kr, :sponsor_address_prov_id, :supporting_doc, :supporting_doc_2, :supporting_doc_3, :supporting_doc_4, :comment, :pickup_office, :pickup_date)
 
     end
     #Notes: to add attribute/variable after POST params received, do

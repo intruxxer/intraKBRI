@@ -16,6 +16,7 @@ EKbri::Application.routes.draw do
   end
 
   devise_for :users, controllers: {
+    sessions: "users/sessions",
     registrations: "users/registrations", 
     passwords: "users/passwords", 
     confirmations: "users/confirmations",
@@ -27,11 +28,21 @@ EKbri::Application.routes.draw do
   end 
   
   resources :users
+  get "searchuser", :to => "users#search"
   
   get "infovisas", :to => "immigration/visa#info"   
   get "infopassports", :to => "immigration/passport#info"
   get "inforeports", :to => "immigration/report#info"
   get "marriage/info", :to => "immigration/marriage#info"
+  
+  get "overview", :to => "immigration/flow#systemoverview"
+  get "payment", :to => "immigration/flow#systempayment"
+  get "visaflow", :to => "immigration/flow#visa"   
+  get "visadocs", :to => "immigration/flow#visadocs"
+  get "passportflow", :to => "immigration/flow#passport"
+  get "passportdocs", :to => "immigration/flow#passportdocs"
+  get "reportflow", :to => "immigration/flow#report"
+  get "reportdocs", :to => "immigration/flow#reportdocs"
 
   get "finishgroupapply", :to => "immigration/visa#finishing_application"
   get "visas/reapply/:id", :to => "immigration/visa#reapply"
@@ -63,14 +74,18 @@ EKbri::Application.routes.draw do
   get "dashboard/service/:document", :to => "dashboard#immigration"
   get "admin/service/:document/:id", :to => "dashboard#immigration"
   get "dashboard/syncpanel", :to => "dashboard#syncpanel"
-  
+  get "journal/list/all", :to => "journal#show_all_journal"
 
+  
+  
   match "passport/tospri/:id", to: "desktop#exec_toSPRI", via: :post
   match "visa/tosisari/:id", to: "desktop#exec_toSisari", via: :post
   
   get "passports/:id/check", :to => "immigration/passport#check"
   get "visas/:id/check", :to => "immigration/visa#check"
   get "reports/:id/check", :to => "immigration/report#check"
+  get "reports/:whosign/:id", :to => "immigration/report#show"
+  get "reports/user/print/:id", :to => "immigration/report#show"
   
   get "protocol/synccloudtolocal/:collection", :to => "protocol#syncCollectionCloudtoLocal"
   get "protocol/syncdbcomplete", :to => "protocol#syncDBComplete"
@@ -79,12 +94,19 @@ EKbri::Application.routes.draw do
   match "report/findbynameandbirth", to: "immigration/report#findbyNameandBirth", via: :get
   
   get "report/panel/periodical", :to => "dashboard#periodical_reporting"
+  get "report/panel/periodical_printed_based", :to => "dashboard#periodical_reporting_printed_based"
+  match "report/generate/periodical", to: "dashboard#generate_periodical_reporting", via: :post  
+  match "report/generate/periodical_printed_based", to: "dashboard#generate_periodical_reporting_printed_based", via: :post
   
-  match "report/generate/periodical", to: "dashboard#generate_periodical_reporting", via: :post
+  get "export/table/:doc", :to => "desktop#export_table"
   
   get '/images/:name', :to => 'images#show', :as => :custom_image
   
   get "finishgroupapply", :to => "immigration/visa#finishing_application"
+  get "deletepassportviadashboard/:id", :to => "desktop#destroy_passport", via: :delete, :as => :deletepassportviadashboard
+  get "deletevisaviadashboard/:id", :to => "desktop#destroy_visa", via: :delete, :as => :deletevisaviadashboard
+  get "deleteuserviadashboard/:id", :to => "desktop#destroy_user", via: :delete, :as => :deleteuserviadashboard
+  
   get "visas/reapply/:id", :to => "immigration/visa#reapply"
   get "passports/reapply/:id", :to => "immigration/passport#reapply"
   
@@ -106,6 +128,9 @@ EKbri::Application.routes.draw do
   get "samplepayment", :to =>"welcome#showsamplebayar"
   
   get "visas/group/:ref_id", to: "immigration/visa#group_recap"
+  
+  get "delete/user/passport/:id", :to => "immigration/passport#destroy", :as => :userdeletepassport
+  get "delete/user/visa/:id", :to => "immigration/visa#destroy", :as => :userdeletevisa
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
   

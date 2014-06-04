@@ -1,14 +1,20 @@
 class WelcomeController < ApplicationController
    
   def index	
+=begin
     @ip_visitor = request.remote_ip
     session[:ip_address]  = @ip_visitor
-=begin
     if !user_signed_in? then
       @visitorname = "Visitor"
+      #session[:warned_on_login] = 0
+    else
+      @visitorname = current_user.full_name
+      # session[:warned_on_login] += 1
+      # user_session[:test] = "User session upon logged in."
     end
     @visitor =  Visitor.new( who: @visitorname, ip_address: @ip_visitor.to_s, action: "Visiting Main Page")
-    if @visitor.save!
+    if @visitor.valid?
+        @visitor.save!
         if !user_signed_in?
           message_one = "Dear Visitor, Please kindly be notified that your IP address & Location is automatically 
                          logged for security monitoring during your active access to E-KBRI."

@@ -1,0 +1,365 @@
+<div class="body" style="padding-top: 20px;">
+			<div style="text-align: center;">
+			  <%= image_tag("/assets/images/garuda.png", height: '160', width: '160') %>
+			</div>
+			
+			<% unless @errors.nil? %>
+			<h2 style="color:white;background:red;">Laporan Gagal. Silahkan cek pesan dibawah ini</h2>
+				<div style="padding:4px;color:red;font-size:10pt;">
+					<% @errors.each do |fs| %>
+						<%= simple_format(fs[0].to_s + " = " + fs[1].to_s + "\n")  %>
+					<%end%>
+					<br />
+					Silahkan Upload File - File anda kembali jika ada.
+				</div>
+			<%end%>	
+				
+			<!-- Red color scheme -->
+			<%= simple_form_for @case, url: case_path(@case), :method => :patch, :html => { :class => "sky-form", :multipart => true } do |f| %>
+				<header>Rekap Laporan Individual Permasalahan WNI di Korea Selatan</header>				
+				<fieldset>
+					<div class="row">
+						<section class="col col-3">
+							<p><b>Jenis Masalah</b></p>
+							<%= @case.case_type.upcase %>
+						</section>
+						<% if current_user.has_role? :admin or :moderator %>
+						<section class="col col-3">
+							<p><b>Status Masalah</b></p>
+							<%= @case.status.capitalize %>
+						</section>
+						<section class="col col-6">
+							<p><b>Konklusi Masalah</b></p>
+							<%= @case.case_remarks.capitalize %>				
+						</section>
+						<% end %>
+					</div>
+					
+					<div class="row">
+						<section class="col col-9">
+							<p><b>Deskripsi Masalah</b></p>
+							<%= @case.case_description.capitalize %>				
+						</section>
+						
+						<% if current_user.has_role? :admin or :moderator %>
+						<section class="col col-3">
+							<p><b>Staff KBRI</b></p>
+							<%= @case.case_embassy_staff_name.titleize %>
+						</section>
+						<% end %>
+					</div>	
+					
+					<% if current_user.has_role? :admin or :moderator %>
+					<div class="row">
+						<h4>Informasi Penanganan</h4>
+						<hr /><br />
+						<section class="col col-6">
+							<p><b>Bantuan KBRI saat Masalah</b></p>
+							<%= @case.case_embassy_on_assistance.capitalize %>				
+						</section>
+						
+						<section class="col col-6">
+							<p><b>Bantuan KBRI sesudah Masalah</b></p>
+							<%= @case.case_embassy_post_assistance.capitalize %>				
+						</section>
+					</div>
+					<% end %>
+									
+				</fieldset>
+				
+				<fieldset>
+					<h3>Profil WNI Bermasalah</h3>	
+					<hr /><br />
+					<div class="row">
+						<section class="col col-4">
+							<p><b>Nama Lengkap</b></p>
+							<%= @case.full_name.titleize %>
+						</section>	
+						<section class="col col-2">
+							<p><b>Jenis Kelamin</b></p>
+							<%= @case.gender.upcase %>
+						</section>							
+						
+						<section class="col col-3">
+							<p><b>Tempat Lahir</b></p>	
+							<%= @case.place_birth.capitalize %>
+						</section>
+
+						<section class="col col-3">
+							<p><b>Tanggal Lahir</b></p>	
+							<%= @case.date_birth.strftime("%-d %b %y") %>
+							<div class="note"><strong>Format : </strong>YYYY/MM/DD</div>
+						</section>
+		
+					</div>	
+					
+					<div class="row">
+						
+						<section class="col col-3">
+							<p><b>Nomor Paspor</b></p>	
+							<%= @case.passport_no.upcase %>
+						</section>
+						
+						<section class="col col-3">
+							<p><b>Tanggal Terbit Paspor</b></p>
+							<%= @case.passport_date_from.strftime("%-d %b %y") %>
+							<div class="note"><strong>Format : </strong>YYYY/MM/DD</div>
+						</section>
+						
+						<section class="col col-3">
+							<p><b>Tanggal Habis Berlaku Paspor</b></p>
+							<%= @case.passport_date_to.strftime("%-d %b %y") %>
+							<div class="note"><strong>Format : </strong>YYYY/MM/DD</div>
+						</section>					
+						
+						
+						<section class="col col-3">
+							<p><b>Kantor Imigrasi</b></p>
+							<%= @case.passport_place %>							
+						</section>
+						
+					</div>				
+				</fieldset>
+				
+				<fieldset>
+					<h3>Alamat & Keluarga di Indonesia</h3>	
+					<hr /><br />
+					<div class="row">
+				    
+						<section class="col col-6">
+							<p><b>Alamat di Indonesia</b></p>
+							<%= @case.address_id.titleize %>
+						</section>
+						
+						<section class="col col-6">
+							<p><b>Kelurahan/Desa</b></p>
+							<%= @case.kelurahan_id.titleize %>
+						</section>
+					
+				    </div>
+				    
+				    <div class="row">
+						
+						<section class="col col-3">
+							<p><b>Kecamatan</b></p>
+							<%= @case.kecamatan_id.titleize %>
+						</section>
+						
+						<section class="col col-3">
+							<p><b>Kabupaten/Kota</b></p>
+							<%= @case.kabupaten_id.titleize %>
+					   	</section>
+					  
+					   <section class="col col-3">
+						 <p><b>Propinsi</b></p>
+						 <%= @case.provinsi_id.titleize %>
+					   </section>
+					
+					   <section class="col col-3">
+							<p><b>No Telepon di Indonesia</b></p>
+							<%= @case.phone_id %>
+					   </section>
+					</div>
+				</fieldset>
+				
+				<fieldset>
+					<h3>Detail di Korea</h3>	
+					<hr /><br />
+					<div class="row">
+						<section class="col col-4">
+							<p><b>Pekerjaan di Korea</b></p>
+							<%= @case.visa_kr.upcase %>
+						</section>
+						
+						<section class="col col-4">
+							<p><b>Keterangan Pekerjaan</b></p>
+							<%= @case.visa_kr_type.capitalize %>
+						</section>
+						
+						<section class="col col-4">
+							<p><b>No Telepon di Korea</b></p>
+							<%= @case.phone_kr %>
+						</section>
+						
+				  </div>
+					
+					<div class="row">
+						<section class="col col-6">
+							<p><b>Alamat Tinggal di Korea</b></p>
+							<%= @case.address_kr.capitalize %>						
+						</section>
+						
+						<section class="col col-3">
+							<p><b>Kota</b></p>
+							<%= @case.city_kr.capitalize %>
+						</section>
+						
+						<section class="col col-3">
+							  <p><b>Propinsi</b></p>
+							  <%= @case.province_kr.capitalize %>							
+						</section>
+
+					</div>
+					
+					<div class="row">
+						
+						<section class="col col-3">
+							<p><b>Ijin Tinggal/Visa Diterbitkan</b></p>
+							<%= @case.visa_kr_from.strftime("%-d %b %y") %>
+						</section>
+						
+						<section class="col col-3">
+							  <p><b>Ijin Tinggal/Visa Habis Berlaku</b></p>
+							  <%= @case.visa_kr_to.strftime("%-d %b %y") %>							
+						</section>
+
+					</div>
+
+				</fieldset>		
+				
+				<fieldset>
+					<h3>Detail Perusahaan/Institusi/Sekolah</h3>	
+					<hr /><br />
+					<div class="row">
+						<section class="col col-6">
+							<p><b>Nama Perusahaan/Sekolah/Instansi</b></p>
+							<%= @case.company_kr.capitalize %>				
+						</section>
+						
+						<section class="col col-6">
+							<p><b>Alamat Perusahaan/Sekolah/Instansi</b></p>
+							<%= @case.company_address_kr %>				
+						</section>
+					</div>	
+					
+					<div class="row">
+						<section class="col col-3">
+							<p><b>Kota</b></p>
+							<%= @case.company_city_kr.capitalize %>
+						</section>
+						
+						<section class="col col-3">
+							  <p><b>Propinsi</b></p>
+							  <%= @case.company_province_kr.capitalize %>							
+						</section>
+						
+						<section class="col col-6">
+							<p><b>No Telepon Perusahaan/Sekolah/Instansi</b></p>
+							<%= @case.company_phone_kr %>
+						</section>
+						
+					</div>	
+				</fieldset>
+				
+				<fieldset class="no-print">
+				<% if @case.case_embassy_supporting_photo.exists? && (current_user.has_role? :admin or current_user.has_role? :moderator) %>
+				    <section class="col col-4">
+				    	<p>Foto dari KBRI</p>
+							<%= image_tag @case.case_embassy_supporting_photo.url(:thumb) %>
+							<% if current_user.has_role? :admin or current_user.has_role? :moderator %>
+								<%= link_to 'Download', @case.case_embassy_supporting_photo.url(:original, false), target: "_blank" %>
+							<%end%>
+					</section>
+				<% end %>
+				<% if @case.case_embassy_supporting_doc.exists? && (current_user.has_role? :admin or current_user.has_role? :moderator) %>
+				    <section class="col col-4">
+				    	<p>Dokumen dari KBRI</p>
+							<%= image_tag("/assets/images/doc.gif", height: '120', width: '120') %>
+							<% if current_user.has_role? :admin or current_user.has_role? :moderator %>
+								<%= link_to 'Download', @case.case_embassy_supporting_doc.url(:original, false), target: "_blank" %>
+							<%end%>
+					</section>
+				<% end %>
+				<% if @case.case_user_supporting_doc.exists? %>
+				    <section class="col col-4">
+				    	<p>Foto dari Pelapor</p>
+							<%= image_tag @case.case_user_supporting_doc.url(:thumb) %>
+							<% if current_user.has_role? :admin or current_user.has_role? :moderator %>
+								<%= link_to 'Download', @case.case_user_supporting_doc.url(:original, false), target: "_blank" %>
+							<%end%>
+					</section>
+				<% end %>
+				<% if (!@case.case_embassy_supporting_photo.exists? && !@case.case_embassy_supporting_doc.exists?) and !@case.case_user_supporting_doc.exists? %>
+					<!--
+					<section class="col col-6">
+							<label class="label"><b>Foto atau Dokumen Pendukung</b></label>
+							<label for="file" class="input input-file">
+								<div class="button">									
+									<%= f.input_field :case_user_supporting_doc, as: :file, class: 'fileplaceholder' %>Unggah</div>
+									<input type="text" name="userdocpath" readonly="readonly" />
+							</label>
+							<div class="note">
+								<strong>Catatan : </strong>Ukuran Maks. 2MB<br />
+							</div>
+					</section>	
+					<section class="col col-6">
+							<label class="label"><b>Foto atau Dokumen Pendukung (oleh staff KBRI)</b></label>
+							<label for="file" class="input input-file">
+								<div class="button">									
+									<%= f.input_field :case_embassy_supporting_doc, as: :file, class: 'fileplaceholder' %>Unggah</div>
+									<input type="text" name="embassydocpath" readonly="readonly" />
+							</label>
+							<div class="note">
+								<strong>Catatan : </strong>Ukuran Maks. 2MB<br />
+							</div>
+					</section>	
+					-->
+					<section class="col col-6"><p><b>Foto atau Dokumen Pendukung tidak ditemukan.</b></p></section>
+				<% end %>
+				</fieldset>
+				
+				<!-- 
+				<fieldset style="text-align:justify;" class="no-print">
+					<h4>Disclaimer</h4>
+					<hr /><br />
+					<p>Dengan mengisi form ini Saya menyatakan bahwa semua data yang diisikan merupakan informasi yang sebenar-benarnya. 
+						Segala kesalahan informasi yang dapat menyebabkan kerugian adalah tanggung jawab Saya dan tidak dapat di tangguhkan pada pihak lain. 
+						KBRI Seoul dan staff terkait dapat menolak/meminta perubahan data dan informasi terkait permohonan jika tidak sesuai dengan syarat dan ketentuan.
+					</p>
+
+				</fieldset>
+				-->
+
+				<footer class="no-print">
+					<button type="button" class="button button-primary" onclick="window.print(); return false;">Print Dokumen Ini</button>
+					<button type="button" class="button button-secondary" onclick="window.close();">Tutup Dokumen Ini</button>
+					<button type="button" class="button button-secondary" onclick="location.href='<%= site_url %>';">Kembali ke Panel Utama</button>
+					<button type="button" class="button button-primary" onclick="location.href='<%= edit_case_path %>';">Edit Ulang Dokument Ini</button>
+				</footer>
+			<% end %>
+			<!--/ Red color scheme -->			
+</div>
+
+<script type="text/javascript">
+			$(function()
+			{
+				$('input[type=text]').keyup(function() {
+				    $(this).val($(this).val().toUpperCase());
+				});
+				//$('textarea').keyup(function() {
+				//    $(this).val($(this).val().toUpperCase());
+				//});
+				$('#passport_application_reason').change(function(){
+					if($(this).val() == 'lainnya'){
+						$('#pasporsebelumnya').hide();						
+					}else{												
+						$('#pasporsebelumnya').show();
+					}
+				});	
+				// Regular datepicker
+				$('.datePick').datepicker({
+					dateFormat: 'yy/mm/dd',
+					prevText: '<i class="icon-chevron-left"></i>',
+					nextText: '<i class="icon-chevron-right"></i>',
+					changeMonth: true,
+      				changeYear: true,
+      				yearRange: '1900:2040'
+				});
+				
+				$('.fileplaceholder').change(function(){					
+					filename = $(this).val();
+					$(this).parent().next().val(filename.split("\\").pop());
+				});
+				
+			});			
+</script>

@@ -38,6 +38,25 @@
 										
 																					
 									</ul>
+									<%= link_to "#" do %>
+										<i class="fa fa-check-square"></i> 
+										Ketenagakerjaan <i class="icon-arrow"></i>
+									<% end %>
+									<ul class="sub-menu">
+										<li><!-- '/dashboard/service/masalahwni' -->
+											<%= link_to lapormasalah_path, :target => "_blank" do %>
+												<i class="fa fa-book"></i>
+												Formulir Masalah WNI
+											<% end %>
+										</li>
+										<li><!-- '/dashboard/service/masalahwni' -->
+											<%= link_to '/dashboard/masalahwni' do %>
+												<i class="fa fa-book"></i>
+												Masalah WNI
+											<% end %>
+										</li>												
+									
+									</ul>
 								</li>								
 							</ul>
 						</li>		
@@ -106,6 +125,15 @@
 								<span class="arrow "></span>
 							<% end %>	
 						</li>	
+						<% if current_user.has_role? :admin %>
+						<li>
+							<%= link_to dashboard_statistics_path do %>
+								<i class="clip-stats"></i>
+								<span class="title"> Performa & Statistik </span>
+								<span class="arrow "></span>
+							<% end %>	
+						</li>
+						<% end %>
 
 						
 </ul>

@@ -1,9 +1,8 @@
 class WelcomeController < ApplicationController
    
   def index	
-=begin
     @ip_visitor = request.remote_ip
-    #session[:ip_address]  = @ip_visitor
+    session[:ip_address]  = @ip_visitor
     if !user_signed_in? then
       @visitorname = "Visitor"
       #session[:warned_on_login] = 0
@@ -21,9 +20,10 @@ class WelcomeController < ApplicationController
           message_two = "Your IP address is<b> #{@ip_visitor} </b>that is identified to be located in <b> #{@visitor.coordinates[0]}&deg; longitude </b> & <b> #{@visitor.coordinates[1]}&deg; latitude</b>."
           warning = [ message_one, message_two ]
           flash[:warning] = warning.join("<br/>").html_safe
-        end                         
+        end
+                           
     end
-=end                        
+                         
   	if user_signed_in?
   	  @userreport = Report.where(user_id: current_user.id)
   	                .where(is_valid: true).desc(:updated_at).page(params[:page]).per(10)
@@ -31,17 +31,13 @@ class WelcomeController < ApplicationController
   	    @uservisa = Visa.all.page(params[:page]).desc(:created_at,:ref_id).per(10)
   	    @userpassport = Passport.all.page(params[:page]).desc(:created_at,:ref_id).per(10)
   	    @userreport = Report.all.page(params[:page]).desc(:created_at,:ref_id).per(10)
-  	    @usercase = Case.all.page(params[:page]).desc(:created_at).per(10)
   	    
   	  else
-  	    #visadata = Visa.where(user_id: current_user)
+  	    visadata = Visa.where(user_id: current_user)
         @uservisa = Visa.where(user_id: current_user.id).desc(:created_at,:ref_id).page(params[:page]).per(5)
         
-        #passportdata = Passport.where(user_id: current_user)
+        passportdata = Passport.where(user_id: current_user)
         @userpassport = Passport.where(user_id: current_user.id).desc(:created_at,:ref_od).page(params[:page]).per(5)
-        
-        #casedata = Case.where(user_id: current_user)
-        @usercase = Case.where(user_id: current_user.id).desc(:created_at).page(params[:page]).per(5)
 
         
         

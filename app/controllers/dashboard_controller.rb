@@ -41,6 +41,10 @@ class DashboardController < ApplicationController
       
       @document = "dashboard/service_journal"
       
+    elsif params[:document] == "masalahwni"
+      
+      @document = "dashboard/service_case"
+      
     else  
 
     
@@ -60,7 +64,8 @@ class DashboardController < ApplicationController
   end
   
   def statistics
-  
+    @document = "dashboard/statistics"
+    #@redis_sample = $redis.get('ali')
   end 
   
 
@@ -189,6 +194,12 @@ class DashboardController < ApplicationController
   
   def periodical_post_params
     params.require(:periodical).permit(:startperiod, :endperiod, :type)
+  end
+  
+  
+  private
+  def redis
+    @redis ||= Redis.new
   end
 
 end

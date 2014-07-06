@@ -1,7 +1,6 @@
 class Immigration::VisaController < ApplicationController
   include SimpleCaptcha::ControllerHelpers
   before_filter :authenticate_user!
-
   
   #GET /visa
   def index
@@ -231,7 +230,7 @@ class Immigration::VisaController < ApplicationController
     def reference_no_visa
       time = Time.new
       coded_date = time.strftime("%y%m%d")
-      ref_id = '1'+coded_date+generate_string(3)
+      ref_id = 'A'+coded_date+generate_string(3)
     end
     def generate_string(length=5)
       chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ123456789'

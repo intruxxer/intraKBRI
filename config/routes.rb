@@ -1,10 +1,12 @@
 EKbri::Application.routes.draw do
+
   resources :visas, controller: 'immigration/visa'
   resources :visafamilys, controller: 'immigration/visafamily'
   resources :visagroups, controller: 'immigration/visagroup'
   resources :passports, controller: 'immigration/passport'
   resources :reports, controller: 'immigration/report'  
-  
+  resources :cases
+    
   get "dashboard/protocols", :to => "protocol#index"
   
   authenticated :user do
@@ -33,6 +35,8 @@ EKbri::Application.routes.draw do
   get "infovisas", :to => "immigration/visa#info"   
   get "infopassports", :to => "immigration/passport#info"
   get "inforeports", :to => "immigration/report#info"
+  get "bantuan", :to => "cases#info"
+  get "lapormasalah", :to => "cases#index"
   get "marriage/info", :to => "immigration/marriage#info"
   
   get "overview", :to => "immigration/flow#systemoverview"
@@ -49,6 +53,9 @@ EKbri::Application.routes.draw do
   get "passports/reapply/:id", :to => "immigration/passport#reapply"
   
   get "dashboard/index"
+  get "dashboard/masalahwni", :to => "cases#masalahwni"
+  get "dashboard/formulirmasalahwni", :to => "cases#formulirmasalahwni", as: "formulirmasalahwni"
+  match "dashboard/deletemasalahwni/:id", to: "cases#destroy", as: "deletemasalahwni", via: :get
 
   get "dashboard/counsel"
   get "dashboard/immigration"
@@ -63,14 +70,13 @@ EKbri::Application.routes.draw do
   get "concept/index"
   get "concept", :to => "concept#index"
   
-  #Unit Test Framework#
-  get "playground", :to => "playground#index"
-  get "test", :to => "playground#test"
+  match "statistics", :to => "statistics#index", via: :get
   
   get "visa/show/all", :to => "desktop#show_all_sisari"
   get "lapordiri/show/all", :to => "desktop#show_all_lapordiri"
   get "lapordiri/show/history/:user_id", :to => "desktop#show_all_lapordiri_history"
   get "passport/show/all", :to => "desktop#show_all_spri"
+  get "case/list/all", :to => "desktop#show_all_cases"
   get "dashboard/service/:document", :to => "dashboard#immigration"
   get "admin/service/:document/:id", :to => "dashboard#immigration"
   get "dashboard/syncpanel", :to => "dashboard#syncpanel"
@@ -133,6 +139,10 @@ EKbri::Application.routes.draw do
   get "delete/user/visa/:id", :to => "immigration/visa#destroy", :as => :userdeletevisa
   
   #resources :dashboard_immigration, path: "dashboard/immigration"
+  #Experimental Controller#
+  get "playground", :to => "playground#index"
+  match "experiment", :to => "playground#experiment", via: :all
+  #match '*path', via: :all, to: 'pages#error_404'
   
 
   # The priority is based upon order of creation: first created -> highest priority.
